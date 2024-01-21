@@ -27,7 +27,7 @@ tl = norminv(alpha) ;
 Ml =  ceil( tl ^ 2 / ( 4 * d_l ^ 2) ) ; 
 
 
-r = 1 ;        % subsets Ml
+r = 1  ;        % subsets Ml
 M = r*Ml ;      % Number of measurements
 
 % "Create and Measure" the qubits
@@ -75,7 +75,7 @@ fprintf("Total measurments %d \n\n", M );
 
 names = ["Original" "Estimate" "CI_Clopper-Pearson" "CI_Wald"] ; 
 originalDataTable = table(names' , [P phat_CP {pci_CP} {ci_Wald}]' , [theta f(phat_CP)  {f(pci_CP)} {f(ci_Wald)}]', ...
-    'VariableNames', {'categories', 'p' , 'theta'});
+    'VariableNames', {'categories', 'p' , 'theta [rad]'});
 
 disp(originalDataTable)
 
