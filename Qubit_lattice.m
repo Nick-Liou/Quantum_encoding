@@ -2,7 +2,7 @@
 
 
 % Original data
-theta = pi/6 ; % Angle in range [0, pi]
+theta = pi/2 ; % Angle in range [0, pi]
 
 % |ψ> = cos( θ/2 ) |0> + e^(iγ) sin( θ/2 ) |1>
 
@@ -22,7 +22,7 @@ tl = norminv(e_l) ;
 Ml =  ceil( tl ^ 2 / ( 4 * d_l ^ 2) ) ; 
 
 
-r = 5 ;         % subsets Ml
+r = 30 ;         % subsets Ml
 M = r*Ml ;      % Number of measurements
 
 % "Measure" the qubits
@@ -63,9 +63,9 @@ fprintf('Confidence Interval Angle (theta): [%.4f, %.4f]\n\n', f(ci_Wald));
 fprintf('Estimated Probability (p_hat): %.4f\n', phat_Wald);
 fprintf('Confidence Interval (Wald Interval): [%.4f, %.4f]\n', ci_Wald);
 
-fprintf("\n"); 
+fprintf("Total measurments %d \n", M ); 
 
-names = ["Original" "Estimate" "CI_CP" "CI_Wald"] ; 
+names = ["Original" "Estimate" "CI_Clopper-Pearson" "CI_Wald"] ; 
 originalDataTable = table(names' , [P phat_CP {pci_CP} {ci_Wald}]' , [theta f(phat_CP)  {f(pci_CP)} {f(ci_Wald)}]', ...
     'VariableNames', {'categories', 'p' , 'theta'});
 
@@ -84,18 +84,23 @@ figure;
 histfit(G);
 title("θ histogram")
 ylabel("Absolute frequency")
+xline(theta,'r','Original','DisplayName','Original theta','LabelHorizontalAlignment','center')
+xline(f(phat_CP),'r','Estimate','DisplayName','Estimate theta','LabelHorizontalAlignment','center')
 
 figure; 
 histfit(p_l)
 title("p_l histogram")
 ylabel("Absolute frequency")
+xline(P,'r','Original','DisplayName','Original p','LabelHorizontalAlignment','center')
+xline(phat_CP,'r','Estimate','DisplayName','Estimate p','LabelHorizontalAlignment','center')
 
-figure;
-x = (m_theta - theta)-3*sqrt(var_hat):3*sqrt(var_hat)/10000:(m_theta - theta)+3*sqrt(var_hat);
-y = normpdf(x ,m_theta - theta ,    sqrt(var_hat));  
-plot(x,y)
-title("g distribution (for the mean of the set G)")
-ylabel('Probability Density')
+
+% figure;
+% x = (m_theta - theta)-3*sqrt(var_hat):3*sqrt(var_hat)/10000:(m_theta - theta)+3*sqrt(var_hat);
+% y = normpdf(x ,m_theta - theta ,    sqrt(var_hat));  
+% plot(x,y)
+% title("g distribution (for the mean of the set G)")
+% ylabel('Probability Density')
 
 
 
