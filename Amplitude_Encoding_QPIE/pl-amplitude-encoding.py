@@ -54,10 +54,11 @@ def circuit(data):
 print(qml.draw(circuit, expansion_strategy="device", show_all_wires=True)(data))
 
 
-# Print the quantum gates used in the circuit
-print("Quantum Gates Used:")
-for gate in circuit.qtape.operations:
-    print(gate.name)
+# # Print the quantum gates used in the circuit
+# print("Quantum Gates Used:")
+# for gate in circuit.qtape.operations:
+#     print(gate.name)
+
 
     
 fig, ax = qml.draw_mpl(circuit,show_all_wires=True)(data)
