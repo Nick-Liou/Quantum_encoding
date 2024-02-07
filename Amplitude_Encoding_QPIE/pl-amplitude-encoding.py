@@ -6,7 +6,7 @@ import math
 import matplotlib.pyplot as plt
 
 # To import my custom funcitons
-from Util_testing import Direct_sum_tests
+import Direct_sum_tests
 
 def pad_with_zeros(arr, number_of_zeros = None ):
     """
@@ -33,25 +33,16 @@ def pad_with_zeros(arr, number_of_zeros = None ):
 
 
 
-# Define your custom gate as a unitary matrix
-custom_gate_matrix = np.array([[1, 0, 0, 0],
-                                [0, 1, 0, 0],
-                                [0, 0, 1, 0],
-                                [0, 0, 0, np.exp(1j * np.pi / 4)]])
-
-
-
-
 
 # Define data to embedd into qubits
 # data = np.array([2,3,3,2])
-data = np.array([6,-12.5,11.15,7])
+data = np.array([2,3])
+# data = np.array([6,-12.5,11.15,7])
 Qubits = math.ceil( math.log(len(data),2) ) 
 data = pad_with_zeros(data)     # If necessary
 
 print(f"Number of qubits used: {Qubits}")
-print("Original data:")
-print(data)
+print("Original data:",data)
 
 
 
@@ -60,15 +51,19 @@ dev = qml.device('default.qubit', wires=Qubits)
 
 
 @qml.qnode(dev)
-def circuit_test(data,num_qubits):
+def circuit_mine(data,num_qubits):
 
     for qubit_id in range(num_qubits):
         p = Direct_sum_tests.generate_p (data, qubit_id )
 
         custom_gate_matrix = Direct_sum_tests.amplitude_embedding_sub_matrix(p)
+        # print("Shape is :" , custom_gate_matrix.shape)
+        # print(custom_gate_matrix)
+        # print(range(qubit_id))
 
         # Apply your custom gate to a set of qubits
-        qml.QubitUnitary(custom_gate_matrix, wires=range(qubit_id))
+        qml.QubitUnitary(custom_gate_matrix, wires=range(qubit_id+1))
+
 
     return qml.state()
     
@@ -80,6 +75,7 @@ def circuit(data):
 
 # Print the circuit diagram
 print(qml.draw(circuit, expansion_strategy="device", show_all_wires=True)(data))
+print(qml.draw(circuit_mine, expansion_strategy="device", show_all_wires=True)(data,Qubits))
 
 
 # # Print the quantum gates used in the circuit
@@ -89,20 +85,33 @@ print(qml.draw(circuit, expansion_strategy="device", show_all_wires=True)(data))
 
 
     
-fig, ax = qml.draw_mpl(circuit,show_all_wires=True)(data)
-# fig.show()
+# fig, ax = qml.draw_mpl(circuit,show_all_wires=True)(data)
+# # fig.show()
+# # Show the diagram and wait for user to close the window
+# plt.show()
 
-# Show the diagram and wait for user to close the window
-plt.show()
+
+# fig, ax = qml.draw_mpl(circuit_mine,show_all_wires=True)(data,Qubits)
+# # fig.show()
+# # Show the diagram and wait for user to close the window
+# plt.show()
 
 print("\nQuantum register state:")
-print(circuit(data))
+Qreg = circuit(data) 
+print(Qreg)
 
+print("\nQuantum register state mine:")
+Qreg_mine = circuit_mine(data,Qubits)
+print(Qreg_mine)
+print(sum(np.abs(Qreg_mine)**2))
 
 print("\nExpected quantum register state:")
-print(data / np.sqrt(sum(np.abs(data)**2)) + 0j ) 
+Qreg_expected = data / np.sqrt(sum(np.abs(data)**2)) + 0j 
+print(Qreg_expected) 
 
 
+
+print()
 # # Expected output for data = np.array([6,-12.5,11.15,7])
 #  0: ──╭QubitStateVector(M0)──╭┤ State 
 #  1: ──╰QubitStateVector(M0)──╰┤ State 
