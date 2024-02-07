@@ -29,8 +29,18 @@ def pad_with_zeros(arr, number_of_zeros = None ):
     return padded_arr
 
 
-# Define data to embedd into qubits
 
+# Define your custom gate as a unitary matrix
+custom_gate_matrix = np.array([[1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, 1, 0],
+                                [0, 0, 0, np.exp(1j * np.pi / 4)]])
+
+
+
+
+
+# Define data to embedd into qubits
 # data = np.array([2,3,3,2])
 data = np.array([6,-12.5,11.15,7])
 Qubits = math.ceil( math.log(len(data),2) ) 
@@ -44,6 +54,14 @@ print(data)
 
 # The quantum device to run and how many Qubits to use
 dev = qml.device('default.qubit', wires=Qubits)
+
+
+@qml.qnode(dev)
+def circuit_test(data,num_qubits):
+    # Apply your custom gate to a set of qubits
+    qml.QubitUnitary(custom_gate_matrix, wires=range(num_qubits))
+    return qml.state()
+    
 
 @qml.qnode(dev)
 def circuit(data):
