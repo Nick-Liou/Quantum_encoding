@@ -5,6 +5,7 @@ from pennylane.templates.embeddings import AngleEmbedding
 
 
 dev = qml.device('default.qubit', wires=4)
+
 @qml.qnode(dev)
 def circuit(data):
     for i in range(4):
