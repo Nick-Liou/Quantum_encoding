@@ -5,6 +5,9 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
+# To import my custom funcitons
+from Util_testing import Direct_sum_tests
+
 def pad_with_zeros(arr, number_of_zeros = None ):
     """
     Pad an np.array with a specified number of zeros at the end.
@@ -58,8 +61,15 @@ dev = qml.device('default.qubit', wires=Qubits)
 
 @qml.qnode(dev)
 def circuit_test(data,num_qubits):
-    # Apply your custom gate to a set of qubits
-    qml.QubitUnitary(custom_gate_matrix, wires=range(num_qubits))
+
+    for qubit_id in range(num_qubits):
+        p = Direct_sum_tests.generate_p (data, qubit_id )
+
+        custom_gate_matrix = Direct_sum_tests.amplitude_embedding_sub_matrix(p)
+
+        # Apply your custom gate to a set of qubits
+        qml.QubitUnitary(custom_gate_matrix, wires=range(qubit_id))
+
     return qml.state()
     
 

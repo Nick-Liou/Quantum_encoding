@@ -54,15 +54,41 @@ def amplitude_embedding_sub_matrix ( p_arr ):
         
     return result
 
+def generate_p(data,qubit_id):
 
-amplitude_embedding_sub_matrix([0.5, 0.25, 0.47 ])
+    prob_size = 2**qubit_id
+    p = np.zeros((1,prob_size))
+    sums = np.zeros((1,prob_size))
 
-# Example usage:
-A = np.array([[1, 2], [3, 4]])
-B = np.array([[5, 6], [7, 8]])
-print(A)
-print(B)
+    # Simple way
+    for i in range(prob_size):
+        sum_var = 0 
+        for j, element in enumerate(data):
+            
+            if j % prob_size == i :
+                sum_var += element 
 
-direct_sum_matrix = direct_sum(A, B)
-print("Direct sum of A and B:")
-print(direct_sum_matrix)
+        p[i] = data[i] / sum_var
+
+    print(p)
+
+    # Alternative way
+    for j, element in enumerate(data):         
+        sums[ j % prob_size ] += element
+    print(data[1:prob_size]/sums)
+
+    return p 
+
+# amplitude_embedding_sub_matrix([0.5, 0.25, 0.47 ])
+
+generate_p([2,3,3,2],1)
+
+# # Example usage:
+# A = np.array([[1, 2], [3, 4]])
+# B = np.array([[5, 6], [7, 8]])
+# print(A)
+# print(B)
+
+# direct_sum_matrix = direct_sum(A, B)
+# print("Direct sum of A and B:")
+# print(direct_sum_matrix)
