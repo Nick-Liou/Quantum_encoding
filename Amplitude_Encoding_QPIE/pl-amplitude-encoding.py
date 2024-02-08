@@ -35,9 +35,10 @@ def pad_with_zeros(arr, number_of_zeros = None ):
 
 
 # Define data to embedd into qubits
+# data = np.array([2,3])
 # data = np.array([2,3,3,2])
-data = np.array([2,3])
-# data = np.array([6,-12.5,11.15,7])
+data = np.array([1,2,3,4,5,6,7,8])
+# data = np.array([6,12.5,11.15,7])
 Qubits = math.ceil( math.log(len(data),2) ) 
 data = pad_with_zeros(data)     # If necessary
 
@@ -57,10 +58,7 @@ def circuit_mine(data,num_qubits):
         p = Direct_sum_tests.generate_p (data, qubit_id )
 
         custom_gate_matrix = Direct_sum_tests.amplitude_embedding_sub_matrix(p)
-        # print("Shape is :" , custom_gate_matrix.shape)
-        # print(custom_gate_matrix)
-        # print(range(qubit_id))
-
+        
         # Apply your custom gate to a set of qubits
         qml.QubitUnitary(custom_gate_matrix, wires=range(qubit_id+1))
 
@@ -100,10 +98,10 @@ print("\nQuantum register state:")
 Qreg = circuit(data) 
 print(Qreg)
 
-print("\nQuantum register state mine:")
-Qreg_mine = circuit_mine(data,Qubits)
-print(Qreg_mine)
-print(sum(np.abs(Qreg_mine)**2))
+# print("\nQuantum register state mine:")
+# Qreg_mine = circuit_mine(data,Qubits)
+# print(Qreg_mine)
+# print(sum(np.abs(Qreg_mine)**2))
 
 print("\nExpected quantum register state:")
 Qreg_expected = data / np.sqrt(sum(np.abs(data)**2)) + 0j 
