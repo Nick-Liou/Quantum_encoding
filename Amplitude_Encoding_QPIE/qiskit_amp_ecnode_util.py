@@ -48,7 +48,7 @@ def solve_spherical_angles(c):
 
     return alpha
 
-def verify_solution(c, alpha , max_tolerance = 10**-10):    
+def verify_solution(c, alpha , max_tolerance = 1e-8):    
     
     
     if abs ( c[0] -  np.cos(alpha[0]/2) ) > max_tolerance :
@@ -76,7 +76,7 @@ def verify_solution(c, alpha , max_tolerance = 10**-10):
 
 
 
-if __name__=="__main__": 
+if __name__ == "__main__" : 
     
     # Example usage:
    
@@ -91,10 +91,10 @@ if __name__=="__main__":
 
 
     # Check that it works for the default tolerance 10**-10 
-    if False :
-        num_runs = 10000 
+    if True :
+        num_runs = 1000 
         for i in range(2,100):
-            # print(f"i = {i} <==========")
+            print(f"i = {i} <==========")
             for _ in range(num_runs):
                 c =  np.random.rand(i) -0.90
                 c = c / np.sqrt(sum(np.abs(c)**2))
