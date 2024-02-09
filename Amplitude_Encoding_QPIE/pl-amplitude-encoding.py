@@ -6,7 +6,7 @@ import math
 import matplotlib.pyplot as plt
 
 # To import my custom funcitons
-import Direct_sum_tests
+import Amplitude_Encoding_QPIE.Direct_sum_util as Direct_sum_util
 
 def pad_with_zeros(arr, number_of_zeros = None ):
     """
@@ -55,9 +55,9 @@ dev = qml.device('default.qubit', wires=Qubits)
 def circuit_mine(data,num_qubits):
 
     for qubit_id in range(num_qubits):
-        p = Direct_sum_tests.generate_p (data, qubit_id )
+        p = Direct_sum_util.generate_p (data, qubit_id )
 
-        custom_gate_matrix = Direct_sum_tests.amplitude_embedding_sub_matrix(p)
+        custom_gate_matrix = Direct_sum_util.amplitude_embedding_sub_matrix(p)
         
         # Apply your custom gate to a set of qubits
         qml.QubitUnitary(custom_gate_matrix, wires=range(qubit_id+1))
