@@ -1,11 +1,11 @@
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import Aer
-import numpy as np
-from math import pi
 from qiskit.circuit.library import RYGate
 from qiskit.circuit.library import XGate
-import matplotlib.pyplot as plt
 from qiskit.visualization import circuit_drawer
+import matplotlib.pyplot as plt
+import numpy as np
+from math import pi
 
 # To import my custom funcitons
 from qiskit_amp_ecnode_util import solve_spherical_angles
@@ -17,10 +17,8 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubi
         QCircuit.ry(alpha[0], 0)
     elif n == 2 : 
        
-        # print(type(control_qubits))
-        # print(control_qubits) 
-        control_qubits = list(set(control_qubits))            
-        # print(control_qubits) 
+        # Remove duplicates 
+        control_qubits = list(set(control_qubits))    
 
         number_of_extra_ctr_qubits = len(control_qubits)
 
@@ -32,9 +30,7 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubi
             
             # Template 
             # multi_ctr_RYGate =  RYGate(theta).control(number_of_ctr_qubits,label=None)
-            # QCircuit.append(multi_ctr_RYGate, control_qubits + [target_qubit] )
-
-            
+            # QCircuit.append(multi_ctr_RYGate, control_qubits + [target_qubit] )            
             
             # Gate 1
             multi_ctr_RYGate =  RYGate(alpha[0]).control(number_of_extra_ctr_qubits,label=None)
@@ -48,16 +44,8 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubi
             multi_ctr_RYGate =  RYGate(pi + alpha[2]).control(number_of_extra_ctr_qubits+1,label=None)
             QCircuit.append(multi_ctr_RYGate, control_qubits + [1] + [0] )
 
-
-      
-        # if with_extra_control :
-        #     pass
-        # else : 
-        #     QCircuit.ry(alpha[0], 0)
-        #     QCircuit.cry(-alpha[1], 0, 1)
-        #     QCircuit.cry(pi + alpha[2], 1, 0)   
     else : 
-
+        # Remove duplicates 
         control_qubits = list(set(control_qubits))
         
         # Step b
@@ -83,7 +71,6 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubi
         multi_ctr_XGate =  XGate().control(1 + len(control_qubits),label=None)
         for i in range(n-1):
             QCircuit.append(multi_ctr_XGate, [n-1] + control_qubits + [i] )
-            # QCircuit.cx(n-1,i)
         
         # Step e
             
@@ -100,12 +87,14 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubi
 if __name__ == "__main__" : 
 
 
-    number_of_qubits =  5
+    number_of_qubits =  3
     show_plot = True
 
     # Generate random numbers
     c = np.random.rand(2**number_of_qubits)-0.5
-    # Convert it into a statevector
+    c = np.array([1,0,0,0,5,0,0,0])
+
+    # Convert it into a statevector (normalize)
     c = c / np.sqrt(sum(np.abs(c)**2))      
     # Find the angles "alpha"
     alpha = solve_spherical_angles(c)
@@ -113,16 +102,13 @@ if __name__ == "__main__" :
     # print("Spherical angles:", alpha)
 
 
-    # Create a quantum circuit with one qubit
+    # Create a quantum circuit with multipule qubits
     qc = QuantumCircuit(number_of_qubits)
 
     
-    # Create the circuit     
-    # Apply the Ry gate with the specified angle
-    # qc.ry(alpha[0], 0)
-    # qc = custom_amplitude_encoding(qc, list(range(0, 2**number_of_qubits-1)), number_of_qubits )
+    # Create an Amplitude Encoding (QPIE) circuit   
     qc = custom_amplitude_encoding(qc, alpha, number_of_qubits )
-    # qc = custom_amplitude_encoding(qc, alpha, 2 , [] )
+
     
 
     
@@ -143,22 +129,20 @@ if __name__ == "__main__" :
     job = backend.run(transpiled_circuit)
     result = job.result()
 
-    # Get the final state vector
+    # Get the final state vector (from the result)
     state_vector = result.get_statevector()
     # print("\n\nFinal state vector:    ", state_vector.data)    
 
-    # Define a tolerance for comparison
-    tolerance = 1e-6  # Example tolerance, you can adjust as needed
+    # Define a tolerance for comparison, adjust as needed
+    tolerance = 1e-6  
 
     # Check if the actual and expected values are equal within the tolerance
     if np.allclose(state_vector.data,  c + 0j , atol=tolerance):
         print(f"The actual values match the expected values within the tolerance ({tolerance}).")
-        print("YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEES")
     else:        
         print("Final state vector:    ", state_vector.data)    
         print("Expected state vector: " , c + 0j )
-        print(f"The actual values do not match the expected values within the tolerance ({tolerance}).")
-        print("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+        print(f"The actual values do NOT match the expected values within the tolerance ({tolerance}).")
     
 
     

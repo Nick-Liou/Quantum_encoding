@@ -33,10 +33,13 @@ def solve_spherical_angles(c):
     alpha[0] = 2 * np.arccos(abs(c[0]))
     sin_prod = 1
 
-    # Solve the system assuming c are possitive 
+    # Solve the system for possitive c 
     for i in range(1, n):
         sin_prod *= np.sin(alpha[i-1] / 2)
-        alpha[i] = 2 * np.arccos(abs(c[i]) / sin_prod )
+        if sin_prod == 0 : 
+            alpha[i] = pi 
+        else:
+            alpha[i] = 2 * np.arccos(min(abs(c[i]) / sin_prod , 1))
 
     # Adjust the solution for the signs of c
     for i in range(n):
@@ -91,7 +94,7 @@ if __name__ == "__main__" :
 
 
     # Check that it works for the default tolerance 10**-10 
-    if True :
+    if False :
         num_runs = 1000 
         for i in range(2,100):
             print(f"i = {i} <==========")

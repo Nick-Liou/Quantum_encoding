@@ -6,7 +6,7 @@ import math
 import matplotlib.pyplot as plt
 
 # To import my custom funcitons
-import Amplitude_Encoding_QPIE.Direct_sum_util as Direct_sum_util
+import Direct_sum_util as Direct_sum_util
 
 def pad_with_zeros(arr, number_of_zeros = None ):
     """
@@ -52,7 +52,7 @@ dev = qml.device('default.qubit', wires=Qubits)
 
 
 @qml.qnode(dev)
-def circuit_mine(data,num_qubits):
+def circuit_mine(data,num_qubits): # "Non working (it does something else)"
 
     for qubit_id in range(num_qubits):
         p = Direct_sum_util.generate_p (data, qubit_id )
@@ -73,7 +73,7 @@ def circuit(data):
 
 # Print the circuit diagram
 print(qml.draw(circuit, expansion_strategy="device", show_all_wires=True)(data))
-print(qml.draw(circuit_mine, expansion_strategy="device", show_all_wires=True)(data,Qubits))
+# print(qml.draw(circuit_mine, expansion_strategy="device", show_all_wires=True)(data,Qubits))
 
 
 # # Print the quantum gates used in the circuit
@@ -108,6 +108,17 @@ Qreg_expected = data / np.sqrt(sum(np.abs(data)**2)) + 0j
 print(Qreg_expected) 
 
 
+# Define a tolerance for comparison, adjust as needed
+tolerance = 1e-6  
+
+# Check if the actual and expected values are equal within the tolerance
+if np.allclose(Qreg,  Qreg_expected , atol=tolerance):
+    print(f"The actual values match the expected values within the tolerance ({tolerance}).")
+else:        
+    print("Final state vector:    ", Qreg)    
+    print("Expected state vector: " , Qreg_expected )
+    print(f"The actual values do NOT match the expected values within the tolerance ({tolerance}).")
+    
 
 print()
 # # Expected output for data = np.array([6,-12.5,11.15,7])
