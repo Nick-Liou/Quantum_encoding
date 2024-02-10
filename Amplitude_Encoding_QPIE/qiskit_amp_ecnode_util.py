@@ -12,6 +12,7 @@ def solve_spherical_angles_slow(c):
     alpha[0] = 2 * np.arccos(abs(c[0]))
     
     for i in range(1, n):
+        # Here is missing a check if the prod is Zero (happends when there are padded zeros on the data)
         alpha[i] = 2 * np.arccos(abs(c[i]) / np.prod(np.sin(alpha[:i] / 2) ))
 
 
@@ -31,15 +32,17 @@ def solve_spherical_angles(c):
     alpha = np.zeros(n)
 
     alpha[0] = 2 * np.arccos(abs(c[0]))
-    sin_prod = 1
+    sin_prod = np.sin(alpha[0] / 2)
 
     # Solve the system for possitive c 
     for i in range(1, n):
-        sin_prod *= np.sin(alpha[i-1] / 2)
         if sin_prod == 0 : 
+            break
+            # Leave alpha as zeros (they can have any value)
             alpha[i] = pi 
         else:
             alpha[i] = 2 * np.arccos(min(abs(c[i]) / sin_prod , 1))
+            sin_prod *= np.sin(alpha[i] / 2)
 
     # Adjust the solution for the signs of c
     for i in range(n):
@@ -85,6 +88,8 @@ if __name__ == "__main__" :
    
     number_of_elements = 2 
     c = np.random.rand(number_of_elements)-0.5
+    
+    # c = np.array([-1,0,0,0,-5,0,0,0])
     c = c / np.sqrt(sum(np.abs(c)**2))            
     alpha = solve_spherical_angles(c)
     verify_solution(c,alpha)

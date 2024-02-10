@@ -56,7 +56,7 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubi
         QCircuit = custom_amplitude_encoding(QCircuit, alpha , n - 1 , control_qubits)
 
         # Step c
-        # Employ an (n-1)-qubit controlled 𝑅𝑦 (𝛼3) gate, with control on first (n-1)
+        # Employ an (n-1)-qubit controlled 𝑅𝑦 (alpha[2**(n-1)-1]) gate, with control on first (n-1)
         # qubits and target on last qubit.
 
         
@@ -92,7 +92,7 @@ if __name__ == "__main__" :
 
     # Generate random numbers
     c = np.random.rand(2**number_of_qubits)-0.5
-    c = np.array([1,0,0,0,5,0,0,0])
+    # c = np.array([1,2,0,4,0,6,0,0])
 
     # Convert it into a statevector (normalize)
     c = c / np.sqrt(sum(np.abs(c)**2))      
