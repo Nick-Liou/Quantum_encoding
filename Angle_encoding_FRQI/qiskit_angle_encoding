@@ -1,0 +1,35 @@
+from qiskit import QuantumCircuit, transpile
+from qiskit_aer import Aer
+from qiskit.circuit.library import RYGate
+from qiskit.circuit.library import XGate
+from qiskit.visualization import circuit_drawer
+import matplotlib.pyplot as plt
+import numpy as np
+from math import pi
+
+
+
+def custom_Angle_encoding():
+    pass
+
+if __name__ == "__main__" : 
+
+
+    number_of_qubits =  3
+    show_plot = True
+
+    # Generate random numbers
+    c = np.random.rand(2**number_of_qubits)-0.5
+    # c = np.array([1,2,0,4,0,6,0,0])
+
+    # Convert it into a statevector (normalize)
+    c = c / np.sqrt(sum(np.abs(c)**2))      
+
+    # Create a quantum circuit with multipule qubits
+    qc = QuantumCircuit(number_of_qubits)
+
+    
+    # Create an Angle Encoding (FRQI) circuit   
+    qc = custom_Angle_encoding(qc,number_of_qubits )
+
+    
