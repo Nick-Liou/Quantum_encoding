@@ -4,8 +4,6 @@ from qiskit.circuit.library import RYGate
 from qiskit.circuit.library import XGate
 from math import pi
 
-# # To import my custom funciton to solve a system of equations
-# from qiskit_amp_ecnode_util import solve_spherical_angles
 
 def AmplitudeEncoding(data):
 

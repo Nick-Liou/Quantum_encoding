@@ -41,7 +41,7 @@ def encode_data(data, encoding_function):
 if __name__ == "__main__" : 
 
     show_plot = True    
-    data_length = 7
+    data_length = 7    
     data_to_encode = np.random.rand(data_length)-0.5
 
     qc , result = encode_data(data_to_encode ,  AmplitudeEncoding )
