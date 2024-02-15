@@ -1,6 +1,8 @@
 import numpy as np
 from math import pi
 
+from qs_AmplitudeEncoding import solve_spherical_angles
+
 def solve_spherical_angles_slow(c):
     # # Ensure c contains positive values
     # if any(val <= 0 for val in c):        
@@ -26,33 +28,34 @@ def solve_spherical_angles_slow(c):
 
     return alpha
 
-def solve_spherical_angles(c):
+# Moved to the other file 
+# def solve_spherical_angles(c):
     
-    n = len(c) - 1
-    alpha = np.zeros(n)
+#     n = len(c) - 1
+#     alpha = np.zeros(n)
 
-    alpha[0] = 2 * np.arccos(abs(c[0]))
-    sin_prod = np.sin(alpha[0] / 2)
+#     alpha[0] = 2 * np.arccos(abs(c[0]))
+#     sin_prod = np.sin(alpha[0] / 2)
 
-    # Solve the system for possitive c 
-    for i in range(1, n):
-        if sin_prod == 0 : 
-            break
-            # Leave alpha as zeros (they can have any value)
-            alpha[i] = pi 
-        else:
-            alpha[i] = 2 * np.arccos(min(abs(c[i]) / sin_prod , 1))
-            sin_prod *= np.sin(alpha[i] / 2)
+#     # Solve the system for possitive c 
+#     for i in range(1, n):
+#         if sin_prod == 0 : 
+#             break
+#             # Leave alpha as zeros (they can have any value)
+#             alpha[i] = pi 
+#         else:
+#             alpha[i] = 2 * np.arccos(min(abs(c[i]) / sin_prod , 1))
+#             sin_prod *= np.sin(alpha[i] / 2)
 
-    # Adjust the solution for the signs of c
-    for i in range(n):
-        if c[i] < 0 :
-            alpha[i] = 2*pi - alpha[i]
+#     # Adjust the solution for the signs of c
+#     for i in range(n):
+#         if c[i] < 0 :
+#             alpha[i] = 2*pi - alpha[i]
 
-    if c[-1] < 0 :
-        alpha[-1] = - alpha[-1]
+#     if c[-1] < 0 :
+#         alpha[-1] = - alpha[-1]
 
-    return alpha
+#     return alpha
 
 def verify_solution(c, alpha , max_tolerance = 1e-8):    
     

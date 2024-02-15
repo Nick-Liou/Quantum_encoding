@@ -3,6 +3,9 @@ from qiskit import transpile
 from qiskit_aer import Aer
 from qiskit.visualization import circuit_drawer
 
+import matplotlib.pyplot as plt
+
+# Custom libraries
 from Amplitude_Encoding_QPIE.qs_AmplitudeEncoding import AmplitudeEncoding
 
 def encode_data(data, encoding_function):
@@ -37,17 +40,25 @@ def encode_data(data, encoding_function):
 
 if __name__ == "__main__" : 
 
+    show_plot = True    
     data_length = 7
     data_to_encode = np.random.rand(data_length)-0.5
 
     qc , result = encode_data(data_to_encode ,  AmplitudeEncoding )
 
-    state_vector = result.get_statevector()
+    state_vector = result.get_statevector().data
 
     
-    # Print or manipulate the encoded circuit and result as needed
+    # Print the circuit in the console
     print(qc)
 
-    print("\n\nFinal state vector: ", state_vector.data)    
+    print("\n\nFinal state vector: ", state_vector)    
 
+    if show_plot:
+        # # Print the circuit in the console
+        # print(qc.draw())
+
+        # Plot the circuit
+        fig = circuit_drawer(qc, output='mpl', style="iqp")
+        plt.show()
 

@@ -1,17 +1,21 @@
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import Aer
-from qiskit.circuit.library import RYGate
-from qiskit.circuit.library import XGate
 from qiskit.visualization import circuit_drawer
 import matplotlib.pyplot as plt
 import numpy as np
+
+from qiskit.circuit.library import RYGate
+from qiskit.circuit.library import XGate
 from math import pi
 
 # To import my custom funcitons
-from qiskit_amp_ecnode_util import solve_spherical_angles
+# from qiskit_amp_ecnode_util import solve_spherical_angles
 # from Amplitude_Encoding_QPIE.qs_AmplitudeEncoding import custom_amplitude_encoding
-from qs_AmplitudeEncoding import custom_amplitude_encoding
 
+from qs_AmplitudeEncoding import custom_amplitude_encoding
+from qs_AmplitudeEncoding import solve_spherical_angles
+
+# Moved to the other file
 # def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubits:list = list() ):
 
 #     if n == 1 : 

@@ -9,17 +9,16 @@ from math import pi
 
 def AmplitudeEncoding(data):
 
+    # pad with zeros if needed
     padded_data = pad_with_zeros(data) 
     
     number_of_qubits = int ( np.ceil(np.log2(len(padded_data))) )
     
     # Normalize data 
-    norm_data = padded_data / np.sqrt(sum(np.abs(padded_data)**2))  
+    desired_real_statevector = padded_data / np.sqrt(sum(np.abs(padded_data)**2))  
 
     # Find the angles "alpha"
-    alpha = solve_spherical_angles(norm_data)
-
-    print(alpha)
+    alpha = solve_spherical_angles(desired_real_statevector)
 
 
     # Create a quantum circuit with multipule qubits
@@ -30,7 +29,7 @@ def AmplitudeEncoding(data):
     qc = custom_amplitude_encoding(qc, alpha, number_of_qubits )
 
     # Return the final quantum circuit
-    return qc 
+    return qc  #, desired_real_statevector
 
 
 
@@ -158,3 +157,69 @@ def pad_with_zeros(arr, number_of_zeros = None ):
     padded_arr = np.concatenate((arr, zeros_array))
     
     return padded_arr
+
+
+
+
+# Example usage:
+if __name__ == "__main__" : 
+   
+    from qiskit import transpile
+    from qiskit_aer import Aer
+
+    # Define a tolerance for comparison, adjust as needed
+    tolerance = 1e-6
+    show_plot = True
+
+    data_length = 30
+
+    data_to_encode = np.random.rand(data_length)-0.5
+
+
+    # pad with zeros if needed
+    padded_data = pad_with_zeros(data_to_encode)   
+    
+    # Normalize data 
+    expected_statevector = padded_data / np.sqrt(sum(np.abs(padded_data)**2))  + 0j
+
+
+
+    # Apply the custom encoding function
+    qc = AmplitudeEncoding(data_to_encode)
+
+    # Transpile the circuit for the backend
+    transpiled_circuit = transpile(qc, Aer.get_backend('qasm_simulator'))
+
+    # Simulate the transpiled circuit
+    backend = Aer.get_backend('statevector_simulator')
+    job = backend.run(transpiled_circuit)
+    result = job.result()
+
+    state_vector = result.get_statevector().data
+
+    
+    # Print the circuit in the console
+    print(qc)
+
+    print("\n\nFinal state vector: ", state_vector)    
+
+    # Check if the actual and expected values are equal within the tolerance
+    if np.allclose(state_vector,  expected_statevector , atol=tolerance):
+        print(f"The actual values match the expected values within the tolerance ({tolerance}).")
+    else:        
+        print("Final state vector:    ", state_vector)    
+        print("Expected state vector: " , expected_statevector )
+        print(f"The actual values do NOT match the expected values within the tolerance ({tolerance}).")
+    
+
+    if show_plot:
+        from qiskit.visualization import circuit_drawer
+        import matplotlib.pyplot as plt
+        
+        # Plot the circuit
+        fig = circuit_drawer(qc, output='mpl', style="iqp")
+        plt.show()
+        
+
+
+   
