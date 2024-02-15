@@ -19,10 +19,11 @@ if __name__ == "__main__" :
     show_plot = True
 
     # Generate random numbers
-    c = np.random.rand(2**number_of_qubits)-0.5
+    c = np.random.rand(number_of_qubits)-0.5
     # c = np.array([1,2,0,4,0,6,0,0])
 
     # Convert it into a statevector (normalize)
+    
     c = c / np.sqrt(sum(np.abs(c)**2))      
 
     # Create a quantum circuit with multipule qubits

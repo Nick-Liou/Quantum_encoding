@@ -27,7 +27,7 @@ def direct_sum(A, B):
     return direct_sum_matrix
 
 
-def amplitude_embedding_sub_matrix ( p_arr ):
+def custom_matrix_generator ( p_arr ):
     """
     Computes a matrix for amplitude embedding.
     Args:
@@ -96,7 +96,7 @@ def generate_p(data,qubit_id):
 
 
 if __name__=="__main__": 
-    amplitude_embedding_sub_matrix([0.5, 0.25, 0.47 ])
+    custom_matrix_generator([0.5, 0.25, 0.47 ])
 
     # data = [2,3,3,2] 
     data = [1,2,3,4 , 2,3,3,2 ] 

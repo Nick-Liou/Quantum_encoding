@@ -6,7 +6,7 @@ import math
 import matplotlib.pyplot as plt
 
 # To import my custom funcitons
-import Direct_sum_util as Direct_sum_util
+import Util_testing.Direct_sum_util as Direct_sum_util
 
 def pad_with_zeros(arr, number_of_zeros = None ):
     """
@@ -21,7 +21,7 @@ def pad_with_zeros(arr, number_of_zeros = None ):
         numpy.ndarray: Padded array.
     """
     if number_of_zeros == None :
-        number_of_zeros = 2 ** math.ceil( math.log(len(data),2) ) -  len(arr)
+        number_of_zeros = 2 ** math.ceil( math.log(len(arr),2) ) -  len(arr)
 
     # Create an array of zeros with the desired length
     zeros_array = np.zeros(number_of_zeros, dtype=arr.dtype)
@@ -57,7 +57,7 @@ def circuit_mine(data,num_qubits): # "Non working (it does something else)"
     for qubit_id in range(num_qubits):
         p = Direct_sum_util.generate_p (data, qubit_id )
 
-        custom_gate_matrix = Direct_sum_util.amplitude_embedding_sub_matrix(p)
+        custom_gate_matrix = Direct_sum_util.custom_matrix_generator(p)
         
         # Apply your custom gate to a set of qubits
         qml.QubitUnitary(custom_gate_matrix, wires=range(qubit_id+1))
