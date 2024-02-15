@@ -6,9 +6,10 @@ from qiskit.visualization import circuit_drawer
 import matplotlib.pyplot as plt
 
 # Custom libraries
-from Amplitude_Encoding_QPIE.qs_AmplitudeEncoding import AmplitudeEncoding
+from Amplitude_Encoding_QPIE.qs_AmplitudeEncoding   import AmplitudeEncoding
+from Angle_encoding_FRQI.qs_AngleEncoding           import AngleEncoding
 
-def encode_data(data, encoding_function):
+def encode_data(data, encoding_function, *args, **kwargs):
     """
     Encode the given data using the specified encoding function.
 
@@ -24,7 +25,7 @@ def encode_data(data, encoding_function):
 
 
     # Apply the custom encoding function
-    qc = encoding_function(data)
+    qc = encoding_function(data, *args, **kwargs)
 
     # Transpile the circuit for the backend
     transpiled_circuit = transpile(qc, Aer.get_backend('qasm_simulator'))
@@ -40,11 +41,23 @@ def encode_data(data, encoding_function):
 
 if __name__ == "__main__" : 
 
-    show_plot = True    
-    data_length = 7    
+    encodings =  {
+        AmplitudeEncoding: (1, 2),
+        AngleEncoding: {'min_val': -0.5, 'max_val': 0.5},
+        # More examples 
+        # function_1: (1, 2),
+        # function_2: {'x': 3, 'y': 4, 'z': 5},
+        # function_3: {'message': "Hello, World!"}
+    }
+    
+
+    show_plot = False    
+    data_length = 4 
     data_to_encode = np.random.rand(data_length)-0.5
 
-    qc , result = encode_data(data_to_encode ,  AmplitudeEncoding )
+    print(data_to_encode)
+
+    qc , result = encode_data(data_to_encode ,  encodings[0] , min_val = -0.5 , max_val =  0.5 )
 
     state_vector = result.get_statevector().data
 

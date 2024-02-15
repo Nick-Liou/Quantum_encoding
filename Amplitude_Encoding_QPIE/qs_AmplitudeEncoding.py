@@ -27,8 +27,7 @@ def AmplitudeEncoding(data):
     qc = custom_amplitude_encoding(qc, alpha, number_of_qubits )
 
     # Return the final quantum circuit
-    return qc  #, desired_real_statevector
-
+    return qc 
 
 
 def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubits:list = list() ):
