@@ -42,10 +42,10 @@ def encode_data(data, encoding_function, *args, **kwargs):
 if __name__ == "__main__" : 
 
     encodings =  {
-        AmplitudeEncoding: (1, 2),
-        AngleEncoding: {'min_val': -0.5, 'max_val': 0.5},
+        AmplitudeEncoding:  {},
+        AngleEncoding:      {'min_val': -0.5, 'max_val': 0.5},
         # More examples 
-        # function_1: (1, 2),
+        # function_1: {'args': (1, 2)},
         # function_2: {'x': 3, 'y': 4, 'z': 5},
         # function_3: {'message': "Hello, World!"}
     }
@@ -55,9 +55,15 @@ if __name__ == "__main__" :
     data_length = 4 
     data_to_encode = np.random.rand(data_length)-0.5
 
-    print(data_to_encode)
+    print("\nData to encode:" , data_to_encode)
 
-    qc , result = encode_data(data_to_encode ,  encodings[0] , min_val = -0.5 , max_val =  0.5 )
+
+    encoding_used = AngleEncoding
+    kwargs = encodings[encoding_used]
+    args = kwargs.pop('args', ())  # Extracting 'args' if present, otherwise empty tuple
+    
+
+    qc , result = encode_data(data_to_encode ,  encoding_used , *args, **kwargs )
 
     state_vector = result.get_statevector().data
 

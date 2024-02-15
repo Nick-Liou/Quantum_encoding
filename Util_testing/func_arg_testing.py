@@ -8,14 +8,12 @@ def function_3(message="No message"):
     return message
 
 functions_arguments = {
-    function_1: (1, 2),
+    function_1: {'args': (1, 2)},
     function_2: {'x': 3, 'y': 4, 'z': 5},
     function_3: {'message': "Hello, World!"}
 }
 
-for func, args in functions_arguments.items():
-    if isinstance(args, dict):
-        result = func(**args)
-    else:
-        result = func(*args)
+for func, kwargs in functions_arguments.items():
+    args = kwargs.pop('args', ())  # Extracting 'args' if present, otherwise empty tuple
+    result = func(*args, **kwargs)
     print(f"Result of {func.__name__}:", result)
