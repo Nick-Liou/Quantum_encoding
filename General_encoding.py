@@ -1,13 +1,15 @@
 import numpy as np
-from qiskit import transpile
-from qiskit_aer import Aer
+from qiskit import transpile 
 from qiskit.visualization import circuit_drawer
+from qiskit_aer import Aer
+
 
 import matplotlib.pyplot as plt
 
 # Custom libraries
 from Amplitude_Encoding_QPIE.qs_AmplitudeEncoding   import AmplitudeEncoding
 from Angle_encoding_FRQI.qs_AngleEncoding           import AngleEncoding
+from Basis_Encoding_NEQR.qs_BasisEncoding           import BasisEncoding
 
 def encode_data(data, encoding_function, *args, **kwargs):
     """
@@ -44,6 +46,7 @@ if __name__ == "__main__" :
     encodings =  {
         AmplitudeEncoding:  {},
         AngleEncoding:      {'min_val': -0.5, 'max_val': 0.5},
+        BasisEncoding:      {},
         # More examples 
         # function_1: {'args': (1, 2)},
         # function_2: {'x': 3, 'y': 4, 'z': 5},
@@ -51,14 +54,14 @@ if __name__ == "__main__" :
     }
     
 
-    show_plot = False    
-    data_length = 4 
+    show_plot = True    
+    data_length = 7
     data_to_encode = np.random.rand(data_length)-0.5
 
     print("\nData to encode:" , data_to_encode)
 
 
-    encoding_used = AngleEncoding
+    encoding_used = AmplitudeEncoding
     kwargs = encodings[encoding_used]
     args = kwargs.pop('args', ())  # Extracting 'args' if present, otherwise empty tuple
     
@@ -79,5 +82,5 @@ if __name__ == "__main__" :
 
         # Plot the circuit
         fig = circuit_drawer(qc, output='mpl', style="iqp")
-        plt.show()
+        figure = plt.show()
 

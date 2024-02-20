@@ -132,6 +132,7 @@ def solve_spherical_angles(c):
     return alpha
 
 
+# Refactor it outside !
 def pad_with_zeros(arr, number_of_zeros = None ):
     """
     Pad an np.array with a specified number of zeros at the end.
