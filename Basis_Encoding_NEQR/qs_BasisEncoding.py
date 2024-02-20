@@ -1,26 +1,44 @@
 import numpy as np
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit , QuantumRegister
+from qiskit.circuit.library import MCXGate
 
-def BasisEncoding(data , bit_depth=4) :
+def BasisEncoding(data ) :
 
     # pad with zeros if needed
     padded_data = pad_with_zeros(data) 
     
     number_of_qubits = int ( np.ceil(np.log2(len(padded_data))) )
     
+    # For now only works for integeres
+    bin_data , bit_depth = convert_to_bin(padded_data)
 
-    if all_integers(padded_data):
-        bin_data = convert_to_binary(padded_data)
-        pass
-
+    
+    # Indices of data
+    qr1 = QuantumRegister(number_of_qubits, "q") 
+    # Data
+    qr2 = QuantumRegister(bit_depth, "a")    
 
     # Create a quantum circuit with multipule qubits
-    qc = QuantumCircuit(number_of_qubits + bit_depth)
+    qc = QuantumCircuit(qr1 ,qr2 )
 
+
+    # Create a superposition for all the indices 
     qc.h(range(number_of_qubits))
     
     for i in range(len(padded_data)):
-        padded_data[i]
+        # padded_data[i]
+
+        for j in range(bit_depth):
+            
+            if bin_data[i][j] == '1' :
+
+                array = list(range(number_of_qubits)) + [number_of_qubits + bit_depth - j - 1]
+
+                qc.append(MCXGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), array )
+        
+        # qc.barrier()
+
+         
 
     
     
@@ -28,6 +46,15 @@ def BasisEncoding(data , bit_depth=4) :
     return qc 
 
 
+def convert_to_bin(arr):
+
+    
+    if all_integers(arr):
+        return int_to_binary(arr)        
+    else:
+        raise("Float representation not yet")
+        # Add the float case
+    
 
 
 def all_integers(arr):
@@ -38,19 +65,18 @@ def all_integers(arr):
     return True
 
 
-def convert_to_binary(arr):
+def int_to_binary(arr):
     binary_array = []
-    max_abs_value = max(abs(num) for num in arr)
+    max_abs_value = max(map(abs, arr))
     max_length = len(np.binary_repr(int(max_abs_value)))  # Calculate the maximum number of bits needed
     
+    # Add one bit for the "sign" bit
     if min(arr) < 0 :
         max_length += 1 
 
-    for num in arr:
-        binary_num = np.binary_repr(int(num), width=max_length)  # Convert the number to binary with specified width
-        binary_array.append(binary_num)
-
-    return binary_array
+    binary_array = list(map(lambda num: np.binary_repr(int(num), width=max_length), arr))
+    
+    return binary_array , max_length
 
 
 # Refactor it outside !
@@ -77,3 +103,15 @@ def pad_with_zeros(arr, number_of_zeros = None ):
     
     return padded_arr
 
+
+
+if __name__=="__main__": 
+
+    array = [0, 1, 2, -1.00 , -4 ]
+
+    print(all_integers(array) ) 
+
+    print( int_to_binary(array) )
+
+
+    pass

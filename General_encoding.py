@@ -45,7 +45,7 @@ if __name__ == "__main__" :
 
     encodings =  {
         AmplitudeEncoding:  {},
-        AngleEncoding:      {'min_val': -0.5, 'max_val': 0.5},
+        AngleEncoding:      {'min_val': 0, 'max_val': 255},
         BasisEncoding:      {},
         # More examples 
         # function_1: {'args': (1, 2)},
@@ -54,14 +54,14 @@ if __name__ == "__main__" :
     }
     
 
-    show_plot = True    
-    data_length = 7
-    data_to_encode = np.random.rand(data_length)-0.5
+    show_plot = True 
+    data_length = 4
+    data_to_encode = np.round( np.random.rand(data_length) * 3)
 
     print("\nData to encode:" , data_to_encode)
 
 
-    encoding_used = AmplitudeEncoding
+    encoding_used = BasisEncoding
     kwargs = encodings[encoding_used]
     args = kwargs.pop('args', ())  # Extracting 'args' if present, otherwise empty tuple
     
@@ -75,6 +75,13 @@ if __name__ == "__main__" :
     print(qc)
 
     print("\n\nFinal state vector: ", state_vector)    
+
+    print(f'\n\nNumber of qubits {qc.num_qubits}')
+    print(f"Total number of gates used {qc.size()}")
+    print(f"Circuit depth/layers {qc.depth()}")
+    print("Gates used:")
+    print(qc.count_ops())
+
 
     if show_plot:
         # # Print the circuit in the console
