@@ -33,5 +33,5 @@ def AngleEncoding(data , min_val = None , max_val = None ):
 
 # Example usage:
 if __name__ == "__main__" : 
-
+    # Maybe add a simple test/example
     pass
