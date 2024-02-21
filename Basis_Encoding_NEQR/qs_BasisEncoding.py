@@ -2,7 +2,8 @@ import numpy as np
 from qiskit import QuantumCircuit , QuantumRegister
 from qiskit.circuit.library import MCXGate
 
-def BasisEncoding(data ) :
+def BasisEncoding(data , use_Espresso = True ) :
+    
 
     # pad with zeros if needed
     padded_data = pad_with_zeros(data) 
@@ -25,13 +26,77 @@ def BasisEncoding(data ) :
     # Create a superposition for all the indices 
     qc.h(range(number_of_qubits))
     
-    # Set up the data 
-    for i in range(len(padded_data)):
+    if not use_Espresso:
+        # Set up the data 
+        for i in range(len(padded_data)):
+            for j in range(bit_depth):            
+                if bin_data[i][j] == '1' :
+                    qubits_ids = list(range(number_of_qubits)) + [number_of_qubits + bit_depth - j - 1]
+                    qc.append(MCXGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
+
+    else:
+        from pyeda.inter import exprvars, truthtable, espresso_tts
+        import pyeda.boolalg.minimization
+        def my_modified_function(inputs, noutputs, cover):
+            """Convert a cover to a tuple of Expression instances."""
+            fs = []
+            for i in range(noutputs):
+                terms = []
+                for invec, outvec in cover:
+                    if outvec[i]:
+                        my_term = [[],[]]
+                        # term = []
+                        for j, v in enumerate(inputs):
+                            if invec[j] == 1:
+                                # term.append(~v)
+                                my_term[1].append(j)
+                            elif invec[j] == 2:                        
+                                my_term[0].append(j)
+                                # term.append(v)
+                        # terms.append(term)
+                        terms.append(my_term)
+                        # print(term)
+                        # print(my_term)
+                # fs.append(Or(*[And(*term) for term in terms]))
+                # fs.append()
+                # print(terms)
+            return terms
+            return tuple(fs)
+
+        # Monkey-patching
+        pyeda.boolalg.minimization._cover2exprs = my_modified_function
+
+        
+        
+        # Define the variables x[0], x[1],..., and x[number_of_qubits]
+        X = exprvars('x', number_of_qubits)
+
+        # Set up the data 
         for j in range(bit_depth):            
-            if bin_data[i][j] == '1' :
-                qubits_ids = list(range(number_of_qubits)) + [number_of_qubits + bit_depth - j - 1]
-                qc.append(MCXGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
+            truth_table = ""
+            for i in range(len(padded_data)):
+                truth_table += bin_data[i][j]
+                
+            # Define the truth table
+            f = truthtable(X, truth_table)
+            
+            # Minimize the truth table using Espresso
+            fm = espresso_tts(f)
+
+            for contition in fm:
+                pos_ctrl_qubits_ids = contition[0]
+                neg_ctrl_qubits_ids = contition[1]
+                target_qubit = number_of_qubits + bit_depth - j - 1
+                # print(len(kkk)-1)
+                if len(pos_ctrl_qubits_ids) == 0 and len(neg_ctrl_qubits_ids) == 0 :
+                    qc.x(target_qubit)
+                else:
+                    kkk =  pos_ctrl_qubits_ids + neg_ctrl_qubits_ids + [target_qubit]
+                    qc.append(MCXGate(num_ctrl_qubits=len(kkk)-1, ctrl_state= 2**(len(pos_ctrl_qubits_ids))-1 ), kkk )
     
+
+                pass
+
     
     
     # Return the final quantum circuit

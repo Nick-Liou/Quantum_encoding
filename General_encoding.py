@@ -46,7 +46,7 @@ if __name__ == "__main__" :
     encodings =  {
         AmplitudeEncoding:  {},
         AngleEncoding:      {'min_val': 0, 'max_val': 255},
-        BasisEncoding:      {},
+        BasisEncoding:      {'use_Espresso': True},
         # More examples 
         # function_1: {'args': (1, 2)},
         # function_2: {'x': 3, 'y': 4, 'z': 5},
@@ -55,9 +55,11 @@ if __name__ == "__main__" :
     
 
     show_plot = True 
-    data_length = 8
-    # data_to_encode = np.random.rand(data_length) * 2  -1
-    data_to_encode = np.random.random_integers(low= -4 , high= 3 , size=data_length) 
+    data_length = 4
+    # data_to_encode = np.random.rand(data_length) * 2  -1    
+    data_to_encode = np.random.randint(low=0, high=3, size=data_length)
+    
+    # data_to_encode = np.array( [3, 3, 2, 2] ) 
 
 
 

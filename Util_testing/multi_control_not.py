@@ -19,7 +19,7 @@ qc = QuantumCircuit(qr1 ,qr2 )
 pos_ctrl_qubits_ids = [5,3,1]
 neg_ctrl_qubits_ids = [2,0]
 target_qubit = 0 + number_of_qubits
-kkk =  list(pos_ctrl_qubits_ids) + list(neg_ctrl_qubits_ids) + [target_qubit]
+kkk =  pos_ctrl_qubits_ids + neg_ctrl_qubits_ids + [target_qubit]
 qc.append(MCXGate(num_ctrl_qubits=len(kkk)-1, ctrl_state= 2**(len(pos_ctrl_qubits_ids))-1 ), kkk )
     
 
