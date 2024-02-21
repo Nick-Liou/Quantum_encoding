@@ -1,28 +1,29 @@
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.visualization import circuit_drawer
 
+from qiskit.circuit.library import MCXGate
+
 import matplotlib.pyplot as plt
-# Create a QuantumCircuit instance
-qc = QuantumCircuit(3)
 
-# Define a custom gate representing the grouped sequence of gates
-grouped_gate = QuantumCircuit(3, name="MyGroup")
-grouped_gate.h(0)
-grouped_gate.cx(0, 1)
-grouped_gate.cx(0, 2)
+number_of_qubits = 6
+bit_depth = 2
 
-# Add the custom gate to the circuit
-qc.append(grouped_gate.to_instruction(), [0, 1, 2])
+# Indices of data
+qr1 = QuantumRegister(number_of_qubits, "q") 
+# Data
+qr2 = QuantumRegister(bit_depth, "a")    
 
-# Add individual gates to the circuit
-qc.h(1)
-qc.cx(1, 2)
+# Create a quantum circuit with multipule qubits
+qc = QuantumCircuit(qr1 ,qr2 )
 
-# Visualize the circuit with legend
-legend = {'MyGroup': 'My Grouped Gates',}
-# circuit_drawer(qc, style={'name': legend})
-# Plot the circuit
-fig = circuit_drawer(qc, style={'name': legend})
-# circuit_drawer(qc, output='mpl', style="iqp")
-figure = plt.show()
+pos_ctrl_qubits_ids = [5,3,1]
+neg_ctrl_qubits_ids = [2,0]
+target_qubit = 0 + number_of_qubits
+kkk =  list(pos_ctrl_qubits_ids) + list(neg_ctrl_qubits_ids) + [target_qubit]
+qc.append(MCXGate(num_ctrl_qubits=len(kkk)-1, ctrl_state= 2**(len(pos_ctrl_qubits_ids))-1 ), kkk )
+    
+
 print(qc)
+
+# fig = circuit_drawer(qc, output='mpl', style="iqp")            
+# figure = plt.show()

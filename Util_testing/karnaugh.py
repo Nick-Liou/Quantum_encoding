@@ -4,7 +4,7 @@ from pyeda.inter import exprvars, truthtable, espresso_tts
 X = exprvars('x', 4)
 
 # Define the truth table
-f = truthtable(X, "0001010111101001")
+f = truthtable(X, "1001010111101001")
 
 # Minimize the truth table using Espresso
 fm = espresso_tts(f)
