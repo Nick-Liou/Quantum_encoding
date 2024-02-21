@@ -55,10 +55,10 @@ if __name__ == "__main__" :
     
 
     show_plot = True 
-    data_length = 4
-    data_to_encode = np.round( np.random.rand(data_length) * 3)
+    data_length = 8
+    # data_to_encode = np.random.rand(data_length) * 2  -1
+    data_to_encode = np.random.random_integers(low= -4 , high= 3 , size=data_length) 
 
-    print("\nData to encode:" , data_to_encode)
 
 
     encoding_used = BasisEncoding
@@ -76,7 +76,8 @@ if __name__ == "__main__" :
 
     print("\n\nFinal state vector: ", state_vector)    
 
-    print(f'\n\nNumber of qubits {qc.num_qubits}')
+    print("\nData to encode:" , data_to_encode)
+    print(f'\nNumber of qubits {qc.num_qubits}')
     print(f"Total number of gates used {qc.size()}")
     print(f"Circuit depth/layers {qc.depth()}")
     print("Gates used:")

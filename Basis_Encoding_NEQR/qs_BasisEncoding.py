@@ -25,21 +25,13 @@ def BasisEncoding(data ) :
     # Create a superposition for all the indices 
     qc.h(range(number_of_qubits))
     
+    # Set up the data 
     for i in range(len(padded_data)):
-        # padded_data[i]
-
-        for j in range(bit_depth):
-            
+        for j in range(bit_depth):            
             if bin_data[i][j] == '1' :
-
-                array = list(range(number_of_qubits)) + [number_of_qubits + bit_depth - j - 1]
-
-                qc.append(MCXGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), array )
-        
-        # qc.barrier()
-
-         
-
+                qubits_ids = list(range(number_of_qubits)) + [number_of_qubits + bit_depth - j - 1]
+                qc.append(MCXGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
+    
     
     
     # Return the final quantum circuit
@@ -65,6 +57,7 @@ def all_integers(arr):
     return True
 
 
+# This could be optimized in special cases, when -2**i is in arr but 2**i is not, to use one less bit 
 def int_to_binary(arr):
     binary_array = []
     max_abs_value = max(map(abs, arr))
