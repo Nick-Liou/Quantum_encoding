@@ -25,5 +25,7 @@ You can install the required dependencies using pip. First, navigate to the root
 pip install -r requirements.txt
 ```
 
-
 This command will install all the necessary dependencies listed in the `requirements.txt` file.
+
+
+In the '====.py' you can choose the encoding technique you want from the implemented ones, adjust optional arguments in the dictionary and provide your data.
