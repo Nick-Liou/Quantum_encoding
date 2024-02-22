@@ -17,3 +17,13 @@ Techniques to be implemented:
 - Hybrid Encodings
 
 
+## Installation
+
+You can install the required dependencies using pip. First, navigate to the root directory of the project and then run:
+
+```
+pip install -r requirements.txt
+```
+
+
+This command will install all the necessary dependencies listed in the `requirements.txt` file.
