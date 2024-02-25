@@ -1,14 +1,18 @@
-# Quantum_encoding
+# Quantum Encoding
 Comparative Study and Analysis of Classical-to-Quantum Data Encoding through Embedding and Mapping Techniques
 <!-- Comparative Analysis of Classical-to-Quantum Mapping Techniques in Data Encoding -->
 
-Techniques implemented:
-- Qubit Lattice
-- Basis Encoding: Novel Enhanced Quantum Representation (NEQR)
-- Amplitude Encoding: Quantum Probability Image Encoding (QPIE) 
-- Angle Encoding: Flexible Representation of Quantum Images (FRQI)
+## Description
 
-Techniques to be implemented:
+Quantum Encoding is a research project aimed at investigating various classical-to-quantum data encoding techniques through embedding and mapping methodologies. The project explores different approaches to encode classical data into quantum states, with a focus on understanding their effectiveness and applicability in quantum information processing tasks.
+
+## Techniques implemented
+- Qubit Lattice
+- Basis Encoding - (NEQR) Novel Enhanced Quantum Representation 
+- Amplitude Encoding - (QPIE) Quantum Probability Image Encoding  
+- Angle Encoding - (FRQI) Flexible Representation of Quantum Images 
+
+## Techniques to be implemented
 - Quantum Associative Memory
 - Displacement Encoding
 - IQP Encoding
@@ -19,13 +23,20 @@ Techniques to be implemented:
 
 ## Installation
 
-You can install the required dependencies using pip. First, navigate to the root directory of the project and then run:
+1. Clone this repository:   
+    ```
+    git clone https://github.com/Nick-Liou/Quantum_encoding.git
+    ```
+2. Navigate to the project directory:   
+    ```
+    cd quantum_encoding
+    ```
+3. Install the required dependencies using pip:
+    ```
+    pip install -r requirements.txt
+    ```
 
-```
-pip install -r requirements.txt
-```
+## Usage
 
-This command will install all the necessary dependencies listed in the `requirements.txt` file.
+In the `General_encoding.py` file, users can select an encoding technique from the implemented ones, adjust optional arguments, and provide their data for encoding.
 
-
-In the `General_encoding.py` file you can choose the encoding technique you want from the implemented ones, adjust optional arguments and provide your data.
