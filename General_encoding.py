@@ -54,8 +54,8 @@ if __name__ == "__main__" :
     }
     
 
-    show_plot = True 
-    data_length = 4
+    show_plot = False
+    data_length = 32
     # data_to_encode = np.random.rand(data_length) * 2  -1    
     data_to_encode = np.random.randint(low=0, high=3, size=data_length)
     

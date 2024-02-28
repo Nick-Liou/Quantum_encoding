@@ -2,8 +2,65 @@ import numpy as np
 from qiskit import QuantumCircuit , QuantumRegister
 from qiskit.circuit.library import MCXGate
 
-def BasisEncoding(data , use_Espresso = True ) :
+from pyeda.inter import exprvars, truthtable, espresso_tts
+import pyeda.boolalg.minimization
+
+# Monkey-patching
+def my_modified__cover2exprs(inputs, noutputs, cover):
+    """
+    Convert a cover to a tuple of Expression instances with modifications.
+
+    This function is a modified version of `pyeda.boolalg.minimization._cover2exprs`.
+    It only supports the case where `noutputs` is 1.
+
+    Args:
+        inputs (tuple): A tuple of input variables.
+        noutputs (int): Number of output variables (should be 1 for this function).
+        cover (list): List of cover tuples.
+
+    Returns:
+        list: A list of terms where each term is represented as a list containing two lists:
+            - The first list represents the positive literals (minterms).
+            - The second list represents the negative literals .
+    """
+
+    if noutputs != 1 : 
+        raise ValueError("noutputs should be 1 for my custom implementation")
     
+    for i in range(noutputs):
+        terms = []
+        for invec, outvec in cover:
+            if outvec[i]:
+                # Initialize a list to store positive and negative literals
+                my_term = [[],[]]
+                for j, v in enumerate(inputs):
+                    if invec[j] == 1:
+                        # Add index of input variable for positive literal
+                        my_term[1].append(j)
+                    elif invec[j] == 2:         
+                        # Add index of input variable for negative literal               
+                        my_term[0].append(j)
+                terms.append(my_term)
+
+    return terms
+
+# Monkey-patching
+pyeda.boolalg.minimization._cover2exprs = my_modified__cover2exprs
+
+        
+
+
+def BasisEncoding(data , use_Espresso = True ) :
+    """
+    Encodes the given data into a quantum circuit using Basis Encoding.
+
+    Args:
+        data (list): The list of integers to be encoded.
+        use_Espresso (bool, optional): Flag to indicate whether to use Espresso for optimization. Defaults to True.
+
+    Returns:
+        QuantumCircuit: The quantum circuit representing the Basis Encoding of the data.
+    """
 
     # pad with zeros if needed
     padded_data = pad_with_zeros(data) 
@@ -34,39 +91,7 @@ def BasisEncoding(data , use_Espresso = True ) :
                     qubits_ids = list(range(number_of_qubits)) + [number_of_qubits + bit_depth - j - 1]
                     qc.append(MCXGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
 
-    else:
-        from pyeda.inter import exprvars, truthtable, espresso_tts
-        import pyeda.boolalg.minimization
-        def my_modified_function(inputs, noutputs, cover):
-            """Convert a cover to a tuple of Expression instances."""
-            fs = []
-            for i in range(noutputs):
-                terms = []
-                for invec, outvec in cover:
-                    if outvec[i]:
-                        my_term = [[],[]]
-                        # term = []
-                        for j, v in enumerate(inputs):
-                            if invec[j] == 1:
-                                # term.append(~v)
-                                my_term[1].append(j)
-                            elif invec[j] == 2:                        
-                                my_term[0].append(j)
-                                # term.append(v)
-                        # terms.append(term)
-                        terms.append(my_term)
-                        # print(term)
-                        # print(my_term)
-                # fs.append(Or(*[And(*term) for term in terms]))
-                # fs.append()
-                # print(terms)
-            return terms
-            return tuple(fs)
-
-        # Monkey-patching
-        pyeda.boolalg.minimization._cover2exprs = my_modified_function
-
-        
+    else:        
         
         # Define the variables x[0], x[1],..., and x[number_of_qubits]
         X = exprvars('x', number_of_qubits)
@@ -94,9 +119,6 @@ def BasisEncoding(data , use_Espresso = True ) :
                     kkk =  pos_ctrl_qubits_ids + neg_ctrl_qubits_ids + [target_qubit]
                     qc.append(MCXGate(num_ctrl_qubits=len(kkk)-1, ctrl_state= 2**(len(pos_ctrl_qubits_ids))-1 ), kkk )
     
-
-                pass
-
     
     
     # Return the final quantum circuit
@@ -104,37 +126,71 @@ def BasisEncoding(data , use_Espresso = True ) :
 
 
 def convert_to_bin(arr):
+    """
+    Converts a list of integers to their binary representations with a given bit width.
 
-    
-    if all_integers(arr):
-        return int_to_binary(arr)        
+    Args:
+        arr (list): The list of integers to be converted.
+
+    Returns:
+        tuple: A tuple containing the binary representations of the integers in `arr` and the maximum length of binary strings.
+    """
+    if all_integers(arr):  # Check if all elements in the array are integers
+        return int_to_binary(arr)  # Convert integers to binary
     else:
-        raise("Float representation not yet")
-        # Add the float case
-    
+        # If the array contains non-integer elements, raise a ValueError
+        raise ValueError(
+            "Float representation is not yet supported, please input integers. \n"
+            "Hint: You can multiply your numbers by a constant such as 2**k before "
+            "casting them into int to increase the number of decimals used."
+        )
 
+        # Future expansion: Add handling for floating-point numbers
+
+    
 
 def all_integers(arr):
-    for element in arr:        
+    """
+    Checks if all elements in the given array are integers or floats representing integers.
+
+    Args:
+        arr (list): The array to be checked.
+
+    Returns:
+        bool: True if all elements are integers or floats representing integers, False otherwise.
+    """
+    for element in arr:
         # Check if the element is an integer or a float representing an integer
         if not isinstance(element, int) and not element.is_integer():
             return False
     return True
 
 
-# This could be optimized in special cases, when -2**i is in arr but 2**i is not, to use one less bit 
 def int_to_binary(arr):
-    binary_array = []
-    max_abs_value = max(map(abs, arr))
-    max_length = len(np.binary_repr(int(max_abs_value)))  # Calculate the maximum number of bits needed
-    
-    # Add one bit for the "sign" bit
-    if min(arr) < 0 :
-        max_length += 1 
+    """
+    Converts a list of integers to their binary representations with a given bit width.
 
+    Args:
+        arr (list): The list of integers to be converted.
+
+    Returns:
+        tuple: A tuple containing the binary representations of the integers in `arr` and the maximum length of binary strings.
+    """
+    binary_array = []  # Initialize an empty list to store binary representations
+    max_abs_value = max(map(abs, arr))  # Find the maximum absolute value in the array
+    max_length = len(np.binary_repr(int(max_abs_value)))  # Calculate the maximum number of bits needed for any integer
+    
+    # Add one bit for the "sign" bit if there are negative numbers in the array
+    if min(arr) < 0:        
+        max_length += 1 
+        # This could be optimized in special cases, when -2**i is in arr but 2**i is not, to use one less bit 
+
+    # Convert each integer to binary representation with the specified width
     binary_array = list(map(lambda num: np.binary_repr(int(num), width=max_length), arr))
     
-    return binary_array , max_length
+    return binary_array, max_length
+
+
 
 
 # Refactor it outside !

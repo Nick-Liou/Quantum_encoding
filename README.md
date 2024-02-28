@@ -35,6 +35,7 @@ Quantum Encoding is a research project aimed at investigating various classical-
     ```
     pip install -r requirements.txt
     ```
+<!-- Use  "pipreqs" to auto generate the requirements  -->
 
 ## Usage
 
