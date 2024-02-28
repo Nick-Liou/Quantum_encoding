@@ -60,6 +60,76 @@ def BasisEncoding(data , use_Espresso = True ) :
 
     Returns:
         QuantumCircuit: The quantum circuit representing the Basis Encoding of the data.
+
+
+    Example 1 (possitive integers):
+        >>> data = [1, 5, 3, 7]  # Example input data      
+        # Without Espresso:
+        >>> qc = BasisEncoding(data , use_Espresso=False)
+        >>> print(qc)
+             ┌───┐
+        q_0: ┤ H ├──o────■────■────o────o────■────■────■──
+             ├───┤  │    │    │    │    │    │    │    │  
+        q_1: ┤ H ├──o────o────o────■────■────■────■────■──
+             └───┘┌─┴─┐  │  ┌─┴─┐  │  ┌─┴─┐  │    │  ┌─┴─┐
+        a_0: ─────┤ X ├──┼──┤ X ├──┼──┤ X ├──┼────┼──┤ X ├
+                  └───┘  │  └───┘┌─┴─┐└───┘  │  ┌─┴─┐└───┘
+        a_1: ────────────┼───────┤ X ├───────┼──┤ X ├─────
+                       ┌─┴─┐     └───┘     ┌─┴─┐└───┘     
+        a_2: ──────────┤ X ├───────────────┤ X ├──────────
+                       └───┘               └───┘
+
+        # With Espresso:
+        >>> qc = BasisEncoding(data , use_Espresso=True)
+        >>> print(qc)
+             ┌───┐
+        q_0: ┤ H ├──■───────
+             ├───┤  │
+        q_1: ┤ H ├──┼────■──
+             ├───┤  │    │
+        a_0: ┤ X ├──┼────┼──
+             └───┘  │  ┌─┴─┐
+        a_1: ───────┼──┤ X ├
+                  ┌─┴─┐└───┘
+        a_2: ─────┤ X ├─────
+                  └───┘
+
+    Example 2 (with negative integers):  
+        >>> data = [-3, -1, 3, 2]  # Example input data   
+        # Without Espresso:
+        >>> qc = BasisEncoding(data , use_Espresso=False)
+        >>> print(qc)   
+             ┌───┐
+        q_0: ┤ H ├──o────o────■────■────■────o────o────■──
+             ├───┤  │    │    │    │    │    │    │    │
+        q_1: ┤ H ├──o────o────o────o────o────■────■────■──
+             └───┘  │  ┌─┴─┐  │    │  ┌─┴─┐  │  ┌─┴─┐  │
+        a_0: ───────┼──┤ X ├──┼────┼──┤ X ├──┼──┤ X ├──┼──
+                    │  └───┘  │  ┌─┴─┐└───┘┌─┴─┐└───┘┌─┴─┐
+        a_1: ───────┼─────────┼──┤ X ├─────┤ X ├─────┤ X ├
+                  ┌─┴─┐     ┌─┴─┐└───┘     └───┘     └───┘
+        a_2: ─────┤ X ├─────┤ X ├─────────────────────────
+                  └───┘     └───┘
+        
+        # With Espresso:
+        >>> qc = BasisEncoding(data , use_Espresso=True)
+        >>> print(qc)
+             ┌───┐
+        q_0: ┤ H ├────────────■─────────o──
+             ├───┤            │         │
+        q_1: ┤ H ├──o────■────┼────o────┼──
+             └───┘  │    │    │  ┌─┴─┐┌─┴─┐
+        a_0: ───────┼────┼────┼──┤ X ├┤ X ├
+                    │  ┌─┴─┐┌─┴─┐└───┘└───┘
+        a_1: ───────┼──┤ X ├┤ X ├──────────
+                  ┌─┴─┐└───┘└───┘
+        a_2: ─────┤ X ├────────────────────
+                  └───┘
+
+        Please note that in this context, the last qubit, denoted as a_2, serves as the two's complement bit,
+        representing -4 (i.e., -2^2). The preceding qubits, a_0 and a_1, represent binary numbers,
+        where a_0 corresponds to 2^0 (equal to 1) and a_1 to 2^1 (equal to 2).
+
     """
 
     # pad with zeros if needed
@@ -221,11 +291,21 @@ def pad_with_zeros(arr, number_of_zeros = None ):
 
 if __name__=="__main__": 
 
-    array = [0, 1, 2, -1.00 , -4 ]
+    # array = [0, 1, 2, -1.00 , -4 ]
 
-    print(all_integers(array) ) 
 
-    print( int_to_binary(array) )
+    data_length = 4
+    data = np.random.randint(low=0, high=3, size=data_length)
+
+    data = [-3, -1, 3, 2]  # Example input data      
+    qc = BasisEncoding(data , use_Espresso=False)
+    print(qc)
+    qc = BasisEncoding(data , use_Espresso=True)
+    print(qc)
+
+    # print(all_integers(array) ) 
+
+    # print( int_to_binary(array) )
 
 
     pass
