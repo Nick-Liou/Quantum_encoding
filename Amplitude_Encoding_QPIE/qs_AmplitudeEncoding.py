@@ -6,9 +6,58 @@ from math import pi
 
 
 def AmplitudeEncoding(data):
+    """
+    Encodes the given data into a quantum circuit using Amplitude Encoding (QPIE).
 
+    Args:
+        data (list): The list of real numbers to be encoded.
+
+    Returns:
+        QuantumCircuit: The quantum circuit representing the Amplitude Encoding of the data.
+
+    Example 1 (with 1 qubit):
+        >>> data = [2.3, 0.8]  # Example input data      
+        >>> qc = AmplitudeEncoding(data)
+        >>> print(qc)
+           ┌─────────────┐
+        q: ┤ Ry(0.66947) ├
+           └─────────────┘
+           
+    Example 2 (with 2 qubit):
+        >>> data = [0.5, 0.8, 0.3, 0.6]  # Example input data      
+        >>> qc = AmplitudeEncoding(data)
+        >>> print(qc)
+             ┌────────────┐               ┌────────────┐
+        q_0: ┤ Ry(2.2483) ├───────■───────┤ Ry(5.3559) ├
+             └────────────┘┌──────┴──────┐└─────┬──────┘
+        q_1: ──────────────┤ Ry(-1.3956) ├──────■───────
+                           └─────────────┘
+    
+    Example 3 (with 2 qubit):
+        >>> data = [0.5, 0.8, 0.3]  # Example input data  (they will be padded with one zero, equivalent to: [0.5, 0.8, 0.3, 0])
+        >>> qc = AmplitudeEncoding(data)
+        >>> print(qc)
+             ┌────────────┐                ┌───────┐
+        q_0: ┤ Ry(2.0827) ├───────■────────┤ Ry(π) ├
+             └────────────┘┌──────┴───────┐└───┬───┘
+        q_1: ──────────────┤ Ry(-0.71754) ├────■────
+                           └──────────────┘
+
+    Example 4 (with 3 qubit):
+        >>> data = [0.5, 0.8, 0.3, 0.6, 0.23, 0.16, 0.89, 0.94]  # Example input data      
+        >>> qc = AmplitudeEncoding(data)
+        >>> print(qc)
+             ┌────────────┐               ┌────────────┐              ┌───┐     ┌────────────┐               ┌───────────┐
+        q_0: ┤ Ry(2.5652) ├───────■───────┤ Ry(5.8762) ├──────■───────┤ X ├─────┤ Ry(2.7925) ├───────■───────┤ Ry(4.767) ├
+             └────────────┘┌──────┴──────┐└─────┬──────┘      │       └─┬─┘┌───┐└─────┬──────┘┌──────┴──────┐└─────┬─────┘
+        q_1: ──────────────┤ Ry(-2.1531) ├──────■─────────────■─────────┼──┤ X ├──────┼───────┤ Ry(-2.8956) ├──────■──────
+                           └─────────────┘              ┌─────┴──────┐  │  └─┬─┘      │       └──────┬──────┘      │
+        q_2: ───────────────────────────────────────────┤ Ry(2.2909) ├──■────■────────■──────────────■─────────────■──────
+                                                        └────────────┘
+
+    """
     # pad with zeros if needed
-    padded_data = pad_with_zeros(data) 
+    padded_data = pad_with_zeros(np.array(data))
     
     number_of_qubits = int ( np.ceil(np.log2(len(padded_data))) )
     
@@ -31,12 +80,22 @@ def AmplitudeEncoding(data):
 
 
 def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubits:list = list() ):
+    """
+    Encodes amplitudes onto a quantum circuit using a custom amplitude encoding scheme.
 
+    Args:
+        QCircuit (QuantumCircuit): The quantum circuit to which the encoding is applied.
+        alpha (array-like): An array of angles for encoding.
+        n (int): The number of qubits in the circuit.
+        control_qubits (list, optional): List of control qubits. Defaults to an empty list.
+
+    Returns:
+        QuantumCircuit: The modified quantum circuit after applying the custom amplitude encoding.
+    """
     if n == 1 : 
         QCircuit.ry(alpha[0], 0)
     elif n == 2 : 
-       
-        # Remove duplicates 
+        # Remove duplicates from the list of control qubits
         control_qubits = list(set(control_qubits))    
 
         number_of_extra_ctr_qubits = len(control_qubits)
@@ -47,9 +106,7 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubi
             QCircuit.cry(pi + alpha[2], 1, 0)
         else:             
             
-            # Template 
-            # multi_ctr_RYGate =  RYGate(theta).control(number_of_ctr_qubits,label=None)
-            # QCircuit.append(multi_ctr_RYGate, control_qubits + [target_qubit] )            
+            # Apply controlled RY gates
             
             # Gate 1
             multi_ctr_RYGate =  RYGate(alpha[0]).control(number_of_extra_ctr_qubits,label=None)
@@ -62,9 +119,13 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubi
             # Gate 3
             multi_ctr_RYGate =  RYGate(pi + alpha[2]).control(number_of_extra_ctr_qubits+1,label=None)
             QCircuit.append(multi_ctr_RYGate, control_qubits + [1] + [0] )
+            
+            ## Template 
+            ## multi_ctr_RYGate =  RYGate(theta).control(number_of_ctr_qubits,label=None)
+            ## QCircuit.append(multi_ctr_RYGate, control_qubits + [target_qubit] )            
 
     else : 
-        # Remove duplicates 
+        # Remove duplicates from the list of control qubits
         control_qubits = list(set(control_qubits))
         
         # Step b
@@ -74,26 +135,27 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubi
 
         QCircuit = custom_amplitude_encoding(QCircuit, alpha , n - 1 , control_qubits)
 
-        # Step c
-        # Employ an (n-1)-qubit controlled 𝑅𝑦 (alpha[2**(n-1)-1]) gate, with control on first (n-1)
-        # qubits and target on last qubit.
 
+        # Step c
+        # Apply  an (n-1)-qubit controlled 𝑅𝑦 (alpha[2**(n-1)-1]) gate, with control on first (n-1)
+        # qubits and target on last qubit.
         
         # multi_ctr_RYGate =  RYGate(alpha[n]).control(n-1 + len(control_qubits),label=None)
         multi_ctr_RYGate =  RYGate(alpha[2**(n-1)-1]).control(n-1 + len(control_qubits),label=None)
         QCircuit.append(multi_ctr_RYGate, list(range(0, n-1)) + control_qubits + [n-1] )
 
+
         # Step d 
-        # Employ (n-1) CNOT gates, one by one, on each of the first (n-1) qubits.
+        # Apply (n-1) CNOT gates, one by one, on each of the first (n-1) qubits.
         # Each of these CNOT gates has control on the last qubit.
 
         multi_ctr_XGate =  XGate().control(1 + len(control_qubits),label=None)
         for i in range(n-1):
             QCircuit.append(multi_ctr_XGate, [n-1] + control_qubits + [i] )
         
-        # Step e
-            
-        # Employ another (n-1)-qubit arbitrary statevector generator circuit with the last
+
+        # Step e            
+        # Apply another (n-1)-qubit arbitrary statevector generator circuit with the last
         # (2**𝑛−1 − 1) angles, recursively, on first (n-1) qubits. Each gate in this subcircuit
         # must have additional control from last qubit.
             
@@ -104,18 +166,36 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubi
 
 
 def solve_spherical_angles(c):
-    
-    n = len(c) - 1
-    alpha = np.zeros(n)
+    """
+    Solve the system of equations to find the spherical angles corresponding to the given coefficients.
 
-    alpha[0] = 2 * np.arccos(abs(c[0]))
-    sin_prod = np.sin(alpha[0] / 2)
+    Given a set of coefficients `c`, this function solves a system of equations of the form:
+    c[0]    = cos(a[0]/2)
+    c[1]    = sin(a[0]/2) * cos(a[1]/2)
+    c[2]    = sin(a[0]/2) * sin(a[1]/2) * cos(a[2]/2)
+    ...
+    c[n-1]  = sin(a[0]/2) * sin(a[1]/2) * ... * sin(a[n-2]/2) * cos(a[n-1]/2)
+    c[n]    = sin(a[0]/2) * sin(a[1]/2) * ... * sin(a[n-2]/2) * sin(a[n-1]/2)
+
+    Args:
+        c (array-like): Coefficients representing a spherical function.
+
+    Returns:
+        array-like: Spherical angles corresponding to the coefficients with length: len(c)-1.
+    """
+     
+    n = len(c) - 1
+    alpha = np.zeros(n) # Initialize array for spherical angles
+
+
+    alpha[0] = 2 * np.arccos(abs(c[0]))     # Calculate alpha for the first coefficient
+    sin_prod = np.sin(alpha[0] / 2)         # Initialize sin product
 
     # Solve the system for possitive c 
     for i in range(1, n):
         if sin_prod == 0 : 
+            # Leave alpha as zeros (they can have any value) if sin_prod is zero
             break
-            # Leave alpha as zeros (they can have any value)
             alpha[i] = pi 
         else:
             alpha[i] = 2 * np.arccos(min(abs(c[i]) / sin_prod , 1))
@@ -133,7 +213,7 @@ def solve_spherical_angles(c):
 
 
 # Refactor it outside !
-def pad_with_zeros(arr, number_of_zeros = None ):
+def pad_with_zeros(arr:np.array, number_of_zeros = None ):
     """
     Pad an np.array with a specified number of zeros at the end.
 

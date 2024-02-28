@@ -63,7 +63,7 @@ def BasisEncoding(data , use_Espresso = True ) :
     """
 
     # pad with zeros if needed
-    padded_data = pad_with_zeros(data) 
+    padded_data = pad_with_zeros(np.array(data))
     
     number_of_qubits = int ( np.ceil(np.log2(len(padded_data))) )
     
