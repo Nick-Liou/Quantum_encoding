@@ -1,5 +1,5 @@
 matplotlib==3.5.3
-numpy==1.23.5
+numpy==1.26.4
 pyeda==0.29.0
 qiskit==1.0.0
 qiskit_aer==0.13.3
