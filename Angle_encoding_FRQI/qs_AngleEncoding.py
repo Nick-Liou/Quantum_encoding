@@ -3,9 +3,38 @@ from qiskit import QuantumCircuit
 
 
 def AngleEncoding(data , min_val = None , max_val = None ):
+    """
+    Encodes the given data into a quantum circuit using Angle Encoding.
+
+    Args:
+        data (list or numpy.ndarray): The list or array of values to be encoded.
+        min_val (float, optional): The minimum value of the data. If not provided, it will be calculated from the data. Defaults to None.
+        max_val (float, optional): The maximum value of the data. If not provided, it will be calculated from the data. Defaults to None.
+
+    Returns:
+        QuantumCircuit: The quantum circuit representing the Angle Encoding of the data.
+
+        
+    Example:
+        >>> data = [0.5, 0.8, 0.3, 0.6]  # Example input data
+        >>> min_val = 0.0  # Minimum value
+        >>> max_val = 1.0  # Maximum value
+        >>> qc = AngleEncoding(data, min_val, max_val)
+        >>> print(qc)
+
+              ┌─────────┐ 
+        q_0: ─┤ Ry(π/2) ├─
+              ├─────────┴┐
+        q_1: ─┤ Ry(4π/5) ├
+             ┌┴──────────┤
+        q_2: ┤ Ry(3π/10) ├
+             └┬──────────┤
+        q_3: ─┤ Ry(3π/5) ├
+              └──────────┘
+    """
+
 
     number_of_qubits = len(data)
-
 
     data = np.array(data)
 
@@ -22,6 +51,7 @@ def AngleEncoding(data , min_val = None , max_val = None ):
     qc = QuantumCircuit(number_of_qubits)
 
 
+    # Apply rotations based on the normalized angles
     for i in range(number_of_qubits):
         qc.ry(2 * theta[i] , i)
 
@@ -33,5 +63,21 @@ def AngleEncoding(data , min_val = None , max_val = None ):
 
 # Example usage:
 if __name__ == "__main__" : 
-    # Maybe add a simple test/example
-    pass
+    
+    data = [0.5, 0.8, 0.3, 0.6]  # Example input data
+    min_val = 0.0  # Minimum value
+    max_val = 1.0  # Maximum value
+    qc = AngleEncoding(data, min_val, max_val)
+
+    print(qc)
+    
+    #       ┌─────────┐ 
+    # q_0: ─┤ Ry(π/2) ├─
+    #       ├─────────┴┐
+    # q_1: ─┤ Ry(4π/5) ├
+    #      ┌┴──────────┤
+    # q_2: ┤ Ry(3π/10) ├
+    #      └┬──────────┤
+    # q_3: ─┤ Ry(3π/5) ├
+    #       └──────────┘
+    
