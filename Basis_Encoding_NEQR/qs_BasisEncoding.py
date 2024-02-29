@@ -7,6 +7,9 @@ from qiskit.circuit.library import MCXGate
 # from Utilities.utils import pad_with_zeros
 
 
+# Typing stuff
+from typing import Any, Union
+
 
 from pyeda.inter import exprvars, truthtable, espresso_tts
 import pyeda.boolalg.minimization
@@ -55,9 +58,6 @@ def my_modified__cover2exprs(inputs:list, noutputs:int, cover:Any) -> list[tuple
 pyeda.boolalg.minimization._cover2exprs = my_modified__cover2exprs
 
         
-
-# Typing stuff
-from typing import Any, Union
 
 
 def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) -> QuantumCircuit :
