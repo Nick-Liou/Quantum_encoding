@@ -12,7 +12,7 @@ from pyeda.inter import exprvars, truthtable, espresso_tts
 import pyeda.boolalg.minimization
 
 # Monkey-patching
-def my_modified__cover2exprs(inputs, noutputs, cover):
+def my_modified__cover2exprs(inputs:list, noutputs:int, cover) -> list[tuple[list[int],list[int]]]:
     """
     Convert a cover to a tuple of Expression instances with modifications.
 
@@ -37,15 +37,16 @@ def my_modified__cover2exprs(inputs, noutputs, cover):
         terms = []
         for invec, outvec in cover:
             if outvec[i]:
-                # Initialize a list to store positive and negative literals
-                my_term = [[],[]]
+                # Initialize a tuple to store positive and negative literals, 
+                # my_term[0] has the positive literal and my_term[1] the negative literal
+                my_term : tuple[list[int],list[int]] = ([],[])
                 for j, v in enumerate(inputs):
                     if invec[j] == 1:
-                        # Add index of input variable for positive literal
-                        my_term[1].append(j)
+                        # Add index of input variable for negative literal
+                        my_term[1].append(j)    # ~v
                     elif invec[j] == 2:         
-                        # Add index of input variable for negative literal               
-                        my_term[0].append(j)
+                        # Add index of input variable for positive literal               
+                        my_term[0].append(j)    # v
                 terms.append(my_term)
 
     return terms
@@ -59,7 +60,7 @@ pyeda.boolalg.minimization._cover2exprs = my_modified__cover2exprs
 from typing import Union
 
 
-def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso = True ) -> QuantumCircuit :
+def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) -> QuantumCircuit :
     """
     Encodes the given data into a quantum circuit using Basis Encoding.
 
@@ -204,7 +205,7 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso = True ) -> Quan
     return qc 
 
 
-def convert_to_bin(arr):
+def convert_to_bin(arr: Union[list, np.ndarray]) -> tuple[list[str],int]:
     """
     Converts a list of integers to their binary representations with a given bit width.
 
@@ -228,7 +229,7 @@ def convert_to_bin(arr):
 
     
 
-def all_integers(arr):
+def all_integers(arr: Union[list, np.ndarray]) -> bool :
     """
     Checks if all elements in the given array are integers or floats representing integers.
 
@@ -245,7 +246,7 @@ def all_integers(arr):
     return True
 
 
-def int_to_binary(arr):
+def int_to_binary(arr: Union[list, np.ndarray]) -> tuple[list[str],int]:
     """
     Converts a list of integers to their binary representations with a given bit width.
 

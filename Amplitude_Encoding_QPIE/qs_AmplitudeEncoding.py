@@ -82,7 +82,7 @@ def AmplitudeEncoding(data : Union[list, np.ndarray] ) -> QuantumCircuit:
     return qc 
 
 
-def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubits:list = list() ) -> QuantumCircuit:
+def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, np.ndarray] , n : int ,  control_qubits:list = list() ) -> QuantumCircuit:
     """
     Encodes amplitudes onto a quantum circuit using a custom amplitude encoding scheme.
 
@@ -215,8 +215,8 @@ def solve_spherical_angles(c: np.ndarray) -> np.ndarray:
     return alpha
 
 
-from typing import Optional
 # Refactor it outside !
+from typing import Optional
 def pad_with_zeros(arr: np.ndarray, number_of_zeros: Optional[int] = None) -> np.ndarray:
     """
     Pad an np.array with a specified number of zeros at the end.

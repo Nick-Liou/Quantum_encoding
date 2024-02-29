@@ -3,7 +3,7 @@ from math import pi
 
 from qs_AmplitudeEncoding import solve_spherical_angles
 
-def solve_spherical_angles_slow(c):
+def solve_spherical_angles_slow(c: np.ndarray) -> np.ndarray:
     # # Ensure c contains positive values
     # if any(val <= 0 for val in c):        
     #     raise ValueError("All elements of c must be positive")
@@ -57,7 +57,7 @@ def solve_spherical_angles_slow(c):
 
 #     return alpha
 
-def verify_solution(c, alpha , max_tolerance = 1e-8):    
+def verify_solution(c: np.ndarray, alpha: np.ndarray , max_tolerance:float = 1e-8) -> None:    
     
     
     if abs ( c[0] -  np.cos(alpha[0]/2) ) > max_tolerance :

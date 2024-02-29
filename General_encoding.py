@@ -67,7 +67,7 @@ if __name__ == "__main__" :
     
 
     show_plot = False
-    data_length = 3
+    data_length = 30
     # data_to_encode = np.random.rand(data_length) * 2  -1    
     data_to_encode = np.random.randint(low=0, high=3, size=data_length)
     
