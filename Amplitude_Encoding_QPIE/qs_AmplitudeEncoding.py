@@ -5,7 +5,10 @@ from qiskit.circuit.library import XGate
 from math import pi
 
 
-def AmplitudeEncoding(data):
+# Typing stuff
+from typing import Union
+
+def AmplitudeEncoding(data : Union[list, np.ndarray] ) -> QuantumCircuit:
     """
     Encodes the given data into a quantum circuit using Amplitude Encoding (QPIE).
 
@@ -79,7 +82,7 @@ def AmplitudeEncoding(data):
     return qc 
 
 
-def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubits:list = list() ):
+def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubits:list = list() ) -> QuantumCircuit:
     """
     Encodes amplitudes onto a quantum circuit using a custom amplitude encoding scheme.
 
@@ -165,7 +168,7 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha , n ,  control_qubi
     return QCircuit
 
 
-def solve_spherical_angles(c):
+def solve_spherical_angles(c: np.ndarray) -> np.ndarray:
     """
     Solve the system of equations to find the spherical angles corresponding to the given coefficients.
 
@@ -212,8 +215,9 @@ def solve_spherical_angles(c):
     return alpha
 
 
+from typing import Optional
 # Refactor it outside !
-def pad_with_zeros(arr:np.array, number_of_zeros = None ):
+def pad_with_zeros(arr: np.ndarray, number_of_zeros: Optional[int] = None) -> np.ndarray:
     """
     Pad an np.array with a specified number of zeros at the end.
 
@@ -225,16 +229,13 @@ def pad_with_zeros(arr:np.array, number_of_zeros = None ):
     Returns:
         numpy.ndarray: Padded array.
     """
-    if number_of_zeros == None :
-        number_of_zeros = int( 2 ** np.ceil( np.log2(len(arr)) ) -  len(arr) )
+    if number_of_zeros is None:
+        number_of_zeros = int(2 ** np.ceil(np.log2(len(arr))) - len(arr))
+    
+    return np.pad(arr, (0, number_of_zeros), mode='constant')
 
-    # Create an array of zeros with the desired length
-    zeros_array = np.zeros(number_of_zeros, dtype=arr.dtype)
-    
-    # Concatenate the original array with the zeros array
-    padded_arr = np.concatenate((arr, zeros_array))
-    
-    return padded_arr
+
+
 
 
 
@@ -263,7 +264,7 @@ if __name__ == "__main__" :
 
 
     # Apply the custom encoding function
-    qc = AmplitudeEncoding(data_to_encode)
+    qc = AmplitudeEncoding(list(data_to_encode))
 
     # Transpile the circuit for the backend
     transpiled_circuit = transpile(qc, Aer.get_backend('qasm_simulator'))

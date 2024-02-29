@@ -2,6 +2,12 @@ import numpy as np
 from qiskit import QuantumCircuit , QuantumRegister
 from qiskit.circuit.library import MCXGate
 
+# Import the pad_with_zeros function from utils.py in the Utilities directory
+# from ..Utilities.utils import pad_with_zeros
+# from Utilities.utils import pad_with_zeros
+
+
+
 from pyeda.inter import exprvars, truthtable, espresso_tts
 import pyeda.boolalg.minimization
 
@@ -49,8 +55,11 @@ pyeda.boolalg.minimization._cover2exprs = my_modified__cover2exprs
 
         
 
+# Typing stuff
+from typing import Union
 
-def BasisEncoding(data , use_Espresso = True ) :
+
+def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso = True ) -> QuantumCircuit :
     """
     Encodes the given data into a quantum circuit using Basis Encoding.
 
@@ -262,9 +271,10 @@ def int_to_binary(arr):
 
 
 
-
+# Typing stuff
+from typing import Optional
 # Refactor it outside !
-def pad_with_zeros(arr, number_of_zeros = None ):
+def pad_with_zeros(arr: np.ndarray, number_of_zeros: Optional[int] = None) -> np.ndarray:
     """
     Pad an np.array with a specified number of zeros at the end.
 
@@ -276,16 +286,13 @@ def pad_with_zeros(arr, number_of_zeros = None ):
     Returns:
         numpy.ndarray: Padded array.
     """
-    if number_of_zeros == None :
-        number_of_zeros = int( 2 ** np.ceil( np.log2(len(arr)) ) -  len(arr) )
+    if number_of_zeros is None:
+        number_of_zeros = int(2 ** np.ceil(np.log2(len(arr))) - len(arr))
+    
+    return np.pad(arr, (0, number_of_zeros), mode='constant')
 
-    # Create an array of zeros with the desired length
-    zeros_array = np.zeros(number_of_zeros, dtype=arr.dtype)
-    
-    # Concatenate the original array with the zeros array
-    padded_arr = np.concatenate((arr, zeros_array))
-    
-    return padded_arr
+
+
 
 
 
@@ -295,9 +302,9 @@ if __name__=="__main__":
 
 
     data_length = 4
-    data = np.random.randint(low=0, high=3, size=data_length)
+    # data = np.random.randint(low=0, high=3, size=data_length)
 
-    data = [-3, -1, 3, 2]  # Example input data      
+    data = [-3, -1, 3]  # Example input data      
     qc = BasisEncoding(data , use_Espresso=False)
     print(qc)
     qc = BasisEncoding(data , use_Espresso=True)

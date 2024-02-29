@@ -104,7 +104,8 @@ def cost_func_domain(params_values):
 opt = COBYLA(maxiter=150)
 initial_point = algorithm_globals.random.random(ae.num_parameters)
 
-objective_func_vals = []
+from typing import List
+objective_func_vals : List[float] = []
 # make the plot nicer
 plt.rcParams["figure.figsize"] = (12, 6)
 
