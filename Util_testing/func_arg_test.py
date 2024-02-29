@@ -13,7 +13,7 @@ def function_3(message: str = "No message") -> str:
 # Simple tests
 def test_f1() -> None:
     assert function_1(1,2,3) == 6 
-
+ 
 def test_f2() -> None:
     assert function_1(2,2,3) == 7 
 
