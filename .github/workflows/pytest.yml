@@ -25,11 +25,11 @@ jobs:
         #         pytest 
 
         
-        - name: Find modified Python files
-          id: find_files
-          run: |
-            echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' || true)"
-        
-        - name: Run pytest on modified files
-          run: |
-            pytest ${{ steps.find_files.outputs.files }}
+        -   name: Find modified Python files
+            id: find_files
+            run: |
+                echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' || true)" >> $GITHUB_STATE
+      
+        -   name: Run pytest on modified files
+            run: |
+                pytest $files
