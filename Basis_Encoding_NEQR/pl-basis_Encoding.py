@@ -4,11 +4,14 @@ from pennylane import numpy as np
 # import the template
 from pennylane.templates.embeddings import BasisEmbedding
 
+
+from typing import Any 
+
 # quantum device where you want to run and how many Qubits
 dev = qml.device('default.qubit', wires=6)
 
 @qml.qnode(dev)
-def circuit(data):
+def circuit(data:list) -> Any :
     for i in range(6):
         qml.Hadamard(i)
     for i in range(len(data)):

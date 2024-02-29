@@ -1,10 +1,11 @@
+# type: ignore
 def all_integers(arr):
     for element in arr:        
         # Check if the element is an integer or a float representing an integer
         if not isinstance(element, int) and not element.is_integer():
             return False
     return True
-
+# type: ignore
 def convert_to_binary_possitive(arr):
     binary_array = []
     max_length = len(bin(int(max(arr)))) - 2  # Calculate the maximum number of bits needed
@@ -16,7 +17,7 @@ def convert_to_binary_possitive(arr):
 
     return binary_array
 
-
+# type: ignore
 def convert_to_binary(arr):
     binary_array = []
     max_abs_value = max(map(abs, arr))

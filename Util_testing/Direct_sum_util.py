@@ -1,7 +1,10 @@
 import numpy as np
 import math
 
-def direct_sum(A, B):
+
+from typing import Any, Union 
+
+def direct_sum(A:np.ndarray, B:np.ndarray) -> np.ndarray:
     """
     Computes the direct sum of two matrices A and B.
     Args:
@@ -27,7 +30,7 @@ def direct_sum(A, B):
     return direct_sum_matrix
 
 
-def custom_matrix_generator ( p_arr ):
+def custom_matrix_generator ( p_arr:Union[list, np.ndarray] ) -> np.ndarray:
     """
     Computes a matrix for amplitude embedding.
     Args:
@@ -55,7 +58,8 @@ def custom_matrix_generator ( p_arr ):
         
     return result
 
-def generate_p(data,qubit_id):
+
+def generate_p(data:Union[list, np.ndarray],qubit_id:int) -> np.ndarray:
     '''
     Conditional probabilities of measuring specific states 
     '''

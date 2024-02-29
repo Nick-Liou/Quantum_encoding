@@ -12,7 +12,7 @@ from pyeda.inter import exprvars, truthtable, espresso_tts
 import pyeda.boolalg.minimization
 
 # Monkey-patching
-def my_modified__cover2exprs(inputs:list, noutputs:int, cover) -> list[tuple[list[int],list[int]]]:
+def my_modified__cover2exprs(inputs:list, noutputs:int, cover:Any) -> list[tuple[list[int],list[int]]]:
     """
     Convert a cover to a tuple of Expression instances with modifications.
 
@@ -57,7 +57,7 @@ pyeda.boolalg.minimization._cover2exprs = my_modified__cover2exprs
         
 
 # Typing stuff
-from typing import Union
+from typing import Any, Union
 
 
 def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) -> QuantumCircuit :

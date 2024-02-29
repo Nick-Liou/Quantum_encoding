@@ -4,10 +4,13 @@ from pennylane import numpy as np
 from pennylane.templates.embeddings import AngleEmbedding
 
 
+from typing import Any, Union 
+from pennylane.measurements import StateMP
+
 dev = qml.device('default.qubit', wires=4)
 
 @qml.qnode(dev)
-def circuit(data):
+def circuit(data:Union[list,np.array]) -> StateMP:
     for i in range(4):
         qml.Hadamard(i)
     for i in range(len(data)):

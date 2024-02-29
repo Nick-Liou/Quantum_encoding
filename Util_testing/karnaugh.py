@@ -4,15 +4,16 @@ import pyeda.boolalg.minimization
 # from pyeda.boolalg.minimization import _cover2exprs
 
 
+from typing import Any
 
-def my_modified_function(inputs, noutputs, cover):
+def my_modified_function(inputs:list, noutputs:int, cover:Any) -> list[tuple[list[int],list[int]]]:
     """Convert a cover to a tuple of Expression instances."""
-    fs = []
+    # fs = []
     for i in range(noutputs):
         terms = []
         for invec, outvec in cover:
             if outvec[i]:
-                my_term = [[],[]]
+                my_term : tuple[list[int],list[int]] = ([],[])
                 # term = []
                 for j, v in enumerate(inputs):
                     if invec[j] == 1:
@@ -29,7 +30,7 @@ def my_modified_function(inputs, noutputs, cover):
         # fs.append()
         # print(terms)
     return terms
-    return tuple(fs)
+    # return tuple(fs)
 
 # Monkey-patching
 pyeda.boolalg.minimization._cover2exprs = my_modified_function

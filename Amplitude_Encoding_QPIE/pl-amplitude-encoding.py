@@ -7,8 +7,10 @@ import matplotlib.pyplot as plt
 
 # To import my custom funcitons
 import Util_testing.Direct_sum_util as Direct_sum_util
+from typing import Any, Optional, Union
+from pennylane.measurements import StateMP
 
-def pad_with_zeros(arr, number_of_zeros = None ):
+def pad_with_zeros(arr: np.ndarray, number_of_zeros: Optional[int] = None) -> np.ndarray:
     """
     Pad an np.array with a specified number of zeros at the end.
 
@@ -20,16 +22,11 @@ def pad_with_zeros(arr, number_of_zeros = None ):
     Returns:
         numpy.ndarray: Padded array.
     """
-    if number_of_zeros == None :
-        number_of_zeros = 2 ** math.ceil( math.log(len(arr),2) ) -  len(arr)
+    if number_of_zeros is None:
+        number_of_zeros = int(2 ** np.ceil(np.log2(len(arr))) - len(arr))
+    
+    return np.pad(arr, (0, number_of_zeros), mode='constant')
 
-    # Create an array of zeros with the desired length
-    zeros_array = np.zeros(number_of_zeros, dtype=arr.dtype)
-    
-    # Concatenate the original array with the zeros array
-    padded_arr = np.concatenate((arr, zeros_array))
-    
-    return padded_arr
 
 
 
@@ -52,7 +49,7 @@ dev = qml.device('default.qubit', wires=Qubits)
 
 
 @qml.qnode(dev)
-def circuit_mine(data,num_qubits): # "Non working (it does something else)"
+def circuit_mine(data: Union[list, np.ndarray],num_qubits:int) -> StateMP: # "Non working (it does something else)"
 
     for qubit_id in range(num_qubits):
         p = Direct_sum_util.generate_p (data, qubit_id )
@@ -67,7 +64,7 @@ def circuit_mine(data,num_qubits): # "Non working (it does something else)"
     
 
 @qml.qnode(dev)
-def circuit(data):
+def circuit(data: Union[list, np.ndarray]) -> StateMP:
     AmplitudeEmbedding(features=data, wires=range(Qubits),normalize=True)
     return qml.state()
 

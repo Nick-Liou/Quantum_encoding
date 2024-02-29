@@ -19,7 +19,7 @@ from qiskit_machine_learning.neural_networks import SamplerQNN
 
 algorithm_globals.random_seed = 42
 
-def ansatz(num_qubits):
+def ansatz(num_qubits:int) -> QuantumCircuit:
     return RealAmplitudes(num_qubits, reps=5)
 
 num_qubits = 5
@@ -28,7 +28,7 @@ circ.decompose().draw(output="mpl", style="clifford")
 
 
 
-def auto_encoder_circuit(num_latent, num_trash):
+def auto_encoder_circuit(num_latent:int, num_trash:int) -> QuantumCircuit:
     qr = QuantumRegister(num_latent + 2 * num_trash + 1, "q")
     cr = ClassicalRegister(1, "c")
     circuit = QuantumCircuit(qr, cr)
@@ -51,7 +51,7 @@ circuit = auto_encoder_circuit(num_latent, num_trash)
 circuit.draw(output="mpl", style="clifford")
 
 
-def domain_wall(circuit, a, b):
+def domain_wall(circuit:QuantumCircuit, a:int, b:int) -> QuantumCircuit:
     # Here we place the Domain Wall to qubits a - b in our circuit
     for i in np.arange(int(b / 2), int(b)):
         circuit.x(i)
@@ -70,7 +70,7 @@ qc.draw(output="mpl", style="clifford")
 
 
 # Here we define our interpret for our SamplerQNN
-def identity_interpret(x):
+def identity_interpret(x:Any) -> Any:
     return x
 
 
@@ -84,10 +84,10 @@ qnn = SamplerQNN(
 
 
 
-def cost_func_domain(params_values):
+def cost_func_domain(params_values:np.ndarray) -> float:
     probabilities = qnn.forward([], params_values)
     # we pick a probability of getting 1 as the output of the network
-    cost = np.sum(probabilities[:, 1])
+    cost : float = np.sum(probabilities[:, 1])
 
     # plotting part, moved to optimize execution time (about 50 times faster)
     objective_func_vals.append(cost)
@@ -104,7 +104,7 @@ def cost_func_domain(params_values):
 opt = COBYLA(maxiter=150)
 initial_point = algorithm_globals.random.random(ae.num_parameters)
 
-from typing import List
+from typing import Any, List
 objective_func_vals : List[float] = []
 # make the plot nicer
 plt.rcParams["figure.figsize"] = (12, 6)
