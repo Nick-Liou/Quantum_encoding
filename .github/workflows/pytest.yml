@@ -33,6 +33,12 @@ jobs:
             run: |
                 echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' || true)" >> $GITHUB_STATE
       
+                
+        -   name: Print Modified Files
+            run: |
+                echo "${{ steps.find_files.outputs.files }}"
+
+
         -   name: Run pytest on modified files
             run: |
                 pytest $files
