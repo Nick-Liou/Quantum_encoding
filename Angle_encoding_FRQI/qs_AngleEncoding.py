@@ -3,7 +3,7 @@ from qiskit import QuantumCircuit
 
 # Typing stuff
 from typing import Optional, Union
-
+ 
 def AngleEncoding(data : Union[list, np.ndarray] , min_val : Optional[float] = None , max_val : Optional[float]= None ) -> QuantumCircuit:
     """
     Encodes the given data into a quantum circuit using Angle Encoding.

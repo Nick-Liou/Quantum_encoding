@@ -6,7 +6,7 @@ def function_1(a: int, b: int, c: int = 0) -> int:
 
 def function_2(x: int, y: int, z: int) -> int:
     return x * y - z
-
+ 
 def function_3(message: str = "No message") -> str:
     return message
 
