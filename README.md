@@ -1,4 +1,5 @@
 [![Mypy](https://github.com/Nick-Liou/Quantum_encoding/actions/workflows/mypy.yml/badge.svg)](https://github.com/Nick-Liou/Quantum_encoding/actions/workflows/mypy.yml)
+[![Tests](https://github.com/Nick-Liou/Quantum_encoding/actions/workflows/pytest.yml/badge.svg)](https://github.com/Nick-Liou/Quantum_encoding/actions/workflows/pytest.yml)
 # Quantum Encoding
 Comparative Study and Analysis of Classical-to-Quantum Data Encoding through Embedding and Mapping Techniques
 <!-- Comparative Analysis of Classical-to-Quantum Mapping Techniques in Data Encoding -->
