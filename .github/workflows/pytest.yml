@@ -41,14 +41,17 @@ jobs:
         -   name: Find Modified Files
             id: find_files
             run: |
-                echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' || true)"
+                echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' || true)" >> $GITHUB_STATE
+        #   echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' || true)"
+
 
         -   name: Print Modified Files
             run: |
-                echo "Modified Python files:"
-                echo "${{ steps.find_files.outputs.files }}"
+                echo "Modified Python files:"                
+                cat $GITHUB_STATE
+        #        echo "${{ steps.find_files.outputs.files }}"
 
 
         -   name: Run pytest on modified files
             run: |
-                pytest $files
+                pytest $GITHUB_STATE
