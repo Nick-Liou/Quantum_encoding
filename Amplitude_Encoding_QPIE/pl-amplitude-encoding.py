@@ -6,7 +6,7 @@ import math
 import matplotlib.pyplot as plt
 
 # To import my custom funcitons
-import Util_testing.Direct_sum_util as Direct_sum_util
+import FeaturePlayground.Direct_sum_util as Direct_sum_util
 from typing import Any, Optional, Union
 from pennylane.measurements import StateMP
 
