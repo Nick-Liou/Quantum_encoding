@@ -52,7 +52,7 @@ def encode_data(data: Union[list, np.ndarray],
     return qc , result
 
 
- 
+
 if __name__ == "__main__" : 
 
     encodings : dict[Callable, dict] =  {
