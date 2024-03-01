@@ -9,7 +9,7 @@ def function_2(x: int, y: int, z: int) -> int:
 
 def function_3(message: str = "No message") -> str:
     return message
-
+ 
 # Simple tests
 def test_f1() -> None:
     assert function_1(1,2,3) == 6 
