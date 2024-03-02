@@ -75,7 +75,7 @@ if __name__ == "__main__" :
 
 
 
-    encoding_used : Callable = AmplitudeEncoding
+    encoding_used : Callable = BasisEncoding
     kwargs : dict[str, Any] = encodings.get(encoding_used, {})
     args : tuple = kwargs.pop('args', ())  # Extracting 'args' if present, otherwise empty tuple
     

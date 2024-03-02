@@ -8,6 +8,16 @@ from math import pi
 # Typing stuff
 from typing import Union
 
+# Add the parent directory of the current script's directory to the Python path
+import sys
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
+sys.path.append(os.path.dirname(SCRIPT_DIR))  # Add the parent directory to the Python path
+
+# Import Local modules
+from Utilities.utils import pad_with_zeros
+
 def AmplitudeEncoding(data : Union[list, np.ndarray] ) -> QuantumCircuit:
     """
     Encodes the given data into a quantum circuit using Amplitude Encoding (QPIE).
@@ -213,27 +223,6 @@ def solve_spherical_angles(c: np.ndarray) -> np.ndarray:
         alpha[-1] = - alpha[-1]
 
     return alpha
-
-
-# Refactor it outside !
-from typing import Optional
-def pad_with_zeros(arr: np.ndarray, number_of_zeros: Optional[int] = None) -> np.ndarray:
-    """
-    Pad an np.array with a specified number of zeros at the end.
-
-    Parameters:
-        arr (numpy.ndarray): Input array.
-        number_of_zeros (int, optional): Number of zeros to add at the end of the array.
-            If not provided, the number of zeros will be calculated based on the next power of 2.
-    
-    Returns:
-        numpy.ndarray: Padded array.
-    """
-    if number_of_zeros is None:
-        number_of_zeros = int(2 ** np.ceil(np.log2(len(arr))) - len(arr))
-    
-    return np.pad(arr, (0, number_of_zeros), mode='constant')
-
 
 
 
