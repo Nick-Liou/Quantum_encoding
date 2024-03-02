@@ -23,8 +23,8 @@ from Utilities.utils import pad_with_zeros
 def test_pad_with_zeros_basic() -> None :
     arr = np.array([1, 2, 3])
     padded_arr = pad_with_zeros(arr, 2)
-    assert np.array_equal(padded_arr, np.array([1, 2, 3, 0, 0]))
-
+    assert np.array_equal(padded_arr, np.array([1, 2, 3, 0, 0])) 
+    
 def test_pad_with_zeros_default() -> None :
     arr = np.array([1, 2, 3])
     padded_arr = pad_with_zeros(arr)
@@ -57,8 +57,8 @@ def test_pad_with_zeros_float_zeros() -> None :
 
 def test_pad_with_zeros_string_input() -> None :
     with pytest.raises(TypeError):
-        padded_arr = pad_with_zeros("not_an_array", 5) 
+        padded_arr = pad_with_zeros("not_an_array", 5) # type: ignore[arg-type]
 
 def test_pad_with_zeros_list_input() -> None :
     with pytest.raises(TypeError):
-        padded_arr = pad_with_zeros([1, 2, 3], 5) 
+        padded_arr = pad_with_zeros([1, 2, 3], 5) # type: ignore[arg-type]
