@@ -1,12 +1,22 @@
-from pathlib import Path
-print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
+# from pathlib import Path
+# print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
 
+
+# Add the parent directory of the current script's directory to the Python path
+import sys
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
+sys.path.append(os.path.dirname(SCRIPT_DIR))  # Add the parent directory to the Python path
+
+
+# Import External modules
 import numpy as np
 import pytest
-# from Quantum_encoding.Utilities.utils import pad_with_zeros
 
-from ..Utilities.utils import pad_with_zeros
-# from ...Quantum_encoding.Utilities.utils import pad_with_zeros
+# Import Local modules
+from Utilities.utils import pad_with_zeros
+
 
 # Test cases for pad_with_zeros function
 
@@ -43,9 +53,14 @@ def test_pad_with_zeros_negative_zeros() -> None :
 def test_pad_with_zeros_float_zeros() -> None :
     arr = np.array([1, 2, 3])
     with pytest.raises(TypeError):
-        padded_arr = pad_with_zeros(arr, 5.5)
+        padded_arr = pad_with_zeros(arr, 5.5)  # type: ignore
 
-def test_pad_with_zeros_non_array_input() -> None :
+def test_pad_with_zeros_string_input() -> None :
     with pytest.raises(TypeError):
-        padded_arr = pad_with_zeros([1, 2, 3], 5)
+        padded_arr = pad_with_zeros("not_an_array", 5) # type: ignore
+
+
+def test_pad_with_zeros_list_input() -> None :
+    with pytest.raises(TypeError):
+        padded_arr = pad_with_zeros([1, 2, 3], 5) # type: ignore
 

@@ -17,6 +17,10 @@ def pad_with_zeros(arr: np.ndarray, number_of_zeros: Optional[int] = None) -> np
     Returns:
         numpy.ndarray: Padded array.
     """
+
+    if not isinstance(arr, np.ndarray):
+        raise TypeError("Input arr must be a numpy array")
+    
     if number_of_zeros is None:
         number_of_zeros = int(2 ** np.ceil(np.log2(len(arr))) - len(arr))
     
