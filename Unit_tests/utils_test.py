@@ -53,14 +53,14 @@ def test_pad_with_zeros_negative_zeros() -> None :
 def test_pad_with_zeros_float_zeros() -> None :
     arr = np.array([1, 2, 3])
     with pytest.raises(TypeError):
-        padded_arr = pad_with_zeros(arr, 5.5)  # type: ignore
+        padded_arr = pad_with_zeros(arr, 5.5)  # type: ignore[arg-type]
 
 def test_pad_with_zeros_string_input() -> None :
     with pytest.raises(TypeError):
-        padded_arr = pad_with_zeros("not_an_array", 5) # type: ignore
+        padded_arr = pad_with_zeros("not_an_array", 5) # type: ignore[arg-type]
 
 
 def test_pad_with_zeros_list_input() -> None :
     with pytest.raises(TypeError):
-        padded_arr = pad_with_zeros([1, 2, 3], 5) # type: ignore
+        padded_arr = pad_with_zeros([1, 2, 3], 5) # type: ignore[arg-type]
 
