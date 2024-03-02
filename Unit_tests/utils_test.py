@@ -5,47 +5,47 @@ import numpy as np
 import pytest
 # from Quantum_encoding.Utilities.utils import pad_with_zeros
 
-# from ..Utilities.utils import pad_with_zeros
-from ...Quantum_encoding.Utilities.utils import pad_with_zeros
+from ..Utilities.utils import pad_with_zeros
+# from ...Quantum_encoding.Utilities.utils import pad_with_zeros
 
 # Test cases for pad_with_zeros function
 
-def test_pad_with_zeros_basic():
+def test_pad_with_zeros_basic() -> None :
     arr = np.array([1, 2, 3])
     padded_arr = pad_with_zeros(arr, 2)
     assert np.array_equal(padded_arr, np.array([1, 2, 3, 0, 0]))
 
-def test_pad_with_zeros_default():
+def test_pad_with_zeros_default() -> None :
     arr = np.array([1, 2, 3])
     padded_arr = pad_with_zeros(arr)
     assert np.array_equal(padded_arr, np.array([1, 2, 3, 0]))
 
-def test_pad_with_zeros_large():
+def test_pad_with_zeros_large() -> None :
     arr = np.array([1, 2, 3])
     padded_arr = pad_with_zeros(arr, 10)
     assert np.array_equal(padded_arr, np.array([1, 2, 3] + [0]*10))
 
-def test_pad_with_zeros_empty_array():
+def test_pad_with_zeros_empty_array() -> None :
     arr = np.array([])
     padded_arr = pad_with_zeros(arr, 5)
     assert np.array_equal(padded_arr, np.array([0]*5))
 
-def test_pad_with_zeros_no_zeros():
+def test_pad_with_zeros_no_zeros() -> None :
     arr = np.array([1, 2, 3])
     padded_arr = pad_with_zeros(arr, 0)
     assert np.array_equal(padded_arr, arr)
 
-def test_pad_with_zeros_negative_zeros():
+def test_pad_with_zeros_negative_zeros() -> None :
     arr = np.array([1, 2, 3])
     with pytest.raises(ValueError):
         padded_arr = pad_with_zeros(arr, -5)
 
-def test_pad_with_zeros_float_zeros():
+def test_pad_with_zeros_float_zeros() -> None :
     arr = np.array([1, 2, 3])
     with pytest.raises(TypeError):
         padded_arr = pad_with_zeros(arr, 5.5)
 
-def test_pad_with_zeros_non_array_input():
+def test_pad_with_zeros_non_array_input() -> None :
     with pytest.raises(TypeError):
         padded_arr = pad_with_zeros([1, 2, 3], 5)
 
