@@ -1,5 +1,5 @@
 from PIL import Image
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 class ImageProcessor:
     def __init__(self, image_path: str):
@@ -41,28 +41,27 @@ class ImageProcessor:
         else:
             print("No image loaded!")
 
-    def get_image_as_integers(self) -> Union[None, Tuple[Tuple[int]]]:
+    def get_image_as_integers(self) -> Union[None, tuple[int]]:
         if self.image:
             return tuple(self.image.getdata())
         else:
             print("No image loaded!")
             return None
 
-    def get_image_as_bits(self) -> Union[None, Tuple[Tuple[int]]]:
+    def get_image_as_bits(self) -> Optional[tuple[tuple[int, ...], ...]]:
         if self.image:
             threshold = 128
             width, height = self.image.size
             pixels = self.image.convert("L").getdata()
-            bits = []
+            bits: list[int] = []
             for pixel in pixels:
-                bit_value = 1 if pixel > threshold else 0
+                bit_value : int = 1 if pixel > threshold else 0
                 bits.append(bit_value)
-            return tuple(bits[i:i+width] for i in range(0, len(bits), width))
+            
+            return tuple(tuple(bits[i:i+width]) for i in range(0, len(bits), width))
         else:
             print("No image loaded!")
-
-def fun():
-    pass
+            return None
 
 # Example usage:
 if __name__ == "__main__":
@@ -71,12 +70,13 @@ if __name__ == "__main__":
     processor = ImageProcessor(f"{folder}{file}")
     processor.load_image()
     processor.convert_to_grayscale(bit_rate=8)
-    processor.resize_image(width=8, height=8)
+    processor.resize_image(width=4, height=4)
     processor.save_image(f"{folder}processed_{file}")
     integers = processor.get_image_as_integers()
-    print(integers[:10])  # Example of displaying first 10 rows of integers
+    print(integers)
+    # print(integers[0][:10])  # Example of displaying first 10 rows of integers
     bits = processor.get_image_as_bits()
-    print(bits[:10])  # Example of displaying first 10 rows of bits
-
-    a = fun()
-    print(a)
+    print(bits)
+    print(type(bits))
+    # print(bits[0][:10])  # Example of displaying first 10 rows of bits
+    
