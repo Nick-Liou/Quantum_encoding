@@ -19,7 +19,7 @@ from Basis_Encoding_NEQR.qs_BasisEncoding           import BasisEncoding
 
 
 def encode_data(data: Union[list, np.ndarray], 
-                encoding_function: Callable[[Union[list, np.ndarray], Any], QuantumCircuit],
+                encoding_function: Callable[[Union[list, np.ndarray]], QuantumCircuit],
                 *args: tuple, 
                 **kwargs: dict[str, Any]) -> tuple[QuantumCircuit, Result]:
     """
@@ -55,7 +55,7 @@ def encode_data(data: Union[list, np.ndarray],
  
 if __name__ == "__main__" : 
 
-    encodings : dict[Callable, dict] =  {
+    encodings : dict[Callable[[Union[list, np.ndarray]], QuantumCircuit], dict] =  {
         AmplitudeEncoding:  {},
         AngleEncoding:      {'min_val': 0, 'max_val': 255},
         BasisEncoding:      {'use_Espresso': True},
@@ -75,7 +75,7 @@ if __name__ == "__main__" :
 
 
 
-    encoding_used : Callable = AmplitudeEncoding
+    encoding_used : Callable = AngleEncoding
     kwargs : dict[str, Any] = encodings.get(encoding_used, {})
     args : tuple = kwargs.pop('args', ())  # Extracting 'args' if present, otherwise empty tuple
     

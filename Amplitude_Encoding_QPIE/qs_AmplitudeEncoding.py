@@ -18,7 +18,7 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))  # Add the parent directory to the 
 # Import Local modules
 from Utilities.utils import pad_with_zeros
 
-def AmplitudeEncoding(data : Union[list, np.ndarray] ) -> QuantumCircuit:
+def AmplitudeEncoding(data : Union[list, np.ndarray]  ) -> QuantumCircuit:
     """
     Encodes the given data into a quantum circuit using Amplitude Encoding (QPIE).
 
