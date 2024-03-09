@@ -22,7 +22,8 @@ def pad_with_zeros(arr: np.ndarray, number_of_zeros: Optional[int] = None) -> np
         raise TypeError("Input arr must be a numpy array")
     
     if number_of_zeros is None:
-        number_of_zeros = int(2 ** np.ceil(np.log2(len(arr))) - len(arr))
+        number_of_zeros = int(2 ** np.ceil(max(np.log2(len(arr)),1)) - len(arr))
+        
     
     return np.pad(arr, (0, number_of_zeros), mode='constant')
 

@@ -19,16 +19,22 @@ from Utilities.utils import pad_with_zeros
 
 
 # Test cases for pad_with_zeros function
-
-def test_pad_with_zeros_basic() -> None :
-    arr = np.array([1, 2, 3])
-    padded_arr = pad_with_zeros(arr, 2)
-    assert np.array_equal(padded_arr, np.array([1, 2, 3, 0, 0])) 
     
 def test_pad_with_zeros_default() -> None :
     arr = np.array([1, 2, 3])
     padded_arr = pad_with_zeros(arr)
     assert np.array_equal(padded_arr, np.array([1, 2, 3, 0]))
+
+    
+def test_pad_with_zeros_default_single_input() -> None :
+    arr = np.array([1])
+    padded_arr = pad_with_zeros(arr)
+    assert np.array_equal(padded_arr, np.array([1, 0]))
+
+def test_pad_with_zeros_basic() -> None :
+    arr = np.array([1, 2, 3])
+    padded_arr = pad_with_zeros(arr, 2)
+    assert np.array_equal(padded_arr, np.array([1, 2, 3, 0, 0])) 
 
 def test_pad_with_zeros_large() -> None :
     arr = np.array([1, 2, 3])
