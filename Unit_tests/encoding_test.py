@@ -34,7 +34,7 @@ def Amplitude_Expected_statevector( data_to_encode : Union[list, np.ndarray] ) -
     # pad with zeros if needed
     padded_data = pad_with_zeros(np.array(data_to_encode))
     # Normalize data 
-    expected_statevector = padded_data / np.sqrt(sum(np.abs(padded_data)**2))  + 0j
+    expected_statevector: np.ndarray = padded_data / np.sqrt(sum(np.abs(padded_data)**2))  + 0j
 
     return expected_statevector 
 
@@ -49,7 +49,7 @@ def test_AmplitudeEncoding_multiple_cases() -> None:
     assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
 
     # Test with edge cases
-    edge_cases = [
+    edge_cases : list[list] = [
         # [],  # Empty input
         # [0],  # Single element input
         # [0, 0],  # All zeros
@@ -84,7 +84,7 @@ def test_AmplitudeEncoding_multiple_cases() -> None:
         assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
 
 
-def AngleEncoding__Expected_statevector(data : Union[list, np.ndarray] , min_val : Optional[float] = None , max_val : Optional[float]= None ) -> None:
+def AngleEncoding__Expected_statevector(data : Union[list, np.ndarray] , min_val : Optional[float] = None , max_val : Optional[float]= None ) -> np.ndarray:
     """
     Calculates the statevector from a list of data.
 

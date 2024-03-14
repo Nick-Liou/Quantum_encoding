@@ -6,7 +6,7 @@ from typing import Callable, Any
 
 def get_time(func: Callable) -> Callable:
     @wraps(func)
-    def wrapper(*args, **kwargs) -> Any:
+    def wrapper(*args : tuple, **kwargs : dict[str,Any]) -> Any:
 
         # Note that timing your code once isn't the most reliable option
         # for timing your code. Look into the timeit module for more accurate
