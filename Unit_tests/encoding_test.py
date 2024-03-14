@@ -6,13 +6,17 @@
 import sys
 import os
 
+import pytest
+
+
+from qiskit.result.result import Result
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
 sys.path.append(os.path.dirname(SCRIPT_DIR))  # Add the parent directory to the Python path
 
 # 
 import numpy as np
-from typing import Callable, Union
+from typing import Callable, Optional, Union
 
 # Custom libraries
 from General_encoding import encode_data
@@ -23,6 +27,8 @@ from Amplitude_Encoding_QPIE.qs_AmplitudeEncoding   import AmplitudeEncoding
 from Angle_encoding_FRQI.qs_AngleEncoding           import AngleEncoding
 from Basis_Encoding_NEQR.qs_BasisEncoding           import BasisEncoding
 
+TOLERANCE = 1e-6
+
 def Amplitude_Expected_statevector( data_to_encode : Union[list, np.ndarray] ) -> np.ndarray:
 
     # pad with zeros if needed
@@ -32,7 +38,6 @@ def Amplitude_Expected_statevector( data_to_encode : Union[list, np.ndarray] ) -
 
     return expected_statevector 
 
-TOLERANCE = 1e-6
 
 
 def test_AmplitudeEncoding_multiple_cases() -> None:
@@ -79,12 +84,52 @@ def test_AmplitudeEncoding_multiple_cases() -> None:
         assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
 
 
+def AngleEncoding__Expected_statevector(data : Union[list, np.ndarray] , min_val : Optional[float] = None , max_val : Optional[float]= None ) -> None:
+    """
+    Calculates the statevector from a list of data.
+
+    Args:
+        data (list or numpy.ndarray): The list or array of values to be encoded.
+        min_val (float, optional): The minimum value of the data. If not provided, it will be calculated from the data. Defaults to None.
+        max_val (float, optional): The maximum value of the data. If not provided, it will be calculated from the data. Defaults to None.
+
+    Returns:
+        numpy.ndarray: Statevector corresponding to the given data.
+    """
+    
+    data = np.array(data)
+
+    # Calculate min_val if it is None, otherwise use the provided value
+    min_val = np.min(data) if min_val is None else min_val
+    # Calculate max_val if it is None, otherwise use the provided value
+    max_val = np.max(data) if max_val is None else max_val
+
+    # Normalize to the range [0, pi/2]
+    angles = (data - min_val) * (np.pi / 2) / (max_val - min_val)
+
+    if len(data) == 1 and min_val == max_val :
+        angles = [0]
+    else:
+        # Normalize to the range [0, pi/2]
+        angles = (data - min_val) * (np.pi / 2) / (max_val - min_val)
+    
+
+    statevector = np.array([np.cos(angles[0]), np.sin(angles[0])])
+
+    for angle in angles[1:]:
+        statevector = np.kron(np.array([np.cos(angle), np.sin(angle)]) , statevector )
+
+    return statevector
 
 
+@pytest.mark.parametrize("encoding_function,expected_statevector_gen", 
+                         [(AmplitudeEncoding, Amplitude_Expected_statevector),
+                          (AngleEncoding, AngleEncoding__Expected_statevector)])
 def test_Encodings_multiple_cases(encoding_function: Callable , expected_statevector_gen: Callable ) -> None:
     # Test with known input data
+    result : Result
     data_to_encode = [1, 2, 3]
-    _, result = encode_data(data_to_encode, encoding_function)
+    _ , result = encode_data(data_to_encode, encoding_function)
     state_vector = result.get_statevector().data
     expected_statevector = expected_statevector_gen(data_to_encode)
     assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
@@ -124,3 +169,6 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
         expected_statevector = Amplitude_Expected_statevector(random_data)
         assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
 
+
+
+test_Encodings_multiple_cases(AngleEncoding, AngleEncoding__Expected_statevector)

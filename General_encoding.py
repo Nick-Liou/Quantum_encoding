@@ -17,7 +17,9 @@ from Amplitude_Encoding_QPIE.qs_AmplitudeEncoding   import AmplitudeEncoding
 from Angle_encoding_FRQI.qs_AngleEncoding           import AngleEncoding
 from Basis_Encoding_NEQR.qs_BasisEncoding           import BasisEncoding
 
+from Utilities.decorators import get_time
 
+@get_time
 def encode_data(data: Union[list, np.ndarray], 
                 encoding_function: Callable[[Union[list, np.ndarray]], QuantumCircuit],
                 *args: tuple, 
@@ -67,9 +69,9 @@ if __name__ == "__main__" :
     
 
     show_plot = False
-    data_length = 30
+    data_length = 4
     # data_to_encode = np.random.rand(data_length) * 2  -1    
-    data_to_encode = np.random.randint(low=0, high=3, size=data_length)
+    data_to_encode = np.random.randint(low=0, high=255, size=data_length)
     
     # data_to_encode = np.array( [3, 3, 2, 2] ) 
 
@@ -80,6 +82,8 @@ if __name__ == "__main__" :
     args : tuple = kwargs.pop('args', ())  # Extracting 'args' if present, otherwise empty tuple
     
     
+    qc: QuantumCircuit
+    result: Result
     qc , result  = encode_data(data_to_encode ,  encoding_used , *args, **kwargs )
 
     state_vector = result.get_statevector().data

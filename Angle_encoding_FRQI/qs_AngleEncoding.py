@@ -45,9 +45,11 @@ def AngleEncoding(data : Union[list, np.ndarray] , min_val : Optional[float] = N
     # Calculate max_val if it is None, otherwise use the provided value
     max_val = np.max(data) if max_val is None else max_val
 
-    # Normalize to the range [0, pi/2]
-    theta = (data - min_val) * (np.pi / 2) / (max_val - min_val)
-
+    if number_of_qubits == 1 and min_val == max_val :
+        theta = [0]
+    else:
+        # Normalize to the range [0, pi/2]
+        theta = (data - min_val) * (np.pi / 2) / (max_val - min_val)
     
     # Create a quantum circuit with multipule qubits
     qc = QuantumCircuit(number_of_qubits)
