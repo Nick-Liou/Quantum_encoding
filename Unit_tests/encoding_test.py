@@ -6,10 +6,6 @@
 import sys
 import os
 
-import pytest
-
-
-from qiskit.result.result import Result
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
 sys.path.append(os.path.dirname(SCRIPT_DIR))  # Add the parent directory to the Python path
@@ -17,6 +13,10 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))  # Add the parent directory to the 
 # 
 import numpy as np
 from typing import Callable, Optional, Union
+from qiskit.result.result import Result
+
+
+import pytest
 
 # Custom libraries
 from General_encoding import encode_data
@@ -26,6 +26,7 @@ from Utilities.utils import pad_with_zeros
 from Amplitude_Encoding_QPIE.qs_AmplitudeEncoding   import AmplitudeEncoding
 from Angle_encoding_FRQI.qs_AngleEncoding           import AngleEncoding
 from Basis_Encoding_NEQR.qs_BasisEncoding           import BasisEncoding
+from Basis_Encoding_NEQR.qs_BasisEncoding           import convert_to_bin
 
 TOLERANCE = 1e-6
 
@@ -39,49 +40,6 @@ def Amplitude_Expected_statevector( data_to_encode : Union[list, np.ndarray] ) -
     return expected_statevector 
 
 
-
-def test_AmplitudeEncoding_multiple_cases() -> None:
-    # Test with known input data
-    data_to_encode = [1, 2, 3]
-    _, result = encode_data(data_to_encode, AmplitudeEncoding)
-    state_vector = result.get_statevector().data
-    expected_statevector = Amplitude_Expected_statevector(data_to_encode)
-    assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
-
-    # Test with edge cases
-    edge_cases : list[list] = [
-        # [],  # Empty input
-        # [0],  # Single element input
-        # [0, 0],  # All zeros
-        [1],  # Single element non-zero
-        [0, 1],  # Zero followed by non-zero
-        [1, 0],  # Non-zero followed by zero
-        [1, -1],  # Positive and negative values
-        [1e10, -1e10],  # Large positive and negative values
-        [1e-10, 1e-20],  # Small positive values
-        [1e-10, -1e-20],  # Small positive and negative values
-        [-1e-10, -1e-20],  # Small negative values
-        [1e10, 1e-20],  # Large positive and small positive values
-        [1e-10, 1e10],  # Small positive and large positive values
-        [-1e-10, 1e10],  # Small negative and large positive values
-    ]
-
-    for case in edge_cases:
-        # print("Case : " ,case)
-        _, result = encode_data(case, AmplitudeEncoding)
-        state_vector = result.get_statevector().data
-        expected_statevector = Amplitude_Expected_statevector(case)
-        assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
-
-    # Test with multiple randomly generated inputs
-    num_tests = 10  # Adjust the number of tests as needed
-    for _ in range(num_tests):
-        # Generate random input data within a certain range
-        random_data = np.random.uniform(low=-100, high=100, size=np.random.randint(1, 32 ))
-        _, result = encode_data(random_data, AmplitudeEncoding)
-        state_vector = result.get_statevector().data
-        expected_statevector = Amplitude_Expected_statevector(random_data)
-        assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
 
 
 def AngleEncoding__Expected_statevector(data : Union[list, np.ndarray] , min_val : Optional[float] = None , max_val : Optional[float]= None ) -> np.ndarray:
@@ -122,6 +80,32 @@ def AngleEncoding__Expected_statevector(data : Union[list, np.ndarray] , min_val
     return statevector
 
 
+def Basis(data : Union[list, np.ndarray]):
+    
+    # pad with zeros if needed
+    padded_data = pad_with_zeros(np.array(data))
+    
+    number_of_qubits = int ( np.ceil(np.log2(len(padded_data))) )
+    
+    # For now only works for integeres
+    bin_data , bit_depth = convert_to_bin(padded_data)
+
+    expected_statevector = np.zeros(2**(number_of_qubits+bit_depth))
+
+    for i , element  in enumerate(bin_data) :
+        # print(i , element)
+        #  First term is for the address second term is for the vaule
+        index = i*2**bit_depth + int(element,2)
+
+        # print(index)
+        expected_statevector[index] = 1 
+
+    
+    expected_statevector = expected_statevector / np.sqrt(sum(np.abs(expected_statevector)**2))  + 0j
+
+    return expected_statevector
+
+
 @pytest.mark.parametrize("encoding_function,expected_statevector_gen", 
                          [(AmplitudeEncoding, Amplitude_Expected_statevector),
                           (AngleEncoding, AngleEncoding__Expected_statevector)])
@@ -150,6 +134,8 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
         [1e10, 1e-20],  # Large positive and small positive values
         [1e-10, 1e10],  # Small positive and large positive values
         [-1e-10, 1e10],  # Small negative and large positive values
+        [1, -1, 3, 5, -1, 4, 6, 7, -4],  # Positive and negative values
+        [1, -1, 3, -10, 8, 13, -8, -3, -5, 13, 16, 18, 32],  # Positive and negative values
     ]
 
     for case in edge_cases:
@@ -171,4 +157,7 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
 
 
 
-test_Encodings_multiple_cases(AngleEncoding, AngleEncoding__Expected_statevector)
+# test_Encodings_multiple_cases(AngleEncoding, AngleEncoding__Expected_statevector)
+
+
+Basis([1, -1, 3, 5, -1, 4, 6, 7])
