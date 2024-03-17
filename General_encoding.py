@@ -48,6 +48,7 @@ def encode_data(data: Union[list, np.ndarray],
 
     # Simulate the transpiled circuit
     backend : StatevectorSimulator = Aer.get_backend('statevector_simulator')
+    #  AerSimulator(method="statevector")
     job : AerJob = backend.run(transpiled_circuit)
     result : Result = job.result()    
 
@@ -60,7 +61,7 @@ if __name__ == "__main__" :
     encodings : dict[Callable[[Union[list, np.ndarray]], QuantumCircuit], dict] =  {
         AmplitudeEncoding:  {},
         AngleEncoding:      {'min_val': 0, 'max_val': 255},
-        BasisEncoding:      {'use_Espresso': True},
+        BasisEncoding:      {'use_Espresso': False},
         # More examples 
         # function_1: {'args': (1, 2)},
         # function_2: {'x': 3, 'y': 4, 'z': 5},
@@ -72,12 +73,13 @@ if __name__ == "__main__" :
     data_length = 4
     # data_to_encode = np.random.rand(data_length) * 2  -1    
     data_to_encode = np.random.randint(low=0, high=255, size=data_length)
+
     
-    # data_to_encode = np.array( [3, 3, 2, 2] ) 
+    data_to_encode = np.array( [1, -1, 3, 5, -1, 4, 6, 7] ) 
 
 
 
-    encoding_used : Callable = AngleEncoding
+    encoding_used : Callable = BasisEncoding
     kwargs : dict[str, Any] = encodings.get(encoding_used, {})
     args : tuple = kwargs.pop('args', ())  # Extracting 'args' if present, otherwise empty tuple
     
@@ -93,13 +95,13 @@ if __name__ == "__main__" :
     print(qc)
 
     print("\n\nFinal state vector: ", state_vector)    
+    print("Indices of non-zero elements in the statevector:", np.nonzero(state_vector))
 
     print("\nData to encode:" , data_to_encode)
     print(f'\nNumber of qubits {qc.num_qubits}')
     print(f"Total number of gates used {qc.size()}")
     print(f"Circuit depth/layers {qc.depth()}")
-    print("Gates used:")
-    print(qc.count_ops())
+    # print("Gates used:",qc.count_ops())
 
 
     if show_plot:

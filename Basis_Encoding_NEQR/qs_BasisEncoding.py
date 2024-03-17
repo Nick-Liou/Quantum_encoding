@@ -65,7 +65,7 @@ pyeda.boolalg.minimization._cover2exprs = my_modified__cover2exprs
         
 
 
-def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) -> QuantumCircuit :
+def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = False ) -> QuantumCircuit :
     """
     Encodes the given data into a quantum circuit using Basis Encoding.
 
@@ -152,6 +152,7 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
     
     number_of_qubits = int ( np.ceil(np.log2(len(padded_data))) )
     
+    print(padded_data)
     # For now only works for integeres
     bin_data , bit_depth = convert_to_bin(padded_data)
 
@@ -175,8 +176,11 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
                 if bin_data[i][j] == '1' :
                     qubits_ids = list(range(number_of_qubits)) + [number_of_qubits + bit_depth - j - 1]
                     qc.append(MCXGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
-
     else:        
+        
+        # import warnings
+        # warnings.warn("The espresso optimization is not yet implemented correctly", category=RuntimeWarning)
+        raise Exception("The espresso optimization is not yet implemented correctly")
         
         # Define the variables x[0], x[1],..., and x[number_of_qubits]
         X = exprvars('x', number_of_qubits)
@@ -284,10 +288,12 @@ if __name__=="__main__":
     # array = [0, 1, 2, -1.00 , -4 ]
 
 
-    data_length = 4
+    # data_length = 4
     # data = np.random.randint(low=0, high=3, size=data_length)
 
-    data = [-3, -1, 3]  # Example input data      
+    data = [1, -1, 3, 5, -1, 4, 6, 7]  # Example input data   
+    data = [1, 1, 1, 1, 1, 0, 0, 1]  # Example input data     
+    data = [1, 1, 0, 1]  # Example input data     
     qc = BasisEncoding(data , use_Espresso=False)
     print(qc)
     qc = BasisEncoding(data , use_Espresso=True)
