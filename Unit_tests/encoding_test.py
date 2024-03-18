@@ -108,11 +108,16 @@ def BasisEncoding_Expected_statevector(data : Union[list, np.ndarray]) -> np.nda
     return expected_statevector
 
 
-@pytest.mark.parametrize("encoding_function,expected_statevector_gen", 
-                         [(AmplitudeEncoding, Amplitude_Expected_statevector),
-                          (AngleEncoding, AngleEncoding_Expected_statevector),
-                          (BasisEncoding, BasisEncoding_Expected_statevector)])
-def test_Encodings_multiple_cases(encoding_function: Callable , expected_statevector_gen: Callable , input_type : str = "") -> None:
+from enum import Enum
+class DataType(Enum):
+    ANALOG = 0
+    DIGITAL = 1
+
+@pytest.mark.parametrize("encoding_function,expected_statevector_gen,data_type", 
+                         [(AmplitudeEncoding, Amplitude_Expected_statevector,DataType.ANALOG),
+                          (AngleEncoding, AngleEncoding_Expected_statevector,DataType.ANALOG),
+                          (BasisEncoding, BasisEncoding_Expected_statevector,DataType.DIGITAL)])
+def test_Encodings_multiple_cases(encoding_function: Callable , expected_statevector_gen: Callable , data_type: DataType) -> None:
     # Test with known input data
     result : Result
     data_to_encode = [1, 2, 3]
@@ -147,6 +152,18 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
         [1, -1, 3, -10, 8, 13, -8, -3, -5, 13, 16, 18, 32],  # Positive and negative values
     ]
 
+    if data_type == DataType.ANALOG:
+        edge_cases.extend([
+            [1e10, -1e10],  # Large positive and negative values
+            [1e-10, 1e-20],  # Small positive values
+            [1e-10, -1e-20],  # Small positive and negative values
+            [-1e-10, -1e-20],  # Small negative values
+            [1e10, 1e-20],  # Large positive and small positive values
+            [1e-10, 1e10],  # Small positive and large positive values
+            [-1e-10, 1e10],  # Small negative and large positive values
+        ])
+
+
     for case in edge_cases:
         print("\n\nCase : " ,case)
         _, result = encode_data(case, encoding_function)
@@ -166,8 +183,11 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
     num_tests = 10  # Adjust the number of tests as needed
     for _ in range(num_tests):
         # Generate random input data within a certain range
-        # random_data = np.random.uniform(low=-16, high=15, size=np.random.randint(1, 30 ))
-        random_data = np.random.randint(low=-16, high=15, size=np.random.randint(1, 25 ))
+        if data_type == DataType.ANALOG:
+            random_data = np.random.uniform(low=-16, high=15, size=np.random.randint(1, 25 ))
+        elif data_type == DataType.DIGITAL:
+            random_data = np.random.randint(low=-16, high=15, size=np.random.randint(1, 25 ))
+        
         # print("\n\n",random_data)
         _, result = encode_data(random_data, encoding_function)
         state_vector = result.get_statevector().data
