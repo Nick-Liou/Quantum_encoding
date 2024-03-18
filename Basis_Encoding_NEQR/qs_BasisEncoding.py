@@ -152,7 +152,6 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = False ) -
     
     number_of_qubits = int ( np.ceil(np.log2(len(padded_data))) )
     
-    print(padded_data)
     # For now only works for integeres
     bin_data , bit_depth = convert_to_bin(padded_data)
 

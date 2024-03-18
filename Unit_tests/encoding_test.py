@@ -91,13 +91,13 @@ def BasisEncoding_Expected_statevector(data : Union[list, np.ndarray]) -> np.nda
 
     expected_statevector = np.zeros(2**(number_of_qubits+bit_depth))
 
-    print("len(bin_data) = " , len(bin_data))
+    # print("len(bin_data) = " , len(bin_data))
     for i , element  in enumerate(bin_data) :
         # print(i , element)
         #  First term is for the address second term is for the vaule
         # index = i*2**bit_depth + int(element,2)
         index = i + int(element,2)*2**number_of_qubits
-        print(f"i {i} data {padded_data[i]}  bin: {element}  new_data {int(element,2)}  index {index}")
+        # print(f"i {i} data {padded_data[i]}  bin: {element}  new_data {int(element,2)}  index {index}")
 
         # print(index)
         expected_statevector[index] = 1 
@@ -129,21 +129,14 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
     assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
 
     # Test with edge cases
-    edge_cases = [
+    edge_cases : list[list[Union[int, float]]] = [
         # [],  # Empty input
         # [0],  # Single element input
         # [0, 0],  # All zeros
         [1],  # Single element non-zero
         [0, 1],  # Zero followed by non-zero
         [1, 0],  # Non-zero followed by zero
-        [1, -1],  # Positive and negative values
-        # [1e10, -1e10],  # Large positive and negative values
-        # [1e-10, 1e-20],  # Small positive values
-        # [1e-10, -1e-20],  # Small positive and negative values
-        # [-1e-10, -1e-20],  # Small negative values
-        # [1e10, 1e-20],  # Large positive and small positive values
-        # [1e-10, 1e10],  # Small positive and large positive values
-        # [-1e-10, 1e10],  # Small negative and large positive values
+        [1, -1],  # Positive and negative values        
         [7, -4],  # Positive and negative values
         [1, -1, 3, 5],  # Positive and negative values
         [1, 1, 1, 1, 1, 0, 0, 1],
@@ -165,7 +158,7 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
 
 
     for case in edge_cases:
-        print("\n\nCase : " ,case)
+        # print("\n\nCase : " ,case)
         _, result = encode_data(case, encoding_function)
         state_vector = result.get_statevector().data
         expected_statevector = expected_statevector_gen(case)
@@ -174,8 +167,8 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
         # print(f"Expected statevector {len(expected_statevector)} :" , expected_statevector)
         # print(f"Diff actual - expected" ,state_vector -expected_statevector )
         
-        print("Indices of non-zero elements Actual statevector  :", np.nonzero(state_vector))
-        print("Indices of non-zero elements Expected statevector:", np.nonzero(expected_statevector))
+        # print("Indices of non-zero elements Actual statevector  :", np.nonzero(state_vector))
+        # print("Indices of non-zero elements Expected statevector:", np.nonzero(expected_statevector))
 
         assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
 
@@ -183,6 +176,7 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
     num_tests = 10  # Adjust the number of tests as needed
     for _ in range(num_tests):
         # Generate random input data within a certain range
+        random_data : np.ndarray
         if data_type == DataType.ANALOG:
             random_data = np.random.uniform(low=-16, high=15, size=np.random.randint(1, 25 ))
         elif data_type == DataType.DIGITAL:
@@ -198,6 +192,5 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
 
 
 if __name__ == "__main__":
-    # test_Encodings_multiple_cases(AngleEncoding, AngleEncoding_Expected_statevector)
-
-    test_Encodings_multiple_cases(BasisEncoding, BasisEncoding_Expected_statevector)
+    
+    test_Encodings_multiple_cases(BasisEncoding, BasisEncoding_Expected_statevector, DataType.DIGITAL)
