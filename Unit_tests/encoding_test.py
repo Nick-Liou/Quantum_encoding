@@ -63,6 +63,7 @@ def AngleEncoding_Expected_statevector(data : Union[list, np.ndarray] , min_val 
     # Calculate max_val if it is None, otherwise use the provided value
     max_val = np.max(data) if max_val is None else max_val
 
+    angles : Union[list, np.ndarray]
     if len(data) == 1 and min_val == max_val :
         angles = [0]
     else:
@@ -78,7 +79,7 @@ def AngleEncoding_Expected_statevector(data : Union[list, np.ndarray] , min_val 
     return statevector
 
 
-def BasisEncoding_Expected_statevector(data : Union[list, np.ndarray]):
+def BasisEncoding_Expected_statevector(data : Union[list, np.ndarray]) -> np.ndarray:
     
     # pad with zeros if needed
     padded_data = pad_with_zeros(np.array(data))
@@ -111,7 +112,7 @@ def BasisEncoding_Expected_statevector(data : Union[list, np.ndarray]):
                          [(AmplitudeEncoding, Amplitude_Expected_statevector),
                           (AngleEncoding, AngleEncoding_Expected_statevector),
                           (BasisEncoding, BasisEncoding_Expected_statevector)])
-def test_Encodings_multiple_cases(encoding_function: Callable , expected_statevector_gen: Callable , input_type = "") -> None:
+def test_Encodings_multiple_cases(encoding_function: Callable , expected_statevector_gen: Callable , input_type : str = "") -> None:
     # Test with known input data
     result : Result
     data_to_encode = [1, 2, 3]
