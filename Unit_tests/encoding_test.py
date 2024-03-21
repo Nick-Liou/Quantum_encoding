@@ -147,6 +147,9 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
 
     if data_type == DataType.ANALOG:
         edge_cases.extend([
+            [0.4, -1.4],
+            [4.6, -0.5, 3.6, 1.6],
+            [1.3, 0.5, 1.6, -1.4, 5, -4.24, 13],
             [1e10, -1e10],  # Large positive and negative values
             [1e-10, 1e-20],  # Small positive values
             [1e-10, -1e-20],  # Small positive and negative values
