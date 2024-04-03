@@ -91,15 +91,9 @@ def BasisEncoding_Expected_statevector(data : Union[list, np.ndarray]) -> np.nda
 
     expected_statevector = np.zeros(2**(number_of_qubits+bit_depth))
 
-    # print("len(bin_data) = " , len(bin_data))
     for i , element  in enumerate(bin_data) :
-        # print(i , element)
-        #  First term is for the address second term is for the vaule
-        # index = i*2**bit_depth + int(element,2)
+        #  One term is for the address the other term is for the vaule
         index = i + int(element,2)*2**number_of_qubits
-        # print(f"i {i} data {padded_data[i]}  bin: {element}  new_data {int(element,2)}  index {index}")
-
-        # print(index)
         expected_statevector[index] = 1 
 
     
@@ -161,17 +155,9 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
 
 
     for case in edge_cases:
-        # print("\n\nCase : " ,case)
         _, result = encode_data(case, encoding_function)
         state_vector = result.get_statevector().data
-        expected_statevector = expected_statevector_gen(case)
-        
-        # print(f"Actual statevector {len(state_vector)} :",state_vector)
-        # print(f"Expected statevector {len(expected_statevector)} :" , expected_statevector)
-        # print(f"Diff actual - expected" ,state_vector -expected_statevector )
-        
-        # print("Indices of non-zero elements Actual statevector  :", np.nonzero(state_vector))
-        # print("Indices of non-zero elements Expected statevector:", np.nonzero(expected_statevector))
+        expected_statevector = expected_statevector_gen(case)        
 
         assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
 
@@ -185,11 +171,9 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
         elif data_type == DataType.DIGITAL:
             random_data = np.random.randint(low=-16, high=15, size=np.random.randint(1, 25 ))
         
-        # print("\n\n",random_data)
         _, result = encode_data(random_data, encoding_function)
         state_vector = result.get_statevector().data
         expected_statevector = expected_statevector_gen(random_data)
-        # print(len(state_vector))
         assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
 
 
