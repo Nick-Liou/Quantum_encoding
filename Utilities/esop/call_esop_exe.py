@@ -16,9 +16,8 @@ def execute_exe_with_args(exe_path:str, args:list[str]) -> str:
         # print(f"Error executing {[exe_path] + args}: {stderr}")
         raise Exception(f"Error executing {[exe_path] + args } Got the error: {stderr}")
         
-    else:
-        # print(f"args: {args} Output from {[exe_path] + args}: {stdout}")
-        return stdout
+    # print(f"args: {args} Output from {[exe_path] + args}: {stdout}")
+    return stdout
     # try:
     #     pass    
     # except Exception as e:
