@@ -14,12 +14,19 @@ jobs:
         - name: Install CMake
           run: sudo apt-get update && sudo apt-get install -y cmake  # Install CMake on the runner
 
-        # - name: Set up CMake
-        #   uses: actions/setup-cmake@v4
-        #   # with:
-        #   #   cmake-version: '3.21'  # Specify the version of CMake to use
-
             
+        # - name: Build and Test Project
+        #   run: |      
+        #     cd ..  
+        #     git clone https://github.com/Nick-Liou/easy.git
+        #     cd easy
+        #     mkdir build
+        #     cd build
+        #     cmake -DEASY_TEST=ON ..
+        #     cmake --build .
+        #     ./test/Debug/run_tests.exe
+
+                
         - name: Build and Test Project
           run: |      
             cd ..  
@@ -27,6 +34,28 @@ jobs:
             cd easy
             mkdir build
             cd build
-            cmake -DEASY_TEST=ON ..
-            cmake --build .
-            ./test/Debug/run_tests.exe
+            cmake -DCMAKE_CXX_COMPILER=g++-9 -DEASY_TEST=ON ..
+            make run_tests
+        - name: Run tests
+          run: |
+            cd build
+            ./test/run_tests "~[quality]"
+        
+    # build-gcc9:
+    # runs-on: ubuntu-latest
+    # name: GNU GCC 9
+    
+    # steps:
+    # - uses: actions/checkout@v1
+    #   with:
+    #     submodules: true
+    # - name: Build easy
+    #   run: |
+    #     mkdir build
+    #     cd build
+    #     cmake -DCMAKE_CXX_COMPILER=g++-9 -DEASY_TEST=ON ..
+    #     make run_tests
+    # - name: Run tests
+    #   run: |
+    #     cd build
+    #     ./test/run_tests "~[quality]"
