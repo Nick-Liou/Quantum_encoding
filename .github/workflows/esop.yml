@@ -21,9 +21,9 @@ jobs:
 
             
         - name: Build and Test Project
-          run: |
-            pwd            
-            git clone git@github.com:Nick-Liou/easy.git
+          run: |      
+            cd ..  
+            git clone https://github.com/Nick-Liou/easy.git
             cd easy
             mkdir build
             cd build
