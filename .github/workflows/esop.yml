@@ -1,0 +1,29 @@
+name: Esop
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Build ESOP
+    runs-on: ubuntu-latest
+    
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4     
+        
+        - name: Set up CMake
+          uses: actions/setup-cmake@v4
+          # with:
+          #   cmake-version: '3.21'  # Specify the version of CMake to use
+
+            
+        - name: Build and Test Project
+          run: |
+            pwd            
+            git clone git@github.com:Nick-Liou/easy.git
+            cd easy
+            mkdir build
+            cd build
+            cmake -DEASY_TEST=ON ..
+            cmake --build .
+            ./test/Debug/run_tests.exe
