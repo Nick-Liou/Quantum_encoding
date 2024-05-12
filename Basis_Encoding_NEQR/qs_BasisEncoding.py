@@ -16,56 +16,58 @@ from Utilities.utils import pad_with_zeros
 from typing import Any, Union
 
 
-from pyeda.inter import exprvars, truthtable, espresso_tts
-import pyeda.boolalg.minimization
+from Utilities.esop import call_esop_exe
 
-# Monkey-patching
-def my_modified__cover2exprs(inputs:list, noutputs:int, cover:Any) -> list[tuple[list[int],list[int]]]:
-    """
-    Convert a cover to a tuple of Expression instances with modifications.
+# from pyeda.inter import exprvars, truthtable, espresso_tts
+# import pyeda.boolalg.minimization
 
-    This function is a modified version of `pyeda.boolalg.minimization._cover2exprs`.
-    It only supports the case where `noutputs` is 1.
+# # Monkey-patching
+# def my_modified__cover2exprs(inputs:list, noutputs:int, cover:Any) -> list[tuple[list[int],list[int]]]:
+#     """
+#     Convert a cover to a tuple of Expression instances with modifications.
 
-    Args:
-        inputs (tuple): A tuple of input variables.
-        noutputs (int): Number of output variables (should be 1 for this function).
-        cover (list): List of cover tuples.
+#     This function is a modified version of `pyeda.boolalg.minimization._cover2exprs`.
+#     It only supports the case where `noutputs` is 1.
 
-    Returns:
-        list: A list of terms where each term is represented as a list containing two lists:
-            - The first list represents the positive literals (minterms).
-            - The second list represents the negative literals .
-    """
+#     Args:
+#         inputs (tuple): A tuple of input variables.
+#         noutputs (int): Number of output variables (should be 1 for this function).
+#         cover (list): List of cover tuples.
 
-    if noutputs != 1 : 
-        raise ValueError("noutputs should be 1 for my custom implementation")
+#     Returns:
+#         list: A list of terms where each term is represented as a list containing two lists:
+#             - The first list represents the positive literals (minterms).
+#             - The second list represents the negative literals .
+#     """
+
+#     if noutputs != 1 : 
+#         raise ValueError("noutputs should be 1 for my custom implementation")
     
-    for i in range(noutputs):
-        terms = []
-        for invec, outvec in cover:
-            if outvec[i]:
-                # Initialize a tuple to store positive and negative literals, 
-                # my_term[0] has the positive literal and my_term[1] the negative literal
-                my_term : tuple[list[int],list[int]] = ([],[])
-                for j, v in enumerate(inputs):
-                    if invec[j] == 1:
-                        # Add index of input variable for negative literal
-                        my_term[1].append(j)    # ~v
-                    elif invec[j] == 2:         
-                        # Add index of input variable for positive literal               
-                        my_term[0].append(j)    # v
-                terms.append(my_term)
+#     for i in range(noutputs):
+#         terms = []
+#         for invec, outvec in cover:
+#             if outvec[i]:
+#                 # Initialize a tuple to store positive and negative literals, 
+#                 # my_term[0] has the positive literal and my_term[1] the negative literal
+#                 my_term : tuple[list[int],list[int]] = ([],[])
+#                 for j, v in enumerate(inputs):
+#                     if invec[j] == 1:
+#                         # Add index of input variable for negative literal
+#                         my_term[1].append(j)    # ~v
+#                     elif invec[j] == 2:         
+#                         # Add index of input variable for positive literal               
+#                         my_term[0].append(j)    # v
+#                 terms.append(my_term)
 
-    return terms
+#     return terms
 
-# Monkey-patching
-pyeda.boolalg.minimization._cover2exprs = my_modified__cover2exprs
+# # Monkey-patching
+# pyeda.boolalg.minimization._cover2exprs = my_modified__cover2exprs
 
         
 
 
-def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = False ) -> QuantumCircuit :
+def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) -> QuantumCircuit :
     """
     Encodes the given data into a quantum circuit using Basis Encoding.
 
@@ -78,6 +80,30 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = False ) -
 
 
     Example 1 (possitive integers):
+        >>> data = [1, 1, 0, 1]  # Example input data      
+        # Without Espresso:
+        >>> qc = BasisEncoding(data , use_Espresso=False)
+        >>> print(qc)
+             ┌───┐
+        q_0: ┤ H ├──o────■────■──
+             ├───┤  │    │    │
+        q_1: ┤ H ├──o────o────■──
+             └───┘┌─┴─┐┌─┴─┐┌─┴─┐
+          a: ─────┤ X ├┤ X ├┤ X ├
+                  └───┘└───┘└───┘
+
+        # With Espresso:
+        >>> qc = BasisEncoding(data , use_Espresso=True)
+        >>> print(qc)
+             ┌───┐
+        q_0: ┤ H ├──o────■──
+             ├───┤  │    │
+        q_1: ┤ H ├──o────┼──
+             └───┘┌─┴─┐┌─┴─┐
+          a: ─────┤ X ├┤ X ├
+                  └───┘└───┘
+    
+    Example 2 (possitive integers):
         >>> data = [1, 5, 3, 7]  # Example input data      
         # Without Espresso:
         >>> qc = BasisEncoding(data , use_Espresso=False)
@@ -109,7 +135,7 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = False ) -
         a_2: ─────┤ X ├─────
                   └───┘
 
-    Example 2 (with negative integers):  
+    Example 3 (with negative integers):  
         >>> data = [-3, -1, 3, 2]  # Example input data   
         # Without Espresso:
         >>> qc = BasisEncoding(data , use_Espresso=False)
@@ -130,9 +156,9 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = False ) -
         >>> qc = BasisEncoding(data , use_Espresso=True)
         >>> print(qc)
              ┌───┐
-        q_0: ┤ H ├────────────■─────────o──
-             ├───┤            │         │
-        q_1: ┤ H ├──o────■────┼────o────┼──
+        q_0: ┤ H ├───────o────■────o───────
+             ├───┤       │    │    │
+        q_1: ┤ H ├──o────■────┼────■────o──
              └───┘  │    │    │  ┌─┴─┐┌─┴─┐
         a_0: ───────┼────┼────┼──┤ X ├┤ X ├
                     │  ┌─┴─┐┌─┴─┐└───┘└───┘
@@ -178,25 +204,23 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = False ) -
     else:        
         
         # import warnings
-        # warnings.warn("The espresso optimization is not yet implemented correctly", category=RuntimeWarning)
-        raise Exception("The espresso optimization is not yet implemented correctly")
+        # warnings.warn("The espresso optimization might not yet be implemented correctly", category=RuntimeWarning)
+        # raise Exception("The espresso optimization is not yet implemented correctly")
         
-        # Define the variables x[0], x[1],..., and x[number_of_qubits]
-        X = exprvars('x', number_of_qubits)
-
         # Set up the data 
         for j in range(bit_depth):            
             truth_table = ""
             for i in range(len(padded_data)):
                 truth_table += bin_data[i][j]
-                
-            # Define the truth table
-            f = truthtable(X, truth_table)
             
-            # Minimize the truth table using Espresso
-            fm = espresso_tts(f)
+            hex_truth_table = bin_str_to_hex_str(truth_table)
 
-            for contition in fm:
+
+            output = call_esop_exe.execute_exe_with_args(call_esop_exe.exe_path , [str(number_of_qubits),hex_truth_table])
+
+            minimized_expretion =  call_esop_exe.parse_output(output)
+            
+            for contition in minimized_expretion:
                 pos_ctrl_qubits_ids = contition[0]
                 neg_ctrl_qubits_ids = contition[1]
                 target_qubit = number_of_qubits + bit_depth - j - 1
@@ -278,6 +302,37 @@ def int_to_binary(arr: Union[list, np.ndarray]) -> tuple[list[str],int]:
     
     return binary_array, max_length
 
+def bin_str_to_hex_str(binary_num: str) -> str:
+    """
+    Convert a binary string to a hexadecimal string.
+
+    Args:
+        binary_num (str): A binary string consisting of '0's and '1's.
+
+    Returns:
+        str: A hexadecimal string representing the converted binary number.
+
+    Example:
+        >>> bin_str_to_hex_str("110101")
+        'd1'
+        >>> bin_str_to_hex_str("10101011")
+        'ab'
+        >>> bin_str_to_hex_str("111100001111")
+        'f0f'
+    """
+    lookup_table = {
+        "0000": "0", "0001": "1", "0010": "2", "0011": "3",
+        "0100": "4", "0101": "5", "0110": "6", "0111": "7",
+        "1000": "8", "1001": "9", "1010": "a", "1011": "b",
+        "1100": "c", "1101": "d", "1110": "e", "1111": "f",
+        "00": "0", "01": "1", "10": "2", "11": "3"
+    }
+    hex_num = ""
+    for i in range(0, len(binary_num), 4):
+        chunk = binary_num[i:i + 4]
+        hex_num += lookup_table[chunk]
+    return hex_num
+
 
 
 
@@ -292,6 +347,7 @@ if __name__=="__main__":
 
     data = [1, -1, 3, 5, -1, 4, 6, 7]  # Example input data   
     data = [1, 1, 1, 1, 1, 0, 0, 1]  # Example input data     
+    data = [1, 1, 1, 1]  # Example input data     
     data = [1, 1, 0, 1]  # Example input data     
     qc = BasisEncoding(data , use_Espresso=False)
     print(qc)

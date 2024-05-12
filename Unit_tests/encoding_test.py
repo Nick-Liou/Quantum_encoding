@@ -112,7 +112,7 @@ class DataType(Enum):
                           (AngleEncoding, AngleEncoding_Expected_statevector,DataType.ANALOG),
                           (BasisEncoding, BasisEncoding_Expected_statevector,DataType.DIGITAL)])
 def test_Encodings_multiple_cases(encoding_function: Callable , expected_statevector_gen: Callable , data_type: DataType) -> None:
-    # Test with known input data
+    # Simple Test with known input data
     result : Result
     data_to_encode = [1, 2, 3]
     _ , result = encode_data(data_to_encode, encoding_function)
@@ -132,6 +132,7 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
         [1, 0],  # Non-zero followed by zero
         [1, -1],  # Positive and negative values        
         [7, -4],  # Positive and negative values
+        [13,  5],  # Positive values
         [1, -1, 3, 5],  # Positive and negative values
         [1, 1, 1, 1, 1, 0, 0, 1],
         [1, -1, 3, 5, -1, 4, 6, 7],  # Positive and negative values
@@ -155,6 +156,7 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
 
 
     for case in edge_cases:
+        # print(f"case: {case}")
         _, result = encode_data(case, encoding_function)
         state_vector = result.get_statevector().data
         expected_statevector = expected_statevector_gen(case)        
@@ -171,6 +173,7 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
         elif data_type == DataType.DIGITAL:
             random_data = np.random.randint(low=-16, high=15, size=np.random.randint(1, 25 ))
         
+        # print(f"Data: {random_data}")
         _, result = encode_data(random_data, encoding_function)
         state_vector = result.get_statevector().data
         expected_statevector = expected_statevector_gen(random_data)

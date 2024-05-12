@@ -61,7 +61,7 @@ if __name__ == "__main__" :
     encodings : dict[Callable[[Union[list, np.ndarray]], QuantumCircuit], dict] =  {
         AmplitudeEncoding:  {},
         AngleEncoding:      {'min_val': 0, 'max_val': 255},
-        BasisEncoding:      {'use_Espresso': False},
+        BasisEncoding:      {'use_Espresso': True},
         # More examples 
         # function_1: {'args': (1, 2)},
         # function_2: {'x': 3, 'y': 4, 'z': 5},
