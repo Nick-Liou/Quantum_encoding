@@ -22,31 +22,34 @@ jobs:
             
 
         - name: Debug file permissions
-          run: ls -l Utilities/esop/esop_static.exe
+          run: ls -l Utilities/esop/esop_static_linux.exe
 
         - name: Set executable permissions
-          run: chmod +x Utilities/esop/esop_static.exe
+          run: chmod +x Utilities/esop/esop_static_linux.exe
+          
+        - name: Print file permissions
+          run: ls -l Utilities/esop/esop_static_linux.exe
 
-        - name: Install Wine
-          run: sudo apt-get install -y wine64
+        # - name: Install Wine
+        #   run: sudo apt-get install -y wine64
       
-        - name: Run executable with Wine
-          run: wine64 Utilities/esop/esop_static.exe  3 e8
+        # - name: Run executable with Wine
+        #   run: wine64 Utilities/esop/esop_static.exe  3 e8
 
 
-        # - name: Run executable
-        #   run: Utilities/esop/esop_static.exe 3 e8
-
-        
-        - name: Install dependencies
-          run: |
-                pip install pytest
-                pip install -r requirements.txt
+        - name: Run executable
+          run: Utilities/esop/esop_static_linux.exe 3 e8
 
         
-        - name: Run pytest
-          run: |
-                pytest 
+        # - name: Install dependencies
+        #   run: |
+        #         pip install pytest
+        #         pip install -r requirements.txt
+
+        
+        # - name: Run pytest
+        #   run: |
+        #         pytest 
 
         
         # -   name: Find modified Python files
