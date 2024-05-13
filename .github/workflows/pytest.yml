@@ -22,13 +22,13 @@ jobs:
             
 
         - name: Debug file permissions
-          run: ls -l Utilities/esop/esop_static_linux.exe
+          run: ls -l Utilities/esop/esop_static_WSL.exe
 
         - name: Set executable permissions
-          run: chmod +x Utilities/esop/esop_static_linux.exe
+          run: chmod +x Utilities/esop/esop_static_WSL.exe
           
         - name: Print file permissions
-          run: ls -l Utilities/esop/esop_static_linux.exe
+          run: ls -l Utilities/esop/esop_static_WSL.exe
 
         # - name: Install Wine
         #   run: sudo apt-get install -y wine64
@@ -38,7 +38,7 @@ jobs:
 
 
         - name: Run executable
-          run: Utilities/esop/esop_static_linux.exe 3 e8
+          run: Utilities/esop/esop_static_WSL.exe 3 e8
 
         
         # - name: Install dependencies
