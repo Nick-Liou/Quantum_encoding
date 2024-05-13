@@ -22,7 +22,9 @@ jobs:
             
 
         - name: Debug file permissions
-          run: ls -l Utilities/esop/esop_static_WSL.exe
+          run: |
+                ls -l Utilities/esop/esop_static_linux.exe          
+                file Utilities/esop/esop_static_linux.exe
 
         - name: Set executable permissions
           run: chmod +x Utilities/esop/esop_static_WSL.exe
