@@ -213,6 +213,8 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
             for i in range(len(padded_data)):
                 truth_table += bin_data[i][j]
             
+            # TODO :Add code to invert truth table
+
             hex_truth_table = bin_str_to_hex_str(truth_table)
 
 
