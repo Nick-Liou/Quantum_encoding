@@ -70,10 +70,10 @@ import sys
 
 if sys.platform.startswith('linux'):
     # print("Running on Linux")
-    exe_name = "esop_static_LINUX.exe"
+    exe_name = "esop_static_linux.exe"
 elif sys.platform.startswith('win'):
     # print("Running on Windows")
-    exe_name = "esop_static_WINDOWS.exe"
+    exe_name = "esop_static_windows.exe"
 else:
     print("Not running on Linux or Windows, the esop.exe utility must be recompiled for this os.")
 
