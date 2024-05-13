@@ -20,18 +20,18 @@ jobs:
             python-version: 3.9
             cache: 'pip' # caching pip dependencies
             
-        
-        -   name: Install dependencies
-            run: |
-                pip install pytest
-                pip install -r requirements.txt
 
         - name: Debug file permissions
             run: ls -l Utilities/esop/esop_static.exe
+        
+        - name: Install dependencies
+          run: |
+                pip install pytest
+                pip install -r requirements.txt
 
         
-        -   name: Run pytest
-            run: |
+        - name: Run pytest
+          run: |
                 pytest 
 
         
