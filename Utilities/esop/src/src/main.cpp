@@ -1,4 +1,3 @@
-#include <easy/easy.hpp>
 
 // Compile:
 // g++ -std=c++17  main.cpp -o a  -fpermissive -Wint-to-pointer-cast -I ../easy/include  -I ../easy/lib/alice/include -I ../easy/lib/any -I ../easy/lib/bill/bill/include -I ../easy/lib/cli11 -I ../easy/lib/fmt -I ../easy/lib/json/include -I ../easy/lib/kitty/include -I ../easy/lib/lorina -I ../easy/lib/rang
@@ -25,13 +24,15 @@
 
 
 
-#include <easy/esop/constructors.hpp>
-#include <easy/esop/exact_synthesis.hpp>
-#include <kitty/constructors.hpp>
-#include <kitty/print.hpp>
+#include <easy/easy.hpp>
+#include <easy/esop/esop_from_pkrm.hpp>
+// #include <easy/esop/constructors.hpp>
+// #include <easy/esop/exact_synthesis.hpp>
+// #include <kitty/constructors.hpp>
+// #include <kitty/print.hpp>
 
 #include <iostream>
-#include <numeric>
+// #include <numeric>
 
 #include <cstdlib> // for std::atoi
 

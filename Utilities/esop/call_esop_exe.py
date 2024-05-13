@@ -69,7 +69,8 @@ def parse_output( output : str ) ->list[tuple[list[int],list[int]]]:
 
     
 folder = "Utilities/esop/"
-exe_name = "esop.exe"
+# exe_name = "esop.exe"
+exe_name = "esop_static.exe"
 
 exe_path = f"{folder}{exe_name}"
 

@@ -27,7 +27,7 @@ jobs:
         #     ./test/Debug/run_tests.exe
 
                 
-        - name: Build and Test Project
+        - name: Build "easy" Project
           run: |      
             cd ..  
             git clone https://github.com/Nick-Liou/easy.git
