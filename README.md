@@ -9,18 +9,18 @@ Comparative Study and Analysis of Classical-to-Quantum Data Encoding through Emb
 Quantum Encoding is a research project aimed at investigating various classical-to-quantum data encoding techniques through embedding and mapping methodologies. The project explores different approaches to encode classical data into quantum states, with a focus on understanding their effectiveness and applicability in quantum information processing tasks.
 
 ## Techniques implemented
-- Qubit Lattice
+<!-- - Qubit Lattice -->
 - Basis Encoding - (NEQR) Novel Enhanced Quantum Representation 
 - Amplitude Encoding - (QPIE) Quantum Probability Image Encoding  
 - Angle Encoding - (FRQI) Flexible Representation of Quantum Images 
 
-## Techniques to be implemented
+<!-- ## Techniques to be implemented
 - Quantum Associative Memory
 - Displacement Encoding
 - IQP Encoding
 - QAOA Encoding
 - Squeezing Encoding
-- Hybrid Encodings
+- Hybrid Encodings -->
 
 
 ## Installation

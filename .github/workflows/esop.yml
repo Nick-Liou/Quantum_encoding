@@ -10,9 +10,23 @@ jobs:
     steps:
         - name: Checkout repository
           uses: actions/checkout@v4     
+          
+        # - name: Debug file permissions
+        #   run: |
+        #         ls -l Utilities/esop/esop_static_linux.exe
+        #         file Utilities/esop/esop_static_linux.exe
+
+        - name: Set executable permissions
+          run: chmod +x Utilities/esop/esop_static_linux.exe
+          
+        - name: Print file permissions
+          run: ls -l Utilities/esop/esop_static_linux.exe
+
+        - name: Run executable
+          run: Utilities/esop/esop_static_linux.exe 3 e8
         
-        - name: Install CMake
-          run: sudo apt-get update && sudo apt-get install -y cmake  # Install CMake on the runner
+        # - name: Install CMake
+        #   run: sudo apt-get update && sudo apt-get install -y cmake  # Install CMake on the runner
 
             
         # - name: Build and Test Project
@@ -27,19 +41,19 @@ jobs:
         #     ./test/Debug/run_tests.exe
 
                 
-        - name: Build "easy" Project
-          run: |      
-            cd ..  
-            git clone https://github.com/Nick-Liou/easy.git
-            cd easy
-            mkdir build
-            cd build
-            cmake -DCMAKE_CXX_COMPILER=g++-9 -DEASY_TEST=ON ..
-            make run_tests
-        - name: Run tests
-          run: |
-            cd build
-            ./test/run_tests "~[quality]"
+        # - name: Build "easy" Project
+        #   run: |      
+        #     cd ..  
+        #     git clone https://github.com/Nick-Liou/easy.git
+        #     cd easy
+        #     mkdir build
+        #     cd build
+        #     cmake -DCMAKE_CXX_COMPILER=g++-9 -DEASY_TEST=ON ..
+        #     make run_tests
+        # - name: Run tests
+        #   run: |
+        #     cd build
+        #     ./test/run_tests "~[quality]"
         
     # build-gcc9:
     # runs-on: ubuntu-latest

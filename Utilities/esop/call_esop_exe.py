@@ -89,10 +89,15 @@ if __name__ == "__main__":
 
     # Command-line arguments to pass to the executable
     args = ["5", "e8a4e8a4"]
-    # args = ["3", "ff"]
+    args = ["4", "fffe"]
+    args = ["3", "f9"]
+    args = ["3", "05"]
 
     # Call the function
     output = execute_exe_with_args(exe_path, args)
 
     control_qubits = parse_output(output)
     print("Control qubits: \n" , control_qubits)
+    print("Number of terms: \n" , len(control_qubits) )
+
+    

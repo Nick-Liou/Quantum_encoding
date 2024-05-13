@@ -96,12 +96,12 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
         >>> qc = BasisEncoding(data , use_Espresso=True)
         >>> print(qc)
              ┌───┐
-        q_0: ┤ H ├──o────■──
-             ├───┤  │    │
-        q_1: ┤ H ├──o────┼──
-             └───┘┌─┴─┐┌─┴─┐
-          a: ─────┤ X ├┤ X ├
-                  └───┘└───┘
+        q_0: ┤ H ├──o──
+             ├───┤  │
+        q_1: ┤ H ├──■──
+             ├───┤┌─┴─┐
+          a: ┤ X ├┤ X ├
+             └───┘└───┘
     
     Example 2 (possitive integers):
         >>> data = [1, 5, 3, 7]  # Example input data      
@@ -156,15 +156,15 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
         >>> qc = BasisEncoding(data , use_Espresso=True)
         >>> print(qc)
              ┌───┐
-        q_0: ┤ H ├───────o────■────o───────
-             ├───┤       │    │    │
-        q_1: ┤ H ├──o────■────┼────■────o──
-             └───┘  │    │    │  ┌─┴─┐┌─┴─┐
-        a_0: ───────┼────┼────┼──┤ X ├┤ X ├
-                    │  ┌─┴─┐┌─┴─┐└───┘└───┘
-        a_1: ───────┼──┤ X ├┤ X ├──────────
-                  ┌─┴─┐└───┘└───┘
-        a_2: ─────┤ X ├────────────────────
+        q_0: ┤ H ├───────o────■──
+             ├───┤       │    │
+        q_1: ┤ H ├──o────o────■──
+             ├───┤  │    │  ┌─┴─┐
+        a_0: ┤ X ├──┼────┼──┤ X ├
+             ├───┤  │  ┌─┴─┐└───┘
+        a_1: ┤ X ├──┼──┤ X ├─────
+             └───┘┌─┴─┐└───┘
+        a_2: ─────┤ X ├──────────
                   └───┘
 
         Please note that in this context, the last qubit, denoted as a_2, serves as the two's complement bit,
@@ -208,21 +208,31 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
         # raise Exception("The espresso optimization is not yet implemented correctly")
         
         # Set up the data 
+        not_dict = {"0":"1" , "1":"0"}
         for j in range(bit_depth):            
             truth_table = ""
+            inv_truth_table = ""
             for i in range(len(padded_data)):
                 truth_table += bin_data[i][j]
+                inv_truth_table += not_dict[bin_data[i][j]]
             
             # TODO :Add code to invert truth table
 
             hex_truth_table = bin_str_to_hex_str(truth_table)
-
-
-            output = call_esop_exe.execute_exe_with_args(call_esop_exe.exe_path , [str(number_of_qubits),hex_truth_table])
-
-            minimized_expretion =  call_esop_exe.parse_output(output)
+            inv_hex_truth_table = bin_str_to_hex_str(inv_truth_table)
             
-            for contition in minimized_expretion:
+            output = call_esop_exe.execute_exe_with_args(call_esop_exe.exe_path , [str(number_of_qubits),hex_truth_table])
+            output_inv = call_esop_exe.execute_exe_with_args(call_esop_exe.exe_path , [str(number_of_qubits),inv_hex_truth_table])
+            
+            minimized_expretion =  call_esop_exe.parse_output(output)
+            minimized_expretion_inv =  call_esop_exe.parse_output(output_inv)
+
+            if (len(minimized_expretion_inv) < len(minimized_expretion) ):                
+                optimal_minimized_expretion = [([],[])] + minimized_expretion_inv  # Insert ([],[]) at index 0 (This adds a NOT gate)
+            else:
+                optimal_minimized_expretion = minimized_expretion
+            
+            for contition in optimal_minimized_expretion:
                 pos_ctrl_qubits_ids = contition[0]
                 neg_ctrl_qubits_ids = contition[1]
                 target_qubit = number_of_qubits + bit_depth - j - 1
@@ -349,8 +359,8 @@ if __name__=="__main__":
 
     data = [1, -1, 3, 5, -1, 4, 6, 7]  # Example input data   
     data = [1, 1, 1, 1, 1, 0, 0, 1]  # Example input data     
-    data = [1, 1, 1, 1]  # Example input data     
-    data = [1, 1, 0, 1]  # Example input data     
+    # data = [1, 1, 1, 1]  # Example input data     
+    data = [1, 1, 0, 1]  # Example input data    
     qc = BasisEncoding(data , use_Espresso=False)
     print(qc)
     qc = BasisEncoding(data , use_Espresso=True)
