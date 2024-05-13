@@ -66,11 +66,20 @@ def parse_output( output : str ) ->list[tuple[list[int],list[int]]]:
     return esop 
 
 
+import sys
+
+if sys.platform.startswith('linux'):
+    # print("Running on Linux")
+    exe_name = "esop_static_LINUX.exe"
+elif sys.platform.startswith('win'):
+    # print("Running on Windows")
+    exe_name = "esop_static_WINDOWS.exe"
+else:
+    print("Not running on Linux or Windows, the esop.exe utility must be recompiled for this os.")
 
     
 folder = "Utilities/esop/"
 # exe_name = "esop.exe"
-exe_name = "esop_static.exe"
 
 exe_path = f"{folder}{exe_name}"
 
@@ -85,4 +94,5 @@ if __name__ == "__main__":
     # Call the function
     output = execute_exe_with_args(exe_path, args)
 
-    parse_output(output)
+    control_qubits = parse_output(output)
+    print("Control qubits: \n" , control_qubits)

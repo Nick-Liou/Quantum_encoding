@@ -21,37 +21,32 @@ jobs:
             cache: 'pip' # caching pip dependencies
             
 
-        - name: Debug file permissions
-          run: |
-                ls -l Utilities/esop/esop_static_linux.exe          
-                file Utilities/esop/esop_static_linux.exe
+        # - name: Debug file permissions
+        #   run: |
+        #         ls -l Utilities/esop/esop_static_LINUX.exe
+        #         file Utilities/esop/esop_static_LINUX.exe
 
         - name: Set executable permissions
-          run: chmod +x Utilities/esop/esop_static_WSL.exe
+          run: chmod +x Utilities/esop/esop_static_LINUX.exe
           
-        - name: Print file permissions
-          run: ls -l Utilities/esop/esop_static_WSL.exe
+        # - name: Print file permissions
+        #   run: ls -l Utilities/esop/esop_static_LINUX.exe
 
-        # - name: Install Wine
-        #   run: sudo apt-get install -y wine64
-      
-        # - name: Run executable with Wine
-        #   run: wine64 Utilities/esop/esop_static.exe  3 e8
 
 
         - name: Run executable
-          run: Utilities/esop/esop_static_WSL.exe 3 e8
+          run: Utilities/esop/esop_static_LINUX.exe 3 e8
 
         
-        # - name: Install dependencies
-        #   run: |
-        #         pip install pytest
-        #         pip install -r requirements.txt
+        - name: Install dependencies
+          run: |
+                pip install pytest
+                pip install -r requirements.txt
 
         
-        # - name: Run pytest
-        #   run: |
-        #         pytest 
+        - name: Run pytest
+          run: |
+                pytest 
 
         
         # -   name: Find modified Python files
