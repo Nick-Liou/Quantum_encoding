@@ -227,6 +227,8 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
             minimized_expretion =  call_esop_exe.parse_output(output)
             minimized_expretion_inv =  call_esop_exe.parse_output(output_inv)
 
+            optimal_minimized_expretion :  list[tuple[list[int], list[int]]]
+
             if (len(minimized_expretion_inv) < len(minimized_expretion) ):                
                 optimal_minimized_expretion = [([],[])] + minimized_expretion_inv  # Insert ([],[]) at index 0 (This adds a NOT gate)
             else:
