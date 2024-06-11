@@ -12,9 +12,10 @@ Quantum Encoding is a research project aimed at investigating various classical-
 <!-- - Qubit Lattice -->
 - Basis Encoding - (NEQR) Novel Enhanced Quantum Representation 
 - Amplitude Encoding - (QPIE) Quantum Probability Image Encoding  
-- Angle Encoding - (FRQI) Flexible Representation of Quantum Images 
+- Angle Encoding
 
 <!-- ## Techniques to be implemented
+- (FRQI) Flexible Representation of Quantum Images 
 - Quantum Associative Memory
 - Displacement Encoding
 - IQP Encoding
