@@ -14,7 +14,7 @@ from qiskit_aer.backends.statevector_simulator import StatevectorSimulator
 
 # Custom libraries
 from Amplitude_Encoding_QPIE.qs_AmplitudeEncoding   import AmplitudeEncoding
-from Angle_encoding_FRQI.qs_AngleEncoding           import AngleEncoding
+from Angle_encoding.qs_AngleEncoding                import AngleEncoding
 from Basis_Encoding_NEQR.qs_BasisEncoding           import BasisEncoding
 
 from Utilities.decorators import get_time
@@ -61,6 +61,7 @@ if __name__ == "__main__" :
     encodings : dict[Callable[[Union[list, np.ndarray]], QuantumCircuit], dict] =  {
         AmplitudeEncoding:  {},
         AngleEncoding:      {'min_val': 0, 'max_val': 255},
+        # AngleEncoding:      {},
         BasisEncoding:      {'use_Espresso': True},
         # More examples 
         # function_1: {'args': (1, 2)},
@@ -69,17 +70,20 @@ if __name__ == "__main__" :
     }
     
 
-    show_plot = False
-    data_length = 4
-    # data_to_encode = np.random.rand(data_length) * 2  -1    
-    data_to_encode = np.random.randint(low=0, high=255, size=data_length)
+    show_plot = True
+    data_length = 3
+    data_to_encode = [2.96, -6.70 ] # Example 1 For Angle Encoding
+    data_to_encode = [0, 172, 38, 246] # Example 2 For Angle Encoding
+
+    # data_to_encode = np.random.rand(data_length) * 20  - 10    
+    # data_to_encode = np.random.randint(low=0, high=255, size=data_length)
 
     
-    data_to_encode = np.array( [1, -1, 3, 5, -1, 4, 6, 7] ) 
+    # data_to_encode = np.array( [1, -1, 3, 5, -1, 4, 6, 7] ) 
 
 
 
-    encoding_used : Callable = BasisEncoding
+    encoding_used : Callable = AngleEncoding
     kwargs : dict[str, Any] = encodings.get(encoding_used, {})
     args : tuple = kwargs.pop('args', ())  # Extracting 'args' if present, otherwise empty tuple
     

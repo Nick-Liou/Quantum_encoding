@@ -216,7 +216,6 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
                 truth_table += bin_data[i][j]
                 inv_truth_table += not_dict[bin_data[i][j]]
             
-            # TODO :Add code to invert truth table
 
             hex_truth_table = bin_str_to_hex_str(truth_table)
             inv_hex_truth_table = bin_str_to_hex_str(inv_truth_table)

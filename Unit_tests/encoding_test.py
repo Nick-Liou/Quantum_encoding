@@ -25,7 +25,7 @@ from General_encoding import encode_data
 from Utilities.utils import pad_with_zeros
 
 from Amplitude_Encoding_QPIE.qs_AmplitudeEncoding   import AmplitudeEncoding
-from Angle_encoding_FRQI.qs_AngleEncoding           import AngleEncoding
+from Angle_encoding.qs_AngleEncoding                import AngleEncoding
 from Basis_Encoding_NEQR.qs_BasisEncoding           import BasisEncoding
 from Basis_Encoding_NEQR.qs_BasisEncoding           import convert_to_bin
 
