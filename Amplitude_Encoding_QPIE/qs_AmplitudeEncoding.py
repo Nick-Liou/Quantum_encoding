@@ -77,9 +77,12 @@ def AmplitudeEncoding(data : Union[list, np.ndarray]  ) -> QuantumCircuit:
     # Normalize data 
     desired_real_statevector = padded_data / np.sqrt(sum(np.abs(padded_data)**2))  
 
+    print("desired_real_statevector", desired_real_statevector)
+
     # Find the angles "alpha"
     alpha = solve_spherical_angles(desired_real_statevector)
 
+    print("alpha ", alpha)
 
     # Create a quantum circuit with multipule qubits
     qc = QuantumCircuit(number_of_qubits)
