@@ -60,8 +60,8 @@ if __name__ == "__main__" :
 
     encodings : dict[Callable[[Union[list, np.ndarray]], QuantumCircuit], dict] =  {
         AmplitudeEncoding:  {},
-        AngleEncoding:      {'min_val': 0, 'max_val': 255},
-        # AngleEncoding:      {},
+        # AngleEncoding:      {'min_val': 0, 'max_val': 255},
+        AngleEncoding:      {'min_val': -10, 'max_val': 10},
         BasisEncoding:      {'use_Espresso': True},
         # More examples 
         # function_1: {'args': (1, 2)},
@@ -73,11 +73,11 @@ if __name__ == "__main__" :
     show_plot = True
     data_length = 3
     data_to_encode = [2.96, -6.70 ]     # Example 1 For Angle Encoding
-    data_to_encode = [0, 172, 38, 246]  # Example 2 For Angle Encoding
+    # data_to_encode = [0, 172, 38, 246]  # Example 2 For Angle Encoding
 
     
-    data_to_encode = [2.96, -6.70 ]     # Example 1 For Amplitude Encoding
-    data_to_encode = [0, 172, 38, 246]  # Example 2 For Amplitude Encoding
+    # data_to_encode = [2.96, -6.70 ]     # Example 1 For Amplitude Encoding
+    # data_to_encode = [0, 172, 38, 246]  # Example 2 For Amplitude Encoding
 
     # data_to_encode = np.random.rand(data_length) * 20  - 10    
     # data_to_encode = np.random.randint(low=0, high=255, size=data_length)
@@ -87,7 +87,7 @@ if __name__ == "__main__" :
 
 
 
-    encoding_used : Callable = AmplitudeEncoding
+    encoding_used : Callable = AngleEncoding
     kwargs : dict[str, Any] = encodings.get(encoding_used, {})
     args : tuple = kwargs.pop('args', ())  # Extracting 'args' if present, otherwise empty tuple
     

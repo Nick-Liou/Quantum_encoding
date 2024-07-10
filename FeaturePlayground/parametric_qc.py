@@ -13,12 +13,29 @@ from qiskit.visualization import circuit_drawer
 import matplotlib.pyplot as plt
 
 
+# Amplitude enc
 
-number_of_qubits = 3
-alpha = ParameterVector("a", 2**number_of_qubits-1 )
-qc = QuantumCircuit(number_of_qubits)
+def amp_param (number_of_qubits : int = 3) -> QuantumCircuit :  
+    alpha = ParameterVector("a", 2**number_of_qubits-1 )
+    qc = QuantumCircuit(number_of_qubits)
+    qc = custom_amplitude_encoding(qc, alpha, number_of_qubits )
+    return qc
 
-qc = custom_amplitude_encoding(qc, alpha, number_of_qubits )
+
+
+# Angle enc
+def angle_param (number_of_qubits : int = 3) -> QuantumCircuit: 
+
+    theta = ParameterVector("θ", number_of_qubits)
+    qc = QuantumCircuit(number_of_qubits)
+    for i in range(number_of_qubits):
+            qc.ry(2 * theta[i] , i)
+
+    return qc
+
+
+
+qc = angle_param(3)
 print(qc)
 
 fig = circuit_drawer(qc, output='mpl', style="iqp" ,fold=-1)
