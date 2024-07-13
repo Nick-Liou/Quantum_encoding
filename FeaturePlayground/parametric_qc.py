@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 
 def amp_param (number_of_qubits : int = 3) -> QuantumCircuit :  
     alpha = ParameterVector("a", 2**number_of_qubits-1 )
+    print("alpha: ",alpha)
     qc = QuantumCircuit(number_of_qubits)
     qc = custom_amplitude_encoding(qc, alpha, number_of_qubits )
     return qc
@@ -35,8 +36,8 @@ def angle_param (number_of_qubits : int = 3) -> QuantumCircuit:
 
 
 
-qc = angle_param(3)
+qc = amp_param(number_of_qubits=4)
 print(qc)
 
-fig = circuit_drawer(qc, output='mpl', style="iqp" ,fold=-1)
-figure = plt.show()
+# fig = circuit_drawer(qc, output='mpl', style="iqp" ,fold=None)
+# figure = plt.show()

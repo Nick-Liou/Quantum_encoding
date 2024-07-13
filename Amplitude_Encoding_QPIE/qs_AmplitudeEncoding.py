@@ -161,6 +161,7 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, np.ndar
         QCircuit.append(multi_ctr_RYGate, list(range(0, n-1)) + control_qubits + [n-1] )
 
 
+
         # Step d 
         # Apply (n-1) CNOT gates, one by one, on each of the first (n-1) qubits.
         # Each of these CNOT gates has control on the last qubit.
