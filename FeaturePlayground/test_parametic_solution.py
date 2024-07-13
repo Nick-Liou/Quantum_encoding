@@ -5,7 +5,7 @@ from qiskit.circuit.library import RYGate
 def custom_amplitude_encoding(qc : QuantumCircuit, alpha:ParameterVector, number_of_qubits:int) -> QuantumCircuit:
     n = number_of_qubits
     
-    for i in range(2**(n-1)):
+    for i in range(1):
         param = alpha[i]
         print(f"Attempting to create controlled RYGate with param: {param} for qubits: {n}")
         
@@ -19,7 +19,7 @@ def custom_amplitude_encoding(qc : QuantumCircuit, alpha:ParameterVector, number
     return qc
 
 def amp_param(number_of_qubits:int) -> QuantumCircuit:
-    alpha = ParameterVector('a', length=2**(number_of_qubits-1))
+    alpha = ParameterVector('a', length=1)
     qc = QuantumCircuit(number_of_qubits)
     qc = custom_amplitude_encoding(qc, alpha, number_of_qubits)
     return qc
