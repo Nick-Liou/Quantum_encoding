@@ -18,53 +18,7 @@ from typing import Any, Union
 import warnings
 from Utilities.esop import call_esop_exe
 
-# from pyeda.inter import exprvars, truthtable, espresso_tts
-# import pyeda.boolalg.minimization
-
-# # Monkey-patching
-# def my_modified__cover2exprs(inputs:list, noutputs:int, cover:Any) -> list[tuple[list[int],list[int]]]:
-#     """
-#     Convert a cover to a tuple of Expression instances with modifications.
-
-#     This function is a modified version of `pyeda.boolalg.minimization._cover2exprs`.
-#     It only supports the case where `noutputs` is 1.
-
-#     Args:
-#         inputs (tuple): A tuple of input variables.
-#         noutputs (int): Number of output variables (should be 1 for this function).
-#         cover (list): List of cover tuples.
-
-#     Returns:
-#         list: A list of terms where each term is represented as a list containing two lists:
-#             - The first list represents the positive literals (minterms).
-#             - The second list represents the negative literals .
-#     """
-
-#     if noutputs != 1 : 
-#         raise ValueError("noutputs should be 1 for my custom implementation")
-    
-#     for i in range(noutputs):
-#         terms = []
-#         for invec, outvec in cover:
-#             if outvec[i]:
-#                 # Initialize a tuple to store positive and negative literals, 
-#                 # my_term[0] has the positive literal and my_term[1] the negative literal
-#                 my_term : tuple[list[int],list[int]] = ([],[])
-#                 for j, v in enumerate(inputs):
-#                     if invec[j] == 1:
-#                         # Add index of input variable for negative literal
-#                         my_term[1].append(j)    # ~v
-#                     elif invec[j] == 2:         
-#                         # Add index of input variable for positive literal               
-#                         my_term[0].append(j)    # v
-#                 terms.append(my_term)
-
-#     return terms
-
-# # Monkey-patching
-# pyeda.boolalg.minimization._cover2exprs = my_modified__cover2exprs
-
-        
+ 
 
 
 def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) -> QuantumCircuit :
