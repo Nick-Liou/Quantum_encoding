@@ -62,7 +62,7 @@ if __name__ == "__main__" :
         AmplitudeEncoding:  {},
         # AngleEncoding:      {'min_val': 0, 'max_val': 255},
         AngleEncoding:      {'min_val': -10, 'max_val': 10},
-        BasisEncoding:      {'use_Espresso': True},
+        BasisEncoding:      {'use_Espresso': False},
         # More examples 
         # function_1: {'args': (1, 2)},
         # function_2: {'x': 3, 'y': 4, 'z': 5},
@@ -71,23 +71,35 @@ if __name__ == "__main__" :
     
 
     show_plot = True
-    data_length = 3
-    data_to_encode = [2.96, -6.70 ]     # Example 1 For Angle Encoding
-    data_to_encode = [0, 172, 38, 246]  # Example 2 For Angle Encoding
+    data_length = 8
+    data_to_encode : Union[list, np.ndarray]
+    encoding_used : Callable
+    
+    # encoding_used = AngleEncoding
+    # data_to_encode = [2.96, -6.70 ]     # Example 1 For Angle Encoding
+    # data_to_encode = [0, 172, 38, 246]  # Example 2 For Angle Encoding
 
     
-    data_to_encode = [2.96, -6.70 ]     # Example 1 For Amplitude Encoding
-    # data_to_encode = [0, 172, 38, 246]  # Example 2 For Amplitude Encoding
+    # encoding_used = AmplitudeEncoding
+    # data_to_encode = [2.96, -6.70 ]         # Example 1 For Amplitude Encoding
+    # data_to_encode = [0, 172, 38, 246]      # Example 2 For Amplitude Encoding
+    # data_to_encode = [-1.66, -4.05, -7.76,  1.22, -1.33,  6.19,  2.25, -0.85]  # Example 3 For Amplitude Encoding
 
-    # data_to_encode = np.random.rand(data_length) * 20  - 10    
+
+    
+    encoding_used = BasisEncoding
+    # data_to_encode = [2.96, -6.70 ]         # Example 1 For Basis Encoding
+    data_to_encode = [0, 172, 38, 246]      # Example 2 For Basis Encoding
+    data_to_encode = [0, 0, 0, 0, 0, 0, 0, 0]      # Example 2 For Basis Encoding
+
+
+    # Randomized inputs
+    # encoding_used = AmplitudeEncoding
+    # data_to_encode = np.round(np.random.rand(data_length) * 20  - 10    , 2)
     # data_to_encode = np.random.randint(low=0, high=255, size=data_length)
 
     
-    # data_to_encode = np.array( [1, -1, 3, 5, -1, 4, 6, 7] ) 
 
-
-
-    encoding_used : Callable = AmplitudeEncoding
     kwargs : dict[str, Any] = encodings.get(encoding_used, {})
     args : tuple = kwargs.pop('args', ())  # Extracting 'args' if present, otherwise empty tuple
     

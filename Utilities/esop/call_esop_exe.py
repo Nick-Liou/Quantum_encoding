@@ -1,4 +1,5 @@
 import subprocess
+import sys
 
 def execute_exe_with_args(exe_path:str, args:list[str]) -> str:
     # Formulate the command as a list where the first item is the executable path
@@ -66,7 +67,6 @@ def parse_output( output : str ) ->list[tuple[list[int],list[int]]]:
     return esop 
 
 
-import sys
 
 if sys.platform.startswith('linux'):
     # print("Running on Linux")
@@ -81,13 +81,18 @@ else:
 folder = "Utilities/esop/"
 # exe_name = "esop.exe"
 
+# Path to executable
 exe_path = f"{folder}{exe_name}"
 
 # Example usage
 if __name__ == "__main__":
-    # Path to executable
 
     # Command-line arguments to pass to the executable
+    import secrets
+
+    n_qubits = 4
+    rand_hex =''.join(secrets.choice('0123456789abcdef') for _ in range(2**(n_qubits-2)))
+    args = [str(n_qubits), rand_hex]
     args = ["5", "e8a4e8a4"]
     args = ["4", "fffe"]
     args = ["3", "f9"]
@@ -99,5 +104,8 @@ if __name__ == "__main__":
     control_qubits = parse_output(output)
     print("Control qubits: \n" , control_qubits)
     print("Number of terms: \n" , len(control_qubits) )
+    print(f"Variables: {n_qubits}  hex_length: {2**(n_qubits-2)}")
+
+
 
     

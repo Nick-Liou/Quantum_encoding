@@ -35,9 +35,19 @@ def angle_param (number_of_qubits : int = 3) -> QuantumCircuit:
     return qc
 
 
+# Basis enc
+def basis_param (number_of_qubits : int = 3) -> QuantumCircuit: 
 
-qc = amp_param(number_of_qubits=4)
+    theta = ParameterVector("θ", number_of_qubits)
+    qc = QuantumCircuit(number_of_qubits)
+    for i in range(number_of_qubits):
+            qc.ry(2 * theta[i] , i)
+
+    return qc
+
+
+qc = amp_param(number_of_qubits=3)
 print(qc)
 
-# fig = circuit_drawer(qc, output='mpl', style="iqp" ,fold=None)
-# figure = plt.show()
+fig = circuit_drawer(qc, output='mpl', style="iqp" ,fold=1)
+figure = plt.show()

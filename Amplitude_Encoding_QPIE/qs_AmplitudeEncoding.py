@@ -82,7 +82,7 @@ def AmplitudeEncoding(data : Union[list, np.ndarray]  ) -> QuantumCircuit:
     # Find the angles "alpha"
     alpha = solve_spherical_angles(desired_real_statevector)
 
-    print("alpha ", alpha)
+    print("Final alpha ", alpha)
 
     # Create a quantum circuit with multipule qubits
     qc = QuantumCircuit(number_of_qubits)
@@ -218,9 +218,11 @@ def solve_spherical_angles(c: np.ndarray) -> np.ndarray:
             alpha[i] = 2 * np.arccos(min(abs(c[i]) / sin_prod , 1))
             sin_prod *= np.sin(alpha[i] / 2)
 
+    print("alpha before adjustmed", alpha)
     # Adjust the solution for the signs of c
     for i in range(n):
         if c[i] < 0 :
+            # Replace with the explementary angle
             alpha[i] = 2*pi - alpha[i]
 
     if c[-1] < 0 :

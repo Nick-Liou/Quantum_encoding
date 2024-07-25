@@ -26,6 +26,12 @@ def amp_param(number_of_qubits:int) -> QuantumCircuit:
 
 # https://github.com/Qiskit/qiskit/issues/9187
 # Example usage
-number_of_qubits = 4
+number_of_qubits = 2
 qc = amp_param(number_of_qubits)
 print(qc)
+
+
+# from qiskit.visualization import circuit_drawer 
+# import matplotlib.pyplot as plt
+# fig = circuit_drawer(qc, output='mpl', style="iqp")
+# figure = plt.show()

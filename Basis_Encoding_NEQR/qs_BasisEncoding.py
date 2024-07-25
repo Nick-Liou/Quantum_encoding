@@ -15,7 +15,7 @@ from Utilities.utils import pad_with_zeros
 # Typing stuff
 from typing import Any, Union
 
-
+import warnings
 from Utilities.esop import call_esop_exe
 
 # from pyeda.inter import exprvars, truthtable, espresso_tts
@@ -73,7 +73,8 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
 
     Args:
         data (list): The list of integers to be encoded.
-        use_Espresso (bool, optional): Flag to indicate whether to use Espresso for optimization. Defaults to True.
+        use_Espresso (bool, optional): Flag to indicate whether to use Espresso for optimization. Defaults to True. 
+                                        Can only be used for data length up to 2^16 
 
     Returns:
         QuantumCircuit: The quantum circuit representing the Basis Encoding of the data.
@@ -177,15 +178,19 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
     padded_data = pad_with_zeros(np.array(data))
     
     number_of_qubits = int ( np.ceil(np.log2(len(padded_data))) )
+
+    if (number_of_qubits > 16 and use_Espresso ):
+        use_Espresso = False        
+        warnings.warn("Espresso optimization can not be used (in this version) for when the length of the input data is greater than 2^16", UserWarning)
     
     # For now only works for integeres
     bin_data , bit_depth = convert_to_bin(padded_data)
 
     
     # Indices of data
-    qr1 = QuantumRegister(number_of_qubits, "q") 
+    qr1 = QuantumRegister(number_of_qubits, "a") 
     # Data
-    qr2 = QuantumRegister(bit_depth, "a")    
+    qr2 = QuantumRegister(bit_depth, "d")    
 
     # Create a quantum circuit with multipule qubits
     qc = QuantumCircuit(qr1 ,qr2 )
@@ -202,10 +207,6 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
                     qubits_ids = list(range(number_of_qubits)) + [number_of_qubits + bit_depth - j - 1]
                     qc.append(MCXGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
     else:        
-        
-        # import warnings
-        # warnings.warn("The espresso optimization might not yet be implemented correctly", category=RuntimeWarning)
-        # raise Exception("The espresso optimization is not yet implemented correctly")
         
         # Set up the data 
         not_dict = {"0":"1" , "1":"0"}
@@ -228,8 +229,9 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
 
             optimal_minimized_expretion :  list[tuple[list[int], list[int]]]
 
-            if (len(minimized_expretion_inv) < len(minimized_expretion) ):                
-                optimal_minimized_expretion = [([],[])] + minimized_expretion_inv  # Insert ([],[]) at index 0 (This adds a NOT gate)
+            if (len(minimized_expretion_inv) < len(minimized_expretion) ):           
+                start_pad : list[tuple[list[int], list[int]]] = [([],[])]
+                optimal_minimized_expretion = start_pad + minimized_expretion_inv  # Insert ([],[]) at index 0 (This adds a NOT gate)
             else:
                 optimal_minimized_expretion = minimized_expretion
             
@@ -291,7 +293,8 @@ def all_integers(arr: Union[list, np.ndarray]) -> bool :
     return True
 
 
-def int_to_binary(arr: Union[list, np.ndarray]) -> tuple[list[str],int]:
+
+def int_to_binary(arr: Union[list[int], np.ndarray[np.int_,Any]]) -> tuple[list[str],int]:
     """
     Converts a list of integers to their binary representations with a given bit width.
 
@@ -302,7 +305,7 @@ def int_to_binary(arr: Union[list, np.ndarray]) -> tuple[list[str],int]:
         tuple: A tuple containing the binary representations of the integers in `arr` and the maximum length of binary strings.
     """
     binary_array = []  # Initialize an empty list to store binary representations
-    max_abs_value = max(map(abs, arr))  # Find the maximum absolute value in the array
+    max_abs_value : int = max(map(abs, arr))  # Find the maximum absolute value in the array
     max_length = len(np.binary_repr(int(max_abs_value)))  # Calculate the maximum number of bits needed for any integer
     
     # Add one bit for the "sign" bit if there are negative numbers in the array
