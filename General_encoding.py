@@ -16,6 +16,7 @@ from qiskit_aer.backends.statevector_simulator import StatevectorSimulator
 from Amplitude_Encoding_QPIE.qs_AmplitudeEncoding   import AmplitudeEncoding
 from Angle_encoding.qs_AngleEncoding                import AngleEncoding
 from Basis_Encoding_NEQR.qs_BasisEncoding           import BasisEncoding
+from FRQI_Encoding.qs_FRQI                          import FRQIEncoding
 
 from Utilities.decorators import get_time
 
@@ -60,18 +61,18 @@ if __name__ == "__main__" :
 
     encodings : dict[Callable[[Union[list, np.ndarray]], QuantumCircuit], dict] =  {
         AmplitudeEncoding:  {},
+        AngleEncoding:      {},
         # AngleEncoding:      {'min_val': 0, 'max_val': 255},
-        AngleEncoding:      {'min_val': -10, 'max_val': 10},
-        BasisEncoding:      {'use_Espresso': False},
-        # More examples 
-        # function_1: {'args': (1, 2)},
-        # function_2: {'x': 3, 'y': 4, 'z': 5},
-        # function_3: {'message': "Hello, World!"}
+        # AngleEncoding:      {'min_val': -10, 'max_val': 10},
+        BasisEncoding:      {'use_Espresso': True},
+        FRQIEncoding:       {},
+        # FRQIEncoding:       {'min_val': -10, 'max_val': 10},
+        # FRQIEncoding:       {'min_val': 0, 'max_val': 255},
+        
     }
     
 
     show_plot = True
-    data_length = 8
     data_to_encode : Union[list, np.ndarray]
     encoding_used : Callable
     
@@ -88,13 +89,27 @@ if __name__ == "__main__" :
 
     
     encoding_used = BasisEncoding
-    # data_to_encode = [2.96, -6.70 ]         # Example 1 For Basis Encoding
-    data_to_encode = [0, 172, 38, 246]      # Example 2 For Basis Encoding
-    data_to_encode = [0, 0, 0, 0, 0, 0, 0, 0]      # Example 2 For Basis Encoding
+    # data_to_encode = [0, 0, 0, 0, 0, 0, 0, 0]      # Only Hadamard gates For Basis Encoding
+    data_to_encode = [15, 7 ]               # Example 1 For Basis Encoding
+    data_to_encode = [-7, 2,5,4 ]           # Example 2 For Basis Encoding
+    data_to_encode = [0, 172, 38, 246]      # Example 3 For Basis Encoding
+    data_to_encode = [2, 3, 8, 5, 11, 13, 14, 5, 1, 8, 4, 14, 3, 6, 2, 7] # Example 4 For Basis Encoding
 
+
+    
+    encoding_used = FRQIEncoding
+    data_to_encode = [2.96, -6.70 ]         # Example 1 For FRQI Encoding
+    data_to_encode = [0, 172, 38, 246]      # Example 2 For FRQI Encoding
+    data_to_encode = [[0, 172, 38, 246],[136, 23, 47, 89]]      # Example 3 For FRQI Encoding
+
+
+
+    # data_length = 16
+    # data_to_encode = np.random.randint(low=0, high=15, size=data_length)
 
     # Randomized inputs
     # encoding_used = AmplitudeEncoding
+    # data_length = 8
     # data_to_encode = np.round(np.random.rand(data_length) * 20  - 10    , 2)
     # data_to_encode = np.random.randint(low=0, high=255, size=data_length)
 

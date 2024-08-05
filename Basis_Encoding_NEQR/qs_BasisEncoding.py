@@ -139,7 +139,6 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
     
     # For now only works for integeres
     bin_data , bit_depth = convert_to_bin(padded_data)
-
     
     # Indices of data
     qr1 = QuantumRegister(number_of_qubits, "a") 
@@ -150,16 +149,20 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
     qc = QuantumCircuit(qr1 ,qr2 )
 
 
-    # Create a superposition for all the indices 
+    # Create a superposition for all the addresses
     qc.h(range(number_of_qubits))
     
     if not use_Espresso:
         # Set up the data 
         for i in range(len(padded_data)):
+            # qc.barrier()
             for j in range(bit_depth):            
                 if bin_data[i][j] == '1' :
                     qubits_ids = list(range(number_of_qubits)) + [number_of_qubits + bit_depth - j - 1]
                     qc.append(MCXGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
+        
+        # qc.barrier()
+        
     else:        
         
         # Set up the data 
@@ -259,7 +262,7 @@ def int_to_binary(arr: Union[list[int], np.ndarray[np.int_,Any]]) -> tuple[list[
         tuple: A tuple containing the binary representations of the integers in `arr` and the maximum length of binary strings.
     """
     binary_array = []  # Initialize an empty list to store binary representations
-    max_abs_value : int = max(map(abs, arr))  # Find the maximum absolute value in the array
+    max_abs_value : int = max(map(abs, arr)) # type: ignore # Find the maximum absolute value in the array 
     max_length = len(np.binary_repr(int(max_abs_value)))  # Calculate the maximum number of bits needed for any integer
     
     # Add one bit for the "sign" bit if there are negative numbers in the array
