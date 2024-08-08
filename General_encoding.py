@@ -65,9 +65,9 @@ if __name__ == "__main__" :
         # AngleEncoding:      {'min_val': 0, 'max_val': 255},
         # AngleEncoding:      {'min_val': -10, 'max_val': 10},
         BasisEncoding:      {'use_Espresso': True},
-        FRQIEncoding:       {},
+        # FRQIEncoding:       {},
         # FRQIEncoding:       {'min_val': -10, 'max_val': 10},
-        # FRQIEncoding:       {'min_val': 0, 'max_val': 255},
+        FRQIEncoding:       {'min_val': 0, 'max_val': 255},
         
     }
     
@@ -97,12 +97,14 @@ if __name__ == "__main__" :
 
 
     
-    encoding_used = FRQIEncoding
-    data_to_encode = [2.96, -6.70 ]         # Example 1 For FRQI Encoding
+    encoding_used = FRQIEncoding    
+    # data_to_encode = [2.96, -6.70 ]         # Example 1 For FRQI Encoding
     data_to_encode = [0, 172, 38, 246]      # Example 2 For FRQI Encoding
-    data_to_encode = [[0, 172, 38, 246],[136, 23, 47, 89]]      # Example 3 For FRQI Encoding
 
+    # data_to_encode = [[159, 53, 139, 89], [120, 247, 40, 220], [173, 60, 89, 32], [181, 59, 13, 94]] # Example 3 For FRQI Encoding
+    # data_to_encode = [159, 53, 139, 89, 120, 247, 40, 220, 173, 60, 89, 32, 181, 59, 13, 94]     # Example 4 For FRQI Encoding
 
+    # data_to_encode = [[0, 172, 38, 246],[136, 23, 47, 89]]      
 
     # data_length = 16
     # data_to_encode = np.random.randint(low=0, high=15, size=data_length)
@@ -112,6 +114,7 @@ if __name__ == "__main__" :
     # data_length = 8
     # data_to_encode = np.round(np.random.rand(data_length) * 20  - 10    , 2)
     # data_to_encode = np.random.randint(low=0, high=255, size=data_length)
+    
 
     
 

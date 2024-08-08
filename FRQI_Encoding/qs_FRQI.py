@@ -49,7 +49,8 @@ def FRQIEncoding(data : Union[list, np.ndarray] , min_val : Optional[float] = No
     else:
         # Normalize to the range [0, pi/2]
         theta  = (padded_data - min_val) * (np.pi / 2) / (max_val - min_val)
-
+        
+    print("theta:" , theta)
     
     number_of_qubits = int ( np.ceil(np.log2(len(padded_data))) )
 
@@ -75,10 +76,9 @@ def FRQIEncoding(data : Union[list, np.ndarray] , min_val : Optional[float] = No
         for j in range(data_dimensionality):      
                   
             qubits_ids = list(range(number_of_qubits)) + [number_of_qubits + data_dimensionality - j - 1]
-            # qc.append(MCXGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
-            # qc.append(RYGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
 
-            qc.append(RYGate(theta[i][j]).control(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
+            qc.append(RYGate(2*theta[i][j]).control(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
+            # qc.append(RYGate(theta[i]).control(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
     
     qc.barrier()
 
