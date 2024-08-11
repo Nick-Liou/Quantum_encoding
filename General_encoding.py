@@ -101,7 +101,7 @@ if __name__ == "__main__" :
     # data_to_encode = [2.96, -6.70 ]         # Example 1 For FRQI Encoding
     data_to_encode = [0, 172, 38, 246]      # Example 2 For FRQI Encoding
 
-    # data_to_encode = [[159, 53, 139, 89], [120, 247, 40, 220], [173, 60, 89, 32], [181, 59, 13, 94]] # Example 3 For FRQI Encoding
+    data_to_encode = [[159, 53, 139, 89], [120, 247, 40, 220], [173, 60, 89, 32], [181, 59, 13, 94]] # Example 3 For FRQI Encoding
     # data_to_encode = [159, 53, 139, 89, 120, 247, 40, 220, 173, 60, 89, 32, 181, 59, 13, 94]     # Example 4 For FRQI Encoding
 
     # data_to_encode = [[0, 172, 38, 246],[136, 23, 47, 89]]      
@@ -132,7 +132,8 @@ if __name__ == "__main__" :
     # Print the circuit in the console
     print(qc)
 
-    print("\n\nFinal state vector: ", state_vector)    
+    print("\n\nFinal state vector: ", state_vector)  
+    print("\n\nFinal real state vector: ", state_vector.real)    
     print("Indices of non-zero elements in the statevector:", np.nonzero(state_vector))
 
     print("\nData to encode:" , data_to_encode)
