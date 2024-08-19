@@ -1,7 +1,7 @@
 import numpy as np
 from math import pi
 
-from qs_AmplitudeEncoding import solve_spherical_angles
+from Encodings.qs_AmplitudeEncoding import solve_spherical_angles
 
 def solve_spherical_angles_slow(c: np.ndarray) -> np.ndarray:
     # # Ensure c contains positive values
