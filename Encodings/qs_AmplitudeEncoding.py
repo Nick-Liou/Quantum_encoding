@@ -200,6 +200,9 @@ def solve_spherical_angles(c: np.ndarray) -> np.ndarray:
     Returns:
         array-like: Spherical angles corresponding to the coefficients with length: len(c)-1.
     """
+    
+    if (len(c) == 1 ):
+        return  np.array( [2 * np.arccos(c[0])] ) 
      
     n = len(c) - 1
     alpha = np.zeros(n) # Initialize array for spherical angles
@@ -207,6 +210,7 @@ def solve_spherical_angles(c: np.ndarray) -> np.ndarray:
 
     alpha[0] = 2 * np.arccos(abs(c[0]))     # Calculate alpha for the first coefficient
     sin_prod = np.sin(alpha[0] / 2)         # Initialize sin product
+    
 
     # Solve the system for possitive c 
     for i in range(1, n):
