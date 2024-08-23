@@ -78,48 +78,55 @@ def FRQI_param (number_of_qubits : int = 3 , dim : int = 1 ) -> QuantumCircuit:
 # Theoretical examples
 def theoretical_intro (number_of_qubits : int = 1) -> QuantumCircuit: 
 
+    # NOT and H gates
     qc = QuantumCircuit(1)
     # qc.h(0)
     qc.x(0)
+
+    qc = QuantumCircuit(1)
+    theta = Parameter("φ")
+    qc.ry(theta, 0)
     
-    
-    qc = QuantumCircuit(2)
-    
-    qc.h(0)
-    qc.cx(0,1)
+    # Bell State and Example
+    # qc = QuantumCircuit(2)    
+    # qc.h(0)
+    # qc.cx(0,1)
     # qc.x(0)
 
     return qc
 
-qc = theoretical_intro(number_of_qubits=3)
-print(qc)
-
-fig = circuit_drawer(qc, output='mpl', style="iqp" ,fold=None)
-figure = plt.show()
 
 
+if __name__ == "__main__" : 
+    qc = theoretical_intro(number_of_qubits=3)
+    print(qc)
 
-from qiskit import transpile  
-from qiskit.visualization import circuit_drawer 
-from qiskit_aer import Aer 
-import numpy as np
-
-from qiskit.result.result import Result
-from qiskit_aer.jobs.aerjob import AerJob
-from qiskit_aer.backends.statevector_simulator import StatevectorSimulator
-
-# Transpile the circuit for the backend
-transpiled_circuit = transpile(qc, Aer.get_backend('qasm_simulator'))
-
-# Simulate the transpiled circuit
-backend : StatevectorSimulator = Aer.get_backend('statevector_simulator')
-#  AerSimulator(method="statevector")
-job : AerJob = backend.run(transpiled_circuit)
-result : Result = job.result()    
-
-state_vector = result.get_statevector().data
+    fig = circuit_drawer(qc, output='mpl', style="iqp" ,fold=None)
+    figure = plt.show()
 
 
-print("\n\nFinal state vector: ", state_vector)  
-print("\n\nFinal real state vector: ", state_vector.real)    
-print("Indices of non-zero elements in the statevector:", np.nonzero(state_vector))
+
+    from qiskit import transpile  
+    from qiskit.visualization import circuit_drawer 
+    from qiskit_aer import Aer 
+    import numpy as np
+
+    from qiskit.result.result import Result
+    from qiskit_aer.jobs.aerjob import AerJob
+    from qiskit_aer.backends.statevector_simulator import StatevectorSimulator
+
+    # Transpile the circuit for the backend
+    transpiled_circuit = transpile(qc, Aer.get_backend('qasm_simulator'))
+
+    # Simulate the transpiled circuit
+    backend : StatevectorSimulator = Aer.get_backend('statevector_simulator')
+    #  AerSimulator(method="statevector")
+    job : AerJob = backend.run(transpiled_circuit)
+    result : Result = job.result()    
+
+    state_vector = result.get_statevector().data
+
+
+    print("\n\nFinal state vector: ", state_vector)  
+    print("\n\nFinal real state vector: ", state_vector.real)    
+    print("Indices of non-zero elements in the statevector:", np.nonzero(state_vector))
