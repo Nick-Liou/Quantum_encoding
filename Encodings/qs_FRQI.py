@@ -87,7 +87,7 @@ def FRQIEncoding(data : Union[list, np.ndarray] , min_val : Optional[float] = No
         >>> max_val = 255   # Maximum value
         >>> qc = FRQIEncoding(data, min_val, max_val)
         >>> print(qc)
-        
+
                  ┌───┐
             a_0: ┤ H ├──────o──────────────o─────────────o─────────────o─────────────■─────────────■────────────■─────────────■─────────────o─────────────o─────────────o──────────────o─────────────■──────────────■──────────────■─────────────■───────
                  ├───┤      │              │             │             │             │             │            │             │             │             │             │              │             │              │              │             │       
@@ -171,7 +171,7 @@ def FRQIEncoding(data : Union[list, np.ndarray] , min_val : Optional[float] = No
 if __name__=="__main__": 
 
 
-    show_plot = False
+    show_plot = True
     
     # data_length = 16
     # data = np.random.randint(low=0, high=3, size=data_length)
@@ -183,13 +183,6 @@ if __name__=="__main__":
 
     qc = FRQIEncoding(data)
 
-    # print(qc)
-
-
-    data = [[159, 53, 139, 89], [120, 247, 40, 220], [173, 60, 89, 32], [181, 59, 13, 94]]   # Example input data
-    min_val = 0     # Minimum value
-    max_val = 255   # Maximum value
-    qc = FRQIEncoding(data, min_val, max_val)
     print(qc)
 
     if show_plot:

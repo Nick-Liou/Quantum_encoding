@@ -17,7 +17,7 @@ def AngleEncoding(data : Union[list, np.ndarray] , min_val : Optional[float] = N
         QuantumCircuit: The quantum circuit representing the Angle Encoding of the data.
 
         
-    Example:
+    Example 1 (floating numbers):
         >>> data = [0.5, 0.8, 0.3, 0.6]  # Example input data
         >>> min_val = 0.0  # Minimum value
         >>> max_val = 1.0  # Maximum value
@@ -33,6 +33,25 @@ def AngleEncoding(data : Union[list, np.ndarray] , min_val : Optional[float] = N
              └┬──────────┤
         q_3: ─┤ Ry(3π/5) ├
               └──────────┘
+
+              
+    Example 2 (positive integers):
+        >>> data = [0, 172, 38, 246]   # Example input data
+        >>> min_val = 0     # Minimum value
+        >>> max_val = 255   # Maximum value
+        >>> qc = AngleEncoding(data, min_val, max_val)
+        >>> print(qc)
+
+                    ┌───────┐
+            q_0: ───┤ Ry(0) ├───
+                ┌─┴───────┴─┐
+            q_1: ─┤ Ry(2.119) ├─
+                ┌┴───────────┴┐
+            q_2: ┤ Ry(0.46816) ├
+                └┬────────────┤
+            q_3: ─┤ Ry(3.0307) ├
+                └────────────┘
+
     """
 
 
@@ -70,24 +89,14 @@ def AngleEncoding(data : Union[list, np.ndarray] , min_val : Optional[float] = N
 if __name__ == "__main__" : 
     
     show_plot = True
-    
+
     data = [0.5, 0.8, 0.3, 0.6]  # Example input data
     min_val = 0.0  # Minimum value
     max_val = 1.0  # Maximum value
     qc = AngleEncoding(data, min_val, max_val)
 
     print(qc)
-    
-    #       ┌─────────┐ 
-    # q_0: ─┤ Ry(π/2) ├─
-    #       ├─────────┴┐
-    # q_1: ─┤ Ry(4π/5) ├
-    #      ┌┴──────────┤
-    # q_2: ┤ Ry(3π/10) ├
-    #      └┬──────────┤
-    # q_3: ─┤ Ry(3π/5) ├
-    #       └──────────┘
-    
+
     
     if show_plot:
         from qiskit.visualization import circuit_drawer
