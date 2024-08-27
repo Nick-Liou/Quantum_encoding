@@ -3,6 +3,9 @@
 # *.png
 
 
+# Ignore directories created by some editors
+.vscode/
+
 
 
 
