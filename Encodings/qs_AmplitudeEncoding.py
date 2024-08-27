@@ -77,25 +77,21 @@ def AmplitudeEncoding(data : Union[list, np.ndarray]  ) -> QuantumCircuit:
     # Normalize data 
     desired_real_statevector = padded_data / np.sqrt(sum(np.abs(padded_data)**2))  
 
-    print("desired_real_statevector", desired_real_statevector)
-
     # Find the angles "alpha"
     alpha = solve_spherical_angles(desired_real_statevector)
-
-    print("Final alpha ", alpha)
 
     # Create a quantum circuit with multipule qubits
     qc = QuantumCircuit(number_of_qubits)
 
      
     # Create an Amplitude Encoding (QPIE) circuit   
-    qc = custom_amplitude_encoding(qc, alpha, number_of_qubits )
+    qc = circuit_maker_amplitude_encoding(qc, alpha, number_of_qubits )
 
     # Return the final quantum circuit
     return qc 
 
 
-def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, np.ndarray] , n : int ,  control_qubits:list = list() ) -> QuantumCircuit:
+def circuit_maker_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, np.ndarray] , n : int ,  control_qubits:list = list() ) -> QuantumCircuit:
     """
     Encodes amplitudes onto a quantum circuit using a custom amplitude encoding scheme.
 
@@ -149,7 +145,7 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, np.ndar
         # generator circuit, recursively, employing the first (n-1) qubits on the
         # system.
 
-        QCircuit = custom_amplitude_encoding(QCircuit, alpha , n - 1 , control_qubits)
+        QCircuit = circuit_maker_amplitude_encoding(QCircuit, alpha , n - 1 , control_qubits)
 
 
         # Step c
@@ -177,7 +173,7 @@ def custom_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, np.ndar
         # must have additional control from last qubit.
             
         control_qubits.append(n-1)
-        QCircuit = custom_amplitude_encoding(QCircuit, alpha[2**(n-1):] , n - 1 , control_qubits)
+        QCircuit = circuit_maker_amplitude_encoding(QCircuit, alpha[2**(n-1):] , n - 1 , control_qubits)
 
     return QCircuit
 
@@ -222,7 +218,6 @@ def solve_spherical_angles(c: np.ndarray) -> np.ndarray:
             alpha[i] = 2 * np.arccos(min(abs(c[i]) / sin_prod , 1))
             sin_prod *= np.sin(alpha[i] / 2)
 
-    print("alpha before adjustmed", alpha)
     # Adjust the solution for the signs of c
     for i in range(n):
         if c[i] < 0 :

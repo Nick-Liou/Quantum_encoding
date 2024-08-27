@@ -8,7 +8,7 @@ from qiskit import QuantumRegister
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
 sys.path.append(os.path.dirname(SCRIPT_DIR))  # Add the parent directory to the Python path
 
-from Encodings.qs_AmplitudeEncoding   import custom_amplitude_encoding
+from Encodings.qs_AmplitudeEncoding   import circuit_maker_amplitude_encoding
 
 from qiskit.circuit import QuantumCircuit, Parameter, ParameterVector
 from qiskit.visualization import circuit_drawer 
@@ -22,7 +22,7 @@ def amp_param (number_of_qubits : int = 3) -> QuantumCircuit :
     alpha = ParameterVector("a", 2**number_of_qubits-1 )
     print("alpha: ",alpha)
     qc = QuantumCircuit(number_of_qubits)
-    qc = custom_amplitude_encoding(qc, alpha, number_of_qubits )
+    qc = circuit_maker_amplitude_encoding(qc, alpha, number_of_qubits )
     return qc
 
 

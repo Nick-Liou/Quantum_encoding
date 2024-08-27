@@ -69,6 +69,8 @@ def AngleEncoding(data : Union[list, np.ndarray] , min_val : Optional[float] = N
 # Example usage:
 if __name__ == "__main__" : 
     
+    show_plot = True
+    
     data = [0.5, 0.8, 0.3, 0.6]  # Example input data
     min_val = 0.0  # Minimum value
     max_val = 1.0  # Maximum value
@@ -86,3 +88,12 @@ if __name__ == "__main__" :
     # q_3: ─┤ Ry(3π/5) ├
     #       └──────────┘
     
+    
+    if show_plot:
+        from qiskit.visualization import circuit_drawer
+        import matplotlib.pyplot as plt
+        
+        # Plot the circuit
+        fig = circuit_drawer(qc, output='mpl', style="iqp")
+        plt.show()
+        

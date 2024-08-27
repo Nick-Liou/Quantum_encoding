@@ -20,7 +20,7 @@ from Encodings.qs_FRQI                  import FRQIEncoding
 
 from Utilities.decorators import get_time
 
-@get_time
+# @get_time
 def encode_data(data: Union[list, np.ndarray], 
                 encoding_function: Callable[[Union[list, np.ndarray]], QuantumCircuit],
                 *args: tuple, 
@@ -59,22 +59,23 @@ def encode_data(data: Union[list, np.ndarray],
  
 if __name__ == "__main__" : 
 
+    show_plot = True
+    data_to_encode : Union[list, np.ndarray]
+    encoding_used : Callable
+
+
     encodings : dict[Callable[[Union[list, np.ndarray]], QuantumCircuit], dict] =  {
         AmplitudeEncoding:  {},
-        AngleEncoding:      {},
-        # AngleEncoding:      {'min_val': 0, 'max_val': 255},
+        # AngleEncoding:      {},
+        AngleEncoding:      {'min_val': 0, 'max_val': 255},
         # AngleEncoding:      {'min_val': -10, 'max_val': 10},
         BasisEncoding:      {'use_Espresso': True},
         # FRQIEncoding:       {},
         # FRQIEncoding:       {'min_val': -10, 'max_val': 10},
         FRQIEncoding:       {'min_val': 0, 'max_val': 255},
         
-    }
-    
+    }    
 
-    show_plot = True
-    data_to_encode : Union[list, np.ndarray]
-    encoding_used : Callable
     
     # encoding_used = AngleEncoding
     # data_to_encode = [2.96, -6.70 ]     # Example 1 For Angle Encoding
@@ -82,39 +83,30 @@ if __name__ == "__main__" :
 
     
     encoding_used = AmplitudeEncoding
-    # data_to_encode = [2.96, -6.70 ]         # Example 1 For Amplitude Encoding
-    # data_to_encode = [0, 172, 38, 246]      # Example 2 For Amplitude Encoding
-    # data_to_encode = [-1.66, -4.05, -7.76,  1.22, -1.33,  6.19,  2.25, -0.85]  # Example 3 For Amplitude Encoding
+    # data_to_encode = [2.96, -6.70 ]                                               # Example 1 For Amplitude Encoding
+    data_to_encode = [0, 172, 38, 246]                                            # Example 2 For Amplitude Encoding
+    # data_to_encode = [-1.66, -4.05, -7.76,  1.22, -1.33,  6.19,  2.25, -0.85]     # Example 3 For Amplitude Encoding
 
 
     
     # encoding_used = BasisEncoding
-    # data_to_encode = [0, 0, 0, 0, 0, 0, 0, 0]      # Only Hadamard gates For Basis Encoding
-    data_to_encode = [15, 7 ]               # Example 1 For Basis Encoding
-    data_to_encode = [-7, 2,5,4 ]           # Example 2 For Basis Encoding
-    data_to_encode = [0, 172, 38, 246]      # Example 3 For Basis Encoding
-    data_to_encode = [2, 3, 8, 5, 11, 13, 14, 5, 1, 8, 4, 14, 3, 6, 2, 7] # Example 4 For Basis Encoding
+    # data_to_encode = [0, 0, 0, 0, 0, 0, 0, 0]                               # Only Hadamard gates For Basis Encoding
+    # data_to_encode = [15, 7 ]                                               # Example 1 For Basis Encoding
+    # data_to_encode = [-7, 2,5,4 ]                                           # Example 2 For Basis Encoding
+    # data_to_encode = [0, 172, 38, 246]                                      # Example 3 For Basis Encoding
+    # data_to_encode = [2, 3, 8, 5, 11, 13, 14, 5, 1, 8, 4, 14, 3, 6, 2, 7]   # Example 4 For Basis Encoding
 
 
     
     # encoding_used = FRQIEncoding    
-    # data_to_encode = [2.96, -6.70 ]         # Example 1 For FRQI Encoding
-    # data_to_encode = [0, 172, 38, 246]      # Example 2 For FRQI Encoding
+    # data_to_encode = [2.96, -6.70 ]                                                                   # Example 1 For FRQI Encoding
+    # data_to_encode = [0, 172, 38, 246]                                                                # Example 2 For FRQI Encoding
+    # data_to_encode = [[159, 53, 139, 89], [120, 247, 40, 220], [173, 60, 89, 32], [181, 59, 13, 94]]  # Example 3 For FRQI Encoding
+    # data_to_encode = [159, 53, 139, 89, 120, 247, 40, 220, 173, 60, 89, 32, 181, 59, 13, 94]          # Example 4 For FRQI Encoding
 
-    # data_to_encode = [[159, 53, 139, 89], [120, 247, 40, 220], [173, 60, 89, 32], [181, 59, 13, 94]] # Example 3 For FRQI Encoding
-    # data_to_encode = [159, 53, 139, 89, 120, 247, 40, 220, 173, 60, 89, 32, 181, 59, 13, 94]     # Example 4 For FRQI Encoding
-
-    # data_to_encode = [[0, 172, 38, 246],[136, 23, 47, 89]]      
-
+    # Randomized input
     # data_length = 16
     # data_to_encode = np.random.randint(low=0, high=15, size=data_length)
-
-    # Randomized inputs
-    # encoding_used = AmplitudeEncoding
-    # data_length = 8
-    # data_to_encode = np.round(np.random.rand(data_length) * 20  - 10    , 2)
-    # data_to_encode = np.random.randint(low=0, high=255, size=data_length)
-    
 
     
 
@@ -133,8 +125,8 @@ if __name__ == "__main__" :
     print(qc)
 
     print("\n\nFinal state vector: ", state_vector)  
-    print("\n\nFinal real state vector: ", state_vector.real)    
-    print("Indices of non-zero elements in the statevector:", np.nonzero(state_vector))
+    # print("\n\nFinal real state vector: ", state_vector.real)    
+    print("Indices of non-zero elements in the statevector:", np.nonzero(state_vector)[0])
 
     print("\nData to encode:" , data_to_encode)
     print(f'\nNumber of qubits {qc.num_qubits}')

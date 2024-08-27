@@ -312,22 +312,31 @@ def bin_str_to_hex_str(binary_num: str) -> str:
 
 if __name__=="__main__": 
 
-    # array = [0, 1, 2, -1.00 , -4 ]
-
+    show_plot = True
 
     # data_length = 4
     # data = np.random.randint(low=0, high=3, size=data_length)
 
     data = [1, -1, 3, 5, -1, 4, 6, 7]  # Example input data   
     data = [1, 1, 1, 1, 1, 0, 0, 1]  # Example input data     
-    # data = [1, 1, 1, 1]  # Example input data     
     data = [1, 1, 0, 1]  # Example input data    
-    qc = BasisEncoding(data , use_Espresso=False)
-    print(qc)
-    qc = BasisEncoding(data , use_Espresso=True)
-    print(qc)
 
-    # print(all_integers(array) ) 
+    print("\nData to encode:" , data)
 
-    # print( int_to_binary(array) )
+    qc_simple = BasisEncoding(data , use_Espresso=False)
+    print("Simple quantum circuit: \n" , qc_simple)
 
+    qc_optimized = BasisEncoding(data , use_Espresso=True)
+    print("Optimized quantum circuit: \n" ,qc_optimized)
+
+
+
+    if show_plot:
+        from qiskit.visualization import circuit_drawer
+        import matplotlib.pyplot as plt
+        
+        # Plot the circuit
+        fig_1 = circuit_drawer(qc_simple, output='mpl', style="iqp")
+        fig_2 = circuit_drawer(qc_optimized, output='mpl', style="iqp")
+        plt.show()
+        
