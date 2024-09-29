@@ -22,7 +22,7 @@ from qiskit.circuit.library import RYGate
 
 from typing import Any, Union, Optional
 
-from Encodings.qs_AmplitudeEncoding import AmplitudeEncoding
+from Encodings.qs_AmplitudeEncoding import AmplitudeEncoding, circuit_maker_amplitude_encoding, solve_spherical_angles
 
 
 def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1 ) -> QuantumCircuit:
@@ -81,7 +81,8 @@ def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1
     
     number_of_qubits = int ( np.ceil(np.log2(len(padded_data))) )
     
-    number_of_address_qubits = number_of_qubits - data_dimensionality
+    number_of_address_qubits = 2
+    data_dimensionality = number_of_qubits
 
     # Indices of data
     qr1 = QuantumRegister(number_of_address_qubits, "a") 
@@ -101,21 +102,25 @@ def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1
 
     QCircuit = qc 
 
-    for address_ctrl_state in range(2**number_of_address_qubits) : 
+    for i in range(2**number_of_address_qubits) : 
 
-        extra_ctr_qubits = [number_of_qubits-3,number_of_qubits-2]
-        print(extra_ctr_qubits)
-        number_of_extra_ctr_qubits = len(extra_ctr_qubits) 
+        qc.barrier()
+        extra_ctr_qubits =  list(range(number_of_address_qubits))
         
-        extra_ctrl_state  = sum(2 ** i for i in extra_ctr_qubits)
-        print(extra_ctrl_state)
 
-        multi_ctr_RYGate =  RYGate(2).control(number_of_address_qubits + number_of_extra_ctr_qubits  ,ctrl_state= extra_ctrl_state + address_ctrl_state)
-        print(list(range(0, number_of_address_qubits)) + extra_ctr_qubits +  list([number_of_qubits-1]))
-        QCircuit.append(multi_ctr_RYGate, list(range(0, number_of_address_qubits)) + extra_ctr_qubits + list([number_of_qubits-1]) )
+        
+        # padded_data = pad_with_zeros(np.array(data))
+
+        # Normalize data 
+        desired_real_statevector = padded_data / np.sqrt(sum(np.abs(padded_data)**2))  
+
+        # Find the angles "alpha"
+        alpha = solve_spherical_angles(desired_real_statevector)
+
+        
+        # Create an Amplitude Encoding (QPIE) circuit   
+        qc = circuit_maker_amplitude_encoding(qc, alpha, data_dimensionality ,extra_ctr_qubits , i ,number_of_address_qubits  )
      
-    # Create an Amplitude Encoding (QPIE) circuit   
-    # qc = circuit_maker_amplitude_encoding(qc, alpha, number_of_qubits )
 
     # Return the final quantum circuit
     return qc 
@@ -123,16 +128,25 @@ def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1
 
 if __name__ == "__main__" : 
     # data_to_encode = [0, 172, 38, 246, 0, 172, 38, 246] 
-
     
-    data_length = 64
+    data_length = 16
     data_to_encode = np.random.randint(low=0, high=15, size=data_length)
-
-    qc = QuantumRegister(4)
-    print(qc)
     
+
     qc = AmplitudeQRAM(list(data_to_encode), 3)
 
     print(qc)
+
+
+    show_plot = True
+
+    if show_plot:
+        from qiskit.visualization import circuit_drawer
+        import matplotlib.pyplot as plt
+        
+        # Plot the circuit
+        fig = circuit_drawer(qc, output='mpl', style="iqp")
+        plt.show()
+        
     
     

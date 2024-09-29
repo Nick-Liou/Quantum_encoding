@@ -91,7 +91,7 @@ def AmplitudeEncoding(data : Union[list, np.ndarray]  ) -> QuantumCircuit:
     return qc 
 
 
-def circuit_maker_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, np.ndarray] , n : int ,  control_qubits:list = list() ) -> QuantumCircuit:
+def circuit_maker_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, np.ndarray] , n : int ,  control_qubits:list = list() , control_state : int = 0 , target_qubit_offset : int = 0 ) -> QuantumCircuit:
     """
     Encodes amplitudes onto a quantum circuit using a custom amplitude encoding scheme.
 
@@ -105,7 +105,11 @@ def circuit_maker_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, 
         QuantumCircuit: The modified quantum circuit after applying the custom amplitude encoding.
     """
     if n == 1 : 
-        QCircuit.ry(alpha[0], 0)
+        if len(control_qubits) == 0 : 
+            QCircuit.ry(alpha[0], control_qubits + [target_qubit_offset + 0])
+        else:
+            multi_ctr_RYGate =  RYGate(alpha[0]).control(len(control_qubits), ctrl_state= control_state)
+            QCircuit.append(multi_ctr_RYGate, control_qubits + [target_qubit_offset + 0] )
     elif n == 2 : 
         # Remove duplicates from the list of control qubits
         control_qubits = list(set(control_qubits))    
@@ -113,29 +117,28 @@ def circuit_maker_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, 
         number_of_extra_ctr_qubits = len(control_qubits)
 
         if number_of_extra_ctr_qubits == 0 : 
-            QCircuit.ry(alpha[0], 0)
-            QCircuit.cry(-alpha[1], 0, 1)
-            QCircuit.cry(pi + alpha[2], 1, 0)
+            QCircuit.ry(alpha[0], target_qubit_offset + 0)
+            QCircuit.cry(-alpha[1], target_qubit_offset + 0, target_qubit_offset + 1)
+            QCircuit.cry(pi + alpha[2], target_qubit_offset + 1, target_qubit_offset + 0)
         else:             
             
             # Apply controlled RY gates
             
             # Gate 1
-            multi_ctr_RYGate =  RYGate(alpha[0]).control(number_of_extra_ctr_qubits,label=None)
-            QCircuit.append(multi_ctr_RYGate, control_qubits + [0] )
+            multi_ctr_RYGate =  RYGate(alpha[0]).control(number_of_extra_ctr_qubits, ctrl_state= control_state )
+            QCircuit.append(multi_ctr_RYGate, control_qubits + [target_qubit_offset + 0] )
             
             # Gate 2
-            multi_ctr_RYGate =  RYGate(-alpha[1]).control(number_of_extra_ctr_qubits+1,label=None)
-            QCircuit.append(multi_ctr_RYGate, control_qubits + [0] + [1] )
+            multi_ctr_RYGate =  RYGate(-alpha[1]).control(number_of_extra_ctr_qubits+1, ctrl_state= (control_state + 2**len(control_qubits)) )
+            QCircuit.append(multi_ctr_RYGate, control_qubits + [target_qubit_offset + 0] + [target_qubit_offset + 1] )
 
             # Gate 3
-            multi_ctr_RYGate =  RYGate(pi + alpha[2]).control(number_of_extra_ctr_qubits+1,label=None)
-            QCircuit.append(multi_ctr_RYGate, control_qubits + [1] + [0] )
+            multi_ctr_RYGate =  RYGate(pi + alpha[2]).control(number_of_extra_ctr_qubits+1, ctrl_state= (control_state + 2**len(control_qubits)))
+            QCircuit.append(multi_ctr_RYGate, control_qubits + [target_qubit_offset + 1] + [target_qubit_offset + 0] )
             
             ## Template 
             ## multi_ctr_RYGate =  RYGate(theta).control(number_of_ctr_qubits,label=None)
-            ## QCircuit.append(multi_ctr_RYGate, control_qubits + [target_qubit] )            
-
+            ## QCircuit.append(multi_ctr_RYGate, control_qubits + [target_qubit] ) 
     else : 
         # Remove duplicates from the list of control qubits
         control_qubits = list(set(control_qubits))
@@ -145,7 +148,7 @@ def circuit_maker_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, 
         # generator circuit, recursively, employing the first (n-1) qubits on the
         # system.
 
-        QCircuit = circuit_maker_amplitude_encoding(QCircuit, alpha , n - 1 , control_qubits)
+        QCircuit = circuit_maker_amplitude_encoding(QCircuit, alpha, n - 1, control_qubits, control_state, target_qubit_offset)
 
 
         # Step c
@@ -153,18 +156,18 @@ def circuit_maker_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, 
         # qubits and target on last qubit.
         
         # multi_ctr_RYGate =  RYGate(alpha[n]).control(n-1 + len(control_qubits),label=None)
-        multi_ctr_RYGate =  RYGate(alpha[2**(n-1)-1]).control(n-1 + len(control_qubits),label=None)
-        QCircuit.append(multi_ctr_RYGate, list(range(0, n-1)) + control_qubits + [n-1] )
-
+        # Note: 2**(len(control_qubits)+n) - 2**(len(control_qubits)) =  2^(len(control_qubits)) + 2^(len(control_qubits)+1) + ... + 2**(len(control_qubits)+n-1)
+        multi_ctr_RYGate =  RYGate(alpha[2**(n-1)-1]).control(n-1 + len(control_qubits), ctrl_state= control_state + 2**(len(control_qubits)) * (2**(n-1) - 1) )
+        QCircuit.append(multi_ctr_RYGate, control_qubits + list(range(target_qubit_offset + 0, target_qubit_offset + n-1)) + [target_qubit_offset + n-1] )
 
 
         # Step d 
         # Apply (n-1) CNOT gates, one by one, on each of the first (n-1) qubits.
         # Each of these CNOT gates has control on the last qubit.
 
-        multi_ctr_XGate =  XGate().control(1 + len(control_qubits),label=None)
+        multi_ctr_XGate =  XGate().control(1 + len(control_qubits),ctrl_state= control_state + 2**(len(control_qubits)) )
         for i in range(n-1):
-            QCircuit.append(multi_ctr_XGate, [n-1] + control_qubits + [i] )
+            QCircuit.append(multi_ctr_XGate,  control_qubits + [target_qubit_offset + n-1] + [target_qubit_offset + i] )
         
 
         # Step e            
@@ -172,8 +175,8 @@ def circuit_maker_amplitude_encoding(QCircuit:QuantumCircuit, alpha:Union[list, 
         # (2**𝑛−1 − 1) angles, recursively, on first (n-1) qubits. Each gate in this subcircuit
         # must have additional control from last qubit.
             
-        control_qubits.append(n-1)
-        QCircuit = circuit_maker_amplitude_encoding(QCircuit, alpha[2**(n-1):] , n - 1 , control_qubits)
+        control_qubits.append(target_qubit_offset + n-1)        
+        QCircuit = circuit_maker_amplitude_encoding(QCircuit, alpha[2**(n-1):] , n - 1 , control_qubits, control_state + 2**(len(control_qubits)-1) , target_qubit_offset )
 
     return QCircuit
 
@@ -244,7 +247,7 @@ if __name__ == "__main__" :
     tolerance = 1e-6
     show_plot = True
 
-    data_length = 30
+    data_length = 2
 
     data_to_encode = np.random.rand(data_length)-0.5
 
