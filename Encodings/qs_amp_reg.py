@@ -22,7 +22,7 @@ from qiskit.circuit.library import RYGate
 
 from typing import Any, Union, Optional
 
-from Encodings.qs_AmplitudeEncoding import AmplitudeEncoding, circuit_maker_amplitude_encoding, solve_spherical_angles
+from Encodings.qs_AmplitudeEncoding import circuit_maker_amplitude_encoding, solve_spherical_angles
 
 
 def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1 ) -> QuantumCircuit:
