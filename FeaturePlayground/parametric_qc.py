@@ -79,18 +79,18 @@ def FRQI_param (number_of_qubits : int = 3 , dim : int = 1 ) -> QuantumCircuit:
 def theoretical_intro (number_of_qubits : int = 1) -> QuantumCircuit: 
 
     # NOT and H gates
-    qc = QuantumCircuit(1)
+    # qc = QuantumCircuit(1)
     # qc.h(0)
-    qc.x(0)
+    # qc.x(0)
 
-    qc = QuantumCircuit(1)
-    theta = Parameter("φ")
-    qc.ry(theta, 0)
+    # qc = QuantumCircuit(1)
+    # theta = Parameter("φ")
+    # qc.ry(theta, 0)
     
     # Bell State and Example
-    # qc = QuantumCircuit(2)    
-    # qc.h(0)
-    # qc.cx(0,1)
+    qc = QuantumCircuit(2)    
+    qc.h(0)
+    qc.cx(0,1)
     # qc.x(0)
 
     return qc

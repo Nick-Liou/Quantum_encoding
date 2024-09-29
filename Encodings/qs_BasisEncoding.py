@@ -148,23 +148,17 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
     # Create a quantum circuit with multipule qubits
     qc = QuantumCircuit(qr1 ,qr2 )
 
-
     # Create a superposition for all the addresses
     qc.h(range(number_of_qubits))
     
     if not use_Espresso:
         # Set up the data 
         for i in range(len(padded_data)):
-            # qc.barrier()
             for j in range(bit_depth):            
                 if bin_data[i][j] == '1' :
                     qubits_ids = list(range(number_of_qubits)) + [number_of_qubits + bit_depth - j - 1]
                     qc.append(MCXGate(num_ctrl_qubits=number_of_qubits, ctrl_state=i), qubits_ids )
-        
-        # qc.barrier()
-        
     else:        
-        
         # Set up the data 
         not_dict = {"0":"1" , "1":"0"}
         for j in range(bit_depth):            
@@ -196,14 +190,12 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
                 pos_ctrl_qubits_ids = contition[0]
                 neg_ctrl_qubits_ids = contition[1]
                 target_qubit = number_of_qubits + bit_depth - j - 1
-                # print(len(kkk)-1)
+
                 if len(pos_ctrl_qubits_ids) == 0 and len(neg_ctrl_qubits_ids) == 0 :
                     qc.x(target_qubit)
                 else:
                     kkk =  pos_ctrl_qubits_ids + neg_ctrl_qubits_ids + [target_qubit]
                     qc.append(MCXGate(num_ctrl_qubits=len(kkk)-1, ctrl_state= 2**(len(pos_ctrl_qubits_ids))-1 ), kkk )
-    
-    
     
     # Return the final quantum circuit
     return qc 
@@ -285,7 +277,7 @@ def bin_str_to_hex_str(binary_num: str) -> str:
     Returns:
         str: A hexadecimal string representing the converted binary number.
 
-    Example:
+    Examples:
         >>> bin_str_to_hex_str("110101")
         'd1'
         >>> bin_str_to_hex_str("10101011")
