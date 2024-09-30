@@ -34,6 +34,7 @@ def BasisEncoding(data : Union[list, np.ndarray] , use_Espresso:bool = True ) ->
         QuantumCircuit: The quantum circuit representing the Basis Encoding of the data.
 
 
+    Examples:
     Example 1 (possitive integers):
         >>> data = [1, 1, 0, 1]  # Example input data      
         # Without Espresso:

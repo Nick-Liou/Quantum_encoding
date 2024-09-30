@@ -16,7 +16,7 @@ def AngleEncoding(data : Union[list, np.ndarray] , min_val : Optional[float] = N
     Returns:
         QuantumCircuit: The quantum circuit representing the Angle Encoding of the data.
 
-        
+    Examples:
     Example 1 (floating numbers):
         >>> data = [0.5, 0.8, 0.3, 0.6]  # Example input data
         >>> min_val = 0.0  # Minimum value

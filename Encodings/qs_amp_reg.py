@@ -17,27 +17,28 @@ from Utilities.utils import pad_with_zeros
 
 import numpy as np
 from qiskit import QuantumCircuit , QuantumRegister
-from qiskit.circuit.library import RYGate
 
 
 from typing import Any, Union, Optional
 
-from Encodings.qs_AmplitudeEncoding import circuit_maker_amplitude_encoding, solve_spherical_angles
+from Encodings.qs_AmplitudeEncoding import circuit_maker_amplitude_encoding, solve_spherical_angles, AmplitudeEncoding
 
 
-def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1 ) -> QuantumCircuit:
+def AmplitudeQRAM(data : Union[list, np.ndarray] , number_of_address_qubits : int = 0 ) -> QuantumCircuit:
     """
-    Encodes the given data into a quantum circuit using ???????????.
+    Encodes the given data into a quantum circuit using QRAM Amplitude Encoding.
 
     Args:
         data (list): The list of real numbers to be encoded.
+        number_of_address_qubits (int, optional): The number of qubits to use for the address quantum register
 
     Returns:
-        QuantumCircuit: The quantum circuit representing the Amplitude Encoding of the data.
+        QuantumCircuit: The quantum circuit representing the QRAM Amplitude Encoding of the data.
 
+    Examples:
     Example 1 (with 1 qubit):
         >>> data = [2.3, 0.8]  # Example input data      
-        >>> qc = AmplitudeEncoding(data)
+        >>> qc = AmplitudeQRAM(data)
         >>> print(qc)
            ┌─────────────┐
         q: ┤ Ry(0.66947) ├
@@ -45,7 +46,7 @@ def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1
            
     Example 2 (with 2 qubit):
         >>> data = [0.5, 0.8, 0.3, 0.6]  # Example input data      
-        >>> qc = AmplitudeEncoding(data)
+        >>> qc = AmplitudeQRAM(data)
         >>> print(qc)
              ┌────────────┐               ┌────────────┐
         q_0: ┤ Ry(2.2483) ├───────■───────┤ Ry(5.3559) ├
@@ -55,7 +56,7 @@ def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1
     
     Example 3 (with 2 qubit):
         >>> data = [0.5, 0.8, 0.3]  # Example input data  (they will be padded with one zero, equivalent to: [0.5, 0.8, 0.3, 0])
-        >>> qc = AmplitudeEncoding(data)
+        >>> qc = AmplitudeQRAM(data)
         >>> print(qc)
              ┌────────────┐                ┌───────┐
         q_0: ┤ Ry(2.0827) ├───────■────────┤ Ry(π) ├
@@ -65,7 +66,7 @@ def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1
 
     Example 4 (with 3 qubit):
         >>> data = [0.5, 0.8, 0.3, 0.6, 0.23, 0.16, 0.89, 0.94]  # Example input data      
-        >>> qc = AmplitudeEncoding(data)
+        >>> qc = AmplitudeQRAM(data)
         >>> print(qc)
              ┌────────────┐               ┌────────────┐              ┌───┐     ┌────────────┐               ┌───────────┐
         q_0: ┤ Ry(2.5652) ├───────■───────┤ Ry(5.8762) ├──────■───────┤ X ├─────┤ Ry(2.7925) ├───────■───────┤ Ry(4.767) ├
@@ -76,13 +77,18 @@ def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1
                                                         └────────────┘
 
     """
+        
     # pad with zeros if needed
     padded_data = pad_with_zeros(np.array(data))
     
     number_of_qubits = int ( np.ceil(np.log2(len(padded_data))) )
-    
-    number_of_address_qubits = 2
-    data_dimensionality = number_of_qubits
+
+    if ( number_of_address_qubits >= number_of_qubits or number_of_address_qubits < 0):
+        raise ValueError("Input number_of_address_qubits must be less than the total qubits requaried to encode the data")
+    elif ( number_of_address_qubits == 0 ):
+        return AmplitudeEncoding(padded_data)
+        
+    data_dimensionality = number_of_qubits - number_of_address_qubits
 
     # Indices of data
     qr1 = QuantumRegister(number_of_address_qubits, "a") 
@@ -99,26 +105,21 @@ def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1
     qc.h(range(number_of_address_qubits))
 
 
-
-    QCircuit = qc 
-
     for i in range(2**number_of_address_qubits) : 
 
         qc.barrier()
-        extra_ctr_qubits =  list(range(number_of_address_qubits))
         
-
-        
-        # padded_data = pad_with_zeros(np.array(data))
+        # Find the 
+        address_data = padded_data[i*2**data_dimensionality:(i+1)*2**data_dimensionality]
 
         # Normalize data 
-        desired_real_statevector = padded_data / np.sqrt(sum(np.abs(padded_data)**2))  
+        desired_real_statevector = address_data / np.sqrt(sum(np.abs(address_data)**2))  
 
         # Find the angles "alpha"
         alpha = solve_spherical_angles(desired_real_statevector)
-
         
-        # Create an Amplitude Encoding (QPIE) circuit   
+        extra_ctr_qubits =  list(range(number_of_address_qubits))
+        # Create a controlled Amplitude Encoding (QPIE) circuit   
         qc = circuit_maker_amplitude_encoding(qc, alpha, data_dimensionality ,extra_ctr_qubits , i ,number_of_address_qubits  )
      
 
@@ -127,18 +128,18 @@ def AmplitudeQRAM(data : Union[list, np.ndarray] , data_dimensionality : int = 1
 
 
 if __name__ == "__main__" : 
+    
+    show_plot = True
     # data_to_encode = [0, 172, 38, 246, 0, 172, 38, 246] 
     
-    data_length = 16
+    data_length = 32
     data_to_encode = np.random.randint(low=0, high=15, size=data_length)
     
+    qc = AmplitudeQRAM(list(data_to_encode), 4)
 
-    qc = AmplitudeQRAM(list(data_to_encode), 3)
-
+    # Print quantum circuit to the console 
     print(qc)
 
-
-    show_plot = True
 
     if show_plot:
         from qiskit.visualization import circuit_drawer

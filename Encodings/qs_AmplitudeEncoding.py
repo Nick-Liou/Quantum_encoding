@@ -28,6 +28,7 @@ def AmplitudeEncoding(data : Union[list, np.ndarray]  ) -> QuantumCircuit:
     Returns:
         QuantumCircuit: The quantum circuit representing the Amplitude Encoding of the data.
 
+    Examples:
     Example 1 (with 1 qubit):
         >>> data = [2.3, 0.8]  # Example input data      
         >>> qc = AmplitudeEncoding(data)
