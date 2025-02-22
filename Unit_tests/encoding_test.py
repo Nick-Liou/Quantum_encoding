@@ -159,10 +159,7 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
         # print(f"case: {case}")
         _, result = encode_data(case, encoding_function)
         state_vector = result.get_statevector().data
-        expected_statevector = expected_statevector_gen(case)        
-        print(f"\nCase: {case}")
-        print(f"state_vector: {state_vector}")
-        print(f"expected_statevector: {expected_statevector}")
+        expected_statevector = expected_statevector_gen(case)
         assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
 
     # Test with multiple randomly generated inputs
