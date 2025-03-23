@@ -17,6 +17,7 @@ from Encodings.qs_AmplitudeEncoding     import AmplitudeEncoding
 from Encodings.qs_AngleEncoding         import AngleEncoding
 from Encodings.qs_BasisEncoding         import BasisEncoding
 from Encodings.qs_FRQI                  import FRQIEncoding
+from Encodings.qs_AmpQRAM               import AmplitudeQRAM
 
 from Utilities.decorators import get_time
 
@@ -73,6 +74,7 @@ if __name__ == "__main__" :
         # FRQIEncoding:       {},
         # FRQIEncoding:       {'min_val': -10, 'max_val': 10},
         FRQIEncoding:       {'min_val': 0, 'max_val': 255},
+        AmplitudeQRAM:      {'number_of_address_qubits': 1}
         
     }    
 
@@ -86,7 +88,6 @@ if __name__ == "__main__" :
     # data_to_encode = [2.96, -6.70 ]                                               # Example 1 For Amplitude Encoding
     data_to_encode = [0, 172, 38, 246]                                            # Example 2 For Amplitude Encoding
     # data_to_encode = [-1.66, -4.05, -7.76,  1.22, -1.33,  6.19,  2.25, -0.85]     # Example 3 For Amplitude Encoding
-
 
     
     # encoding_used = BasisEncoding
@@ -104,6 +105,9 @@ if __name__ == "__main__" :
     # data_to_encode = [[159, 53, 139, 89], [120, 247, 40, 220], [173, 60, 89, 32], [181, 59, 13, 94]]  # Example 3 For FRQI Encoding
     # data_to_encode = [159, 53, 139, 89, 120, 247, 40, 220, 173, 60, 89, 32, 181, 59, 13, 94]          # Example 4 For FRQI Encoding
 
+    # encoding_used = AmplitudeQRAM
+    # data_to_encode = [0, 172, 38, 246, 0, 172, 38, 246] 
+    
     # Randomized input
     # data_length = 16
     # data_to_encode = np.random.randint(low=0, high=15, size=data_length)

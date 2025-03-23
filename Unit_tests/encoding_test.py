@@ -24,10 +24,11 @@ from General_encoding import encode_data
 
 from Utilities.utils import pad_with_zeros
 
-from Encodings.qs_AmplitudeEncoding   import AmplitudeEncoding
-from Encodings.qs_AngleEncoding                import AngleEncoding
-from Encodings.qs_BasisEncoding           import BasisEncoding
-from Encodings.qs_BasisEncoding           import convert_to_bin
+from Encodings.qs_AmplitudeEncoding         import AmplitudeEncoding
+from Encodings.qs_AngleEncoding             import AngleEncoding
+from Encodings.qs_BasisEncoding             import BasisEncoding
+from Encodings.qs_BasisEncoding             import convert_to_bin
+from Encodings.qs_AmpQRAM                   import AmplitudeQRAM
 
 TOLERANCE = 1e-6
 
@@ -100,6 +101,36 @@ def BasisEncoding_Expected_statevector(data : Union[list, np.ndarray]) -> np.nda
     expected_statevector = expected_statevector / np.sqrt(sum(np.abs(expected_statevector)**2))  + 0j
 
     return expected_statevector
+
+def AmplitudeQRAM_Expected_statevector(data : Union[list, np.ndarray] , number_of_address_qubits : int = 0 ) -> np.ndarray:
+
+    
+    # pad with zeros if needed
+    padded_data = pad_with_zeros(np.array(data))
+
+    N = len(padded_data)
+    M = 2**number_of_address_qubits
+    K = N//M
+    # print(f"N {N} , M {M}  K {K}")
+
+    # print("Data: ", padded_data)
+
+
+    expected_statevector: np.ndarray  = np.zeros(padded_data.shape, dtype=np.complex128)
+
+    indeces = np.arange(K)  
+    for i in range(2**number_of_address_qubits):
+        # print(f"Data {i} :" , padded_data[i*K:(i+1)*K])
+        expected_statevector[ indeces*M+i ] = Amplitude_Expected_statevector(padded_data[i*K:(i+1)*K])
+
+    expected_statevector *= 1/np.sqrt(M)
+
+    # print("expected_statevector",expected_statevector)
+    
+    return expected_statevector
+
+
+
 
 
 from enum import Enum
@@ -182,4 +213,5 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
 
 if __name__ == "__main__":
     
-    test_Encodings_multiple_cases(BasisEncoding, BasisEncoding_Expected_statevector, DataType.DIGITAL)
+    test_Encodings_multiple_cases(AmplitudeQRAM, AmplitudeQRAM_Expected_statevector, DataType.ANALOG)
+
