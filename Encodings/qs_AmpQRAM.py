@@ -109,9 +109,12 @@ def AmplitudeQRAM(data : Union[list, np.ndarray] , number_of_address_qubits : in
 
         qc.barrier()
         
-        # Find the 
+        # Find the data corresponding to this address
         address_data = padded_data[i*2**data_dimensionality:(i+1)*2**data_dimensionality]
 
+        if np.all(address_data == 0):
+            raise ValueError(f"Address {i} contains only zeros therefore amplitute encoding can not be implemented for this address (address_data), leading to division by zero.")
+            
         # Normalize data 
         desired_real_statevector = address_data / np.sqrt(sum(np.abs(address_data)**2))  
 

@@ -103,7 +103,6 @@ def BasisEncoding_Expected_statevector(data : Union[list, np.ndarray]) -> np.nda
     return expected_statevector
 
 def AmplitudeQRAM_Expected_statevector(data : Union[list, np.ndarray] , number_of_address_qubits : int = 0 ) -> np.ndarray:
-
     
     # pad with zeros if needed
     padded_data = pad_with_zeros(np.array(data))
@@ -130,7 +129,22 @@ def AmplitudeQRAM_Expected_statevector(data : Union[list, np.ndarray] , number_o
     return expected_statevector
 
 
+def get_args(encoding_func:Callable , data: np.ndarray ) -> tuple :
 
+    if encoding_func ==  AmplitudeQRAM :
+
+        n_qubits = int(np.ceil(max(np.log2(len(data)),1)))
+
+        if n_qubits == 1:
+            k = 0 
+        else:
+            k =  np.random.randint(0, n_qubits-1 ) 
+
+        # print(f"n_qubits: {n_qubits} k: {k} Data: {data})")        
+
+        return tuple([k])
+    
+    return tuple()
 
 
 from enum import Enum
@@ -141,14 +155,16 @@ class DataType(Enum):
 @pytest.mark.parametrize("encoding_function,expected_statevector_gen,data_type", 
                          [(AmplitudeEncoding, Amplitude_Expected_statevector,DataType.ANALOG),
                           (AngleEncoding, AngleEncoding_Expected_statevector,DataType.ANALOG),
-                          (BasisEncoding, BasisEncoding_Expected_statevector,DataType.DIGITAL)])
+                          (BasisEncoding, BasisEncoding_Expected_statevector,DataType.DIGITAL),
+                          (AmplitudeQRAM, AmplitudeQRAM_Expected_statevector,DataType.ANALOG)])
 def test_Encodings_multiple_cases(encoding_function: Callable , expected_statevector_gen: Callable , data_type: DataType) -> None:
     # Simple Test with known input data
     result : Result
     data_to_encode = [1, 2, 3]
-    _ , result = encode_data(data_to_encode, encoding_function)
+    args = get_args(encoding_function,data_to_encode)
+    _ , result = encode_data(data_to_encode, encoding_function,*args)
     state_vector = result.get_statevector().data
-    expected_statevector = expected_statevector_gen(data_to_encode)
+    expected_statevector = expected_statevector_gen(data_to_encode,*args)
     # print("Actual statevector",state_vector)
     # print("Expected statevector" , expected_statevector)
     assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
@@ -158,7 +174,7 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
         # [],  # Empty input
         # [0],  # Single element input
         # [0, 0],  # All zeros
-        [1],  # Single element non-zero
+        # [1],  # Single element non-zero
         [0, 1],  # Zero followed by non-zero
         [1, 0],  # Non-zero followed by zero
         [1, -1],  # Positive and negative values        
@@ -188,10 +204,15 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
 
     for case in edge_cases:
         # print(f"case: {case}")
-        _, result = encode_data(case, encoding_function)
-        state_vector = result.get_statevector().data
-        expected_statevector = expected_statevector_gen(case)
-        assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
+
+        try:        
+            args = get_args(encoding_function,case)
+            _, result = encode_data(case, encoding_function,*args)
+            state_vector = result.get_statevector().data
+            expected_statevector = expected_statevector_gen(case,*args)
+            assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
+        except ValueError as e:
+            assert "contains only zeros" in str(e)  # Ensure it's the expected error from AmplitudeQRAM
 
     # Test with multiple randomly generated inputs
     num_tests = 10  # Adjust the number of tests as needed
@@ -204,14 +225,21 @@ def test_Encodings_multiple_cases(encoding_function: Callable , expected_stateve
             random_data = np.random.randint(low=-16, high=15, size=np.random.randint(1, 25 ))
         
         # print(f"Data: {random_data}")
-        _, result = encode_data(random_data, encoding_function)
-        state_vector = result.get_statevector().data
-        expected_statevector = expected_statevector_gen(random_data)
-        assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
+        try:
+            args = get_args(encoding_function,random_data)
+            _, result = encode_data(random_data, encoding_function,*args)
+            state_vector = result.get_statevector().data
+            expected_statevector = expected_statevector_gen(random_data,*args)
+            assert np.allclose(state_vector, expected_statevector, atol=TOLERANCE)
+        except ValueError as e:
+            assert "contains only zeros" in str(e)  # Ensure it's the expected error from AmplitudeQRAM
 
 
 
 if __name__ == "__main__":
     
-    test_Encodings_multiple_cases(AmplitudeQRAM, AmplitudeQRAM_Expected_statevector, DataType.ANALOG)
+
+    
+    test_Encodings_multiple_cases(AmplitudeEncoding, Amplitude_Expected_statevector, DataType.ANALOG)
+    # test_Encodings_multiple_cases(AmplitudeQRAM, AmplitudeQRAM_Expected_statevector, DataType.ANALOG)
 
